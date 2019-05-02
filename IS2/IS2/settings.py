@@ -53,6 +53,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'IS2.urls'
+AUTH_USER_MODEL = 'usuario.usuario'
 
 TEMPLATES = [
     {
@@ -77,7 +78,7 @@ WSGI_APPLICATION = 'IS2.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
-   'default': {
+    'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
