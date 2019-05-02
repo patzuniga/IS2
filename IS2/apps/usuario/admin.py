@@ -1,6 +1,17 @@
+# users/admin.py
 from django.contrib import admin
-#from .models import Viaje
+from django.contrib.auth import get_user_model
+from django.contrib.auth.admin import UserAdmin
 
-#admin.site.register(Viaje)
+from .forms import CustomUserCreationForm, CustomUserChangeForm
+from .models import Usuario
 
-# Register your models here.
+class CustomUserAdmin(UserAdmin):
+    add_form = CustomUserCreationForm
+    form = CustomUserChangeForm
+    model = Usuario
+    list_display = ['password', 'username',]
+
+
+admin.site.unregister(Usuario)
+admin.site.register(Usuario, CustomUserAdmin)

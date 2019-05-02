@@ -53,7 +53,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'IS2.urls'
-AUTH_USER_MODEL = 'usuario.usuario'
+AUTH_USER_MODEL = 'usuario.Usuario'
 
 TEMPLATES = [
     {
