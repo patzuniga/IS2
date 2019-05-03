@@ -60,10 +60,11 @@ def viaje_listo(request):
 	return render(request, 'viaje/listo.html')
 
 def Viajelist(request):
+	lista = []
 	for v in Viaje.objects.all():
-		lista = []
 		if v.conductor == request.user._conductor:
-			lista.append(v)
+			tramito = v.tramos.all()
+			lista.append(tramito[0])
 	return render(request, 'viaje/viaje_list.html', {'viajes':lista})
 
 

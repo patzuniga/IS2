@@ -40,22 +40,22 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", Arial, Helvetica, sans-serif}
 				<td>Destino</td>
 				<td>Fecha</td>	
 			</tr>	
-	</thead>
-	<tbody>
+			</thead>
+		<tbody>
 		{% if viajes %}
-		{% for viaje in viajes %}
-		<tr>
-			<td>{{ viaje.origen }}</td>
-			<td>{{ viaje.destino }}</td>
+			<tr>
+			{% for viaje in viajes %}
+			<td>{{ viaje.origen.nombre }}</td>
+			<td>{{ viaje.destino.nombre }}</td>
 			<td>{{ viaje.fecha }}</td>
-		</tr>
+				</tr>
 		{% endfor %}
 		
 		{% else %}
 		<h1>No hay registros de viajes</h1>
 		{% endif %}
-	</tbody>
-</table> 
+		</tbody>
+		</table> 
     </div>
 </header>
 
