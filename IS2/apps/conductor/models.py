@@ -17,7 +17,7 @@ class Vehiculo(models.Model):
 class Conductor(models.Model):
 	clasedelicencia = models.CharField(max_length=1)
 	fecha_obtencion = models.CharField(max_length=30,null=False)
-	user = models.OneToOneField(Usuario, null= True, blank=True, on_delete=models.CASCADE)
+	user = models.OneToOneField(Usuario, null= True, blank=True, related_name = "_conductor", on_delete=models.CASCADE)
 	viaje = models.ForeignKey(Viaje, null= True, blank=True, on_delete=models.CASCADE)
 	car = models.OneToOneField(Vehiculo, null = True, blank = True, on_delete=models.CASCADE)
 	
@@ -26,5 +26,5 @@ class Conductor(models.Model):
 		verbose_name_plural = "Conductores"
 
 	def __unicode__(self):
-		return str(self.id)
+		return str(self.id) 
 

@@ -17,7 +17,7 @@ def my_view(request):
 		user = authenticate(request, username=username, password=password)
 		if user is not None:
 			login(request, user)
-			return render(request,'login/base.html',{})
+			return render(request, 'login/base2.html',{})
 		else:
 			return render(request, 'login/login.html',{})
 	return render(request,'login/login.html',{})

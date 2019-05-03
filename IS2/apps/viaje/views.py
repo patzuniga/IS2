@@ -16,7 +16,7 @@ def viaje_view(request):
 			return redirect('viaje:index')
 	else:
 		form = ViajeForm()
-	return render(request,'viaje/viaje_form.html',{'form':form})
+	return render(request,'viaje/crear.html',{'form':form})
 
 def viaje_list(request):
 	viaje = Viaje.objects.all()

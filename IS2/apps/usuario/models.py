@@ -11,6 +11,12 @@ class Usuario(AbstractUser):
 	#viajes = models.ManyToManyField(Viaje, null= True, blank=True, on_delete=models.CASCADE)
 	def __str__(self):
 		return self.username
+
+	def is_conductor(self):
+		try:
+			return self._conductor
+		except conductor.DoesNotExist:
+			return 1
  
 class Perfil(models.Model):
 	usuario = models.OneToOneField(Usuario, on_delete = models.CASCADE, null = True, blank=True)
