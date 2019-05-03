@@ -1,6 +1,6 @@
 from django import forms
 from apps.viaje.models import Viaje
-
+"""
 class ViajeForm(forms.ModelForm):
 
 	class Meta:
@@ -22,3 +22,4 @@ class ViajeForm(forms.ModelForm):
 			'destino': forms.TextInput(attrs={'class':'form-control'}),
 			'fecha_rescate': forms.TextInput(attrs={'class':'form-control'}),
 		}
+"""

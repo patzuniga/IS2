@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+"""
 from apps.viaje.forms import ViajeForm
 from apps.viaje.models import Viaje
 from django.views.generic import ListView
@@ -25,3 +26,4 @@ def viaje_list(request):
 class Viajelist(ListView):
 	model = Viaje
 	template_name ='viaje/viaje_list.html'
+	"""
