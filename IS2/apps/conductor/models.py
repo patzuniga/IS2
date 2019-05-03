@@ -16,4 +16,11 @@ class Conductor(models.Model):
 	user = models.OneToOneField(Usuario, null= True, blank=True, on_delete=models.CASCADE)
 	viaje = models.ForeignKey(Viaje, null= True, blank=True, on_delete=models.CASCADE)
 	car = models.OneToOneField(Vehiculo, null = True, blank = True, on_delete=models.CASCADE)
+	
+	class Meta:
+		verbose_name = "Conductor"
+		verbose_name_plural = "Conductores"
+
+	def __unicode__(self):
+		return str(self.id)
 
