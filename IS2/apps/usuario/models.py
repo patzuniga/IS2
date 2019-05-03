@@ -20,13 +20,13 @@ class Usuario(AbstractUser):
  
 class Perfil(models.Model):
 	usuario = models.OneToOneField(Usuario, on_delete = models.CASCADE, null = True, blank=True)
-	Rut = models.CharField(max_length=10, null = True, blank = True)
-	Nombre = models.CharField(max_length=30, null = True, blank = True)
-	Numero_teléfono = models.CharField(max_length=30, null = True, blank = True)
-	Dirección = models.CharField(max_length=40,null = True, blank = True)
-	Valoración = models.FloatField(null = True, blank = True)
-	Profesión = models.CharField(max_length=20, null = True, blank = True)
-	Fumador = models.NullBooleanField( blank = True)
+	rut = models.CharField(max_length=10, null = True, blank = True)
+	nombre = models.CharField(max_length=30, null = True, blank = True)
+	numero_teléfono = models.CharField(max_length=30, null = True, blank = True)
+	dirección = models.CharField(max_length=40,null = True, blank = True)
+	valoración = models.FloatField(null = True, blank = True)
+	profesión = models.CharField(max_length=20, null = True, blank = True)
+	fumador = models.NullBooleanField( blank = True)
 	class Meta:
 		verbose_name = "Perfil"
 		verbose_name_plural = "Perfiles"
@@ -44,6 +44,6 @@ def save_user_profile(sender,instance, **kwargs):
 	instance.perfil.save()
 
 class Interes_Personal(models.Model):
-	  Interes = models.CharField(max_length=20, null = False)
+	  interes = models.CharField(max_length=20, null = False)
 
 

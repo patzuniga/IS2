@@ -1,6 +1,5 @@
 from django.db import models
-from apps.usuario.models import Usuario 
-from apps.viaje.models import Viaje
+from apps.usuario.models import Usuario
 # Create your models here.
 
 
@@ -18,7 +17,7 @@ class Conductor(models.Model):
 	clasedelicencia = models.CharField(max_length=1)
 	fecha_obtencion = models.CharField(max_length=30,null=False)
 	user = models.OneToOneField(Usuario, null= True, blank=True, related_name = "_conductor", on_delete=models.CASCADE)
-	viaje = models.ForeignKey(Viaje, null= True, blank=True, on_delete=models.CASCADE)
+	#viajes = models.ForeignKey(Viaje, null= True, blank=True, on_delete=models.CASCADE, related_name = "_viajes")
 	car = models.OneToOneField(Vehiculo, null = True, blank = True, on_delete=models.CASCADE)
 	
 	class Meta:

@@ -16,19 +16,17 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", Arial, Helvetica, sans-serif}
 <div class="w3-bar w3-white w3-border-bottom w3-xlarge">
   <a href="#" class="w3-bar-item w3-button w3-text-red w3-hover-red"><b><i class="fa fa-map-marker w3-margin-right"></i>NohJuimoh</b></a>
   <a href="logout" class="w3-bar-item w3-button w3-hide-small w3-right w3-hover-white">Log out</a>
-  <a href="{% url 'viaje_list' %}" class="w3-bar-item w3-button w3-hide-small w3-right w3-hover-white">Ver Viajes</a>
-  <a href= "{% url 'viaje_crear' %}" class="w3-bar-item w3-button w3-hide-small w3-right w3-hover-white">Publicar Viaje</a>
-  <a href="" class="w3-bar-item w3-button w3-hide-small w3-right w3-hover-white">{{user.username}}</a>
+  <a href="#" class="w3-bar-item w3-button w3-hide-small w3-right w3-hover-white">Ver Viajes</a>
+  <a href="viaje/nuevo" class="w3-bar-item w3-button w3-hide-small w3-right w3-hover-white">Publicar Viaje</a>
+  <a href="#" class="w3-bar-item w3-button w3-hide-small w3-right w3-hover-white">{{user.username}}</a>
 </div>
 
 <!-- Header -->
 <header class="w3-display-container w3-content w3-hide-small" style="max-width:1500px">
   <img class="w3-image" src="https://www.gapyear.com/wp-content/uploads/2017/11/RoadTipsMain.jpg" alt="London" width="1500" height="500">
   <div class="w3-display-middle" style="width:65%">
-                <span>Bienvenido,</span>
-                <h2>{{user.username}} {{user.last_name}}</h2>
-                  <h1>Bienvenido, {{usuario.perfil.Nombre}} {{user.last_name}}</h1>
-                  <p>Estas en NohJuimoh, sistema de busqueda de viajes. Elige una de las opciones laterales para iniciar.</p>
+  {% block content %}
+	{% endblock %}
     </div>
   </header>
             <!-- /menu profile quick info -->

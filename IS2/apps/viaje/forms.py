@@ -42,11 +42,13 @@ from .models import *
 
 class ViajeForm(forms.Form):
 
-	fecha = forms.CharField(label = "Fecha de inicio (DD/MM/YY HH:MM)")
-	estado = forms.CharField(required=False)
-	porta_maleta = forms.BooleanField()
-	silla_niños = forms.BooleanField()
-	Mascotas = forms.BooleanField()
+	fecha = forms.DateField(label = "Fecha de inicio")
+	porta_maleta = forms.BooleanField(required = False)
+	silla_niños = forms.BooleanField(required = False)
+	mascotas = forms.BooleanField(required = False)
 	tarifapreferencias = forms.IntegerField(label = "tarifa")
 	max_personas_atras = forms.IntegerField(label = "Num personas atras")
-	tramos = forms.CharField(label="tramos")
+	origen = forms.CharField(label="origen")
+	hora_origen = forms.CharField(label = "Hora Origen")
+	destino = forms.CharField(label="destino")
+	hora_destino = forms.CharField(label = "Hora Destino")

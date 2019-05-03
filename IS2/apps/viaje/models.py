@@ -1,4 +1,5 @@
 from django.db import models
+from apps.conductor.models import Conductor
 
 # Create your models here.
 class Parada(models.Model):
@@ -26,24 +27,25 @@ class Tramo(models.Model):
 		verbose_name_plural = "Tramos"
 
 	def __unicode__(self):
-		return str(self.id_trayecto)
+		return str(self.id)
 
 class Viaje(models.Model):
-	Fecha = models.DateTimeField()
-	Estado = models.CharField(max_length=20,null=False)
-	Porta_maleta = models.BooleanField(default=False)
-	Silla_niños = models.BooleanField(default=False)
-	Mascotas =  models.BooleanField(default=False)
-	TarifaPreferencias = models.IntegerField(null=True,blank=True)
-	Max_personas_atras = models.IntegerField(null=True,blank=True)
+	fecha = models.DateTimeField()
+	estado = models.CharField(max_length=20,null=False)
+	porta_maleta = models.BooleanField(default=False)
+	silla_niños = models.BooleanField(default=False)
+	mascotas =  models.BooleanField(default=False)
+	tarifaPreferencias = models.IntegerField(null=True,blank=True)
+	max_personas_atras = models.IntegerField(null=True,blank=True)
 	tramos = models.ManyToManyField(Tramo, null = False)
+	conductor = models.ForeignKey(Conductor, null= True, blank=True, related_name = "_viajes")
 
 	class Meta:
 		verbose_name = "Viaje"
 		verbose_name_plural = "Viajes"
 
 	def __unicode__(self):
-		return str(self.id_viaje)
+		return str(self)
 
 
 
