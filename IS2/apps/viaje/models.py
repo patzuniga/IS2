@@ -38,7 +38,7 @@ class Viaje(models.Model):
 	tarifaPreferencias = models.IntegerField(null=True,blank=True)
 	max_personas_atras = models.IntegerField(null=True,blank=True)
 	tramos = models.ManyToManyField(Tramo, null = False)
-	conductor = models.ForeignKey(Conductor, null= True, blank=True, related_name = "conductor")
+	conductor = models.ForeignKey(Conductor, null= True, blank=True)
 
 	class Meta:
 		verbose_name = "Viaje"
