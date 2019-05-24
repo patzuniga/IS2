@@ -51,9 +51,6 @@ class Viaje(models.Model):
 	def _tramos(self):
 		return self.tramos
 
-
-
-
 class Reserva(models.Model):
 	estado = models.CharField(max_length=10)
 	precio = models.IntegerField()

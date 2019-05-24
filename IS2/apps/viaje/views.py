@@ -30,8 +30,10 @@ def viaje_view(request):
 			#Paradas en aux
 			aux.append([form.cleaned_data['fecha'], form.cleaned_data['hora_origen'], form.cleaned_data['origen'].split()[0], form.cleaned_data['origen']])
 			aux.append([form.cleaned_data['fecha_destino'], form.cleaned_data['hora_destino'], form.cleaned_data['destino'].split()[0], form.cleaned_data['destino']])
-
-			return viaje_paradas(request,viaje)
+			print("lolololololololol")
+			lol.append(request)
+			lol.append(viaje)
+			return viaje_paradas(lol)
 	else:
 		form = ViajeForm()
 		return render(request,'viaje/crear2.html',{'form':form})
@@ -80,13 +82,18 @@ def Viajelist(request):
 def success(request):
 	return render(request, 'viaje/listo.html', {})	
 
-def viaje_paradas(request):
+def viaje_paradas(diccionario):
 	print("ajskldjaklsjdkasjdlkajdkl")
-	if request.method == 'POST':
+	if diccionario[0].method == 'POST':
 		form = ParadasForm(request.POST)
 		if form.is_valid():
 			aux.append([form.cleaned_data['fecha'], form.cleaned_data['hora'], form.cleaned_data['direccion']])
 			return viaje_paradas(request,viaje)
+		else:
+			print("perror")
+			form = ParadasForm()
+			return render( diccionario,'viaje/paradas.html', {'form':form})
 	else:
+		print("perror")
 		form = ParadasForm()
-		return render(request,'viaje/paradas.html', {'form':form})
+		return render(diccionario,'viaje/paradas.html', {'form':form})

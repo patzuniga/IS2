@@ -37,24 +37,10 @@
       <div class="w3-row-padding" style="margin:0 -16px;">
         <div class="w3-half">
          <form method="post">
-        {% csrf_token %}
+          {% csrf_token %}
+           Parada : <input type="text" id="where_load"  name = "direccion" required class="vTextField" maxlength="30" />
            {{ form.as_p}}
       </div>
-      <div style="font-weight:bold">
-                  Origen: <input type="text" id="where_load"  name = "origen" required class="vTextField" maxlength="30" />
-              </div>
-              <br>
-            <div id="map"></div>
-            <br>
-            <ul id="geoData">
-                <li>Full Address: <span id="location"></span></li>
-                <li>Country: <span id="country"></span></li>
-                <li>Latitude: <span id="lat"></span></li>
-                <li>Longitude: <span id="long"></span></li>
-                <br>
-                <input type="hidden" id = "lati1" name="lati1" value="" />
-                <input type="hidden" id = "long1" name="long1" value="" />
-            </ul>
       <p><button class="w3-button w3-dark-grey" type = "submit" >Agregar Parada</button></p>
       <p><button class="w3-button w3-dark-grey" href="/viaje/success">Publicar Viaje</button></p>
     </form>
@@ -68,7 +54,7 @@
 
     }
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?libraries=places&callback=onLoaded" async defer></script> 
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAD6Q31QwQK0pv7twtzD32efp6hLa0uFEs&libraries=places&callback=onLoaded"></script>
             
 </script>
 <script>

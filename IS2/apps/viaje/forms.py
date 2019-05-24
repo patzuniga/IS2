@@ -56,5 +56,4 @@ class ViajeForm(forms.Form):
 
 class ParadasForm(forms.Form):
 	fecha = forms.DateField(label = "Fecha de llegada")
-	direccion = forms.CharField(label="direccion")
 	hora = forms.CharField(label = "Hora de llegada")
