@@ -51,4 +51,10 @@ class ViajeForm(forms.Form):
 	origen = forms.CharField(label="origen")
 	hora_origen = forms.CharField(label = "Hora Origen")
 	destino = forms.CharField(label="destino")
+	fecha_destino = forms.DateField(label = "Fecha de Termino")
 	hora_destino = forms.CharField(label = "Hora Destino")
+
+class ParadasForm(forms.Form):
+	fecha = forms.DateField(label = "Fecha de llegada")
+	direccion = forms.CharField(label="direccion")
+	hora = forms.CharField(label = "Hora de llegada")

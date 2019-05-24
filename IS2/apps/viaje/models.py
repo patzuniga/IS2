@@ -1,5 +1,6 @@
 from django.db import models
 from apps.conductor.models import Conductor
+#from apps.usuario.models import *
 
 # Create your models here.
 class Parada(models.Model):
@@ -19,8 +20,8 @@ class Tramo(models.Model):
 	hora_llegada = models.CharField(max_length=30,null=False, default = "15:00")
 	fecha = models.CharField(max_length=30,null=False, default = "21/10/18")
 	asientos_disponibles =  models.IntegerField(null=True,blank=True)
-	origen = models.ForeignKey("Parada",related_name="ParadaOrigen", null=True, blank=True)
-	destino = models.ForeignKey("Parada",related_name="ParadaDestino", null=True, blank=True)
+	origen = models.ForeignKey(Parada,related_name="ParadaOrigen", null=True, blank=True)
+	destino = models.ForeignKey(Parada,related_name="ParadaDestino", null=True, blank=True)
 	
 	class Meta:
 		verbose_name = "Tramo"
@@ -28,7 +29,6 @@ class Tramo(models.Model):
 
 	def __unicode__(self):
 		return str(self.id)
-
 class Viaje(models.Model):
 	fecha = models.DateTimeField()
 	estado = models.CharField(max_length=20,null=False)
@@ -38,7 +38,7 @@ class Viaje(models.Model):
 	tarifaPreferencias = models.IntegerField(null=True,blank=True)
 	max_personas_atras = models.IntegerField(null=True,blank=True)
 	tramos = models.ManyToManyField(Tramo, null = False)
-	conductor = models.ForeignKey(Conductor, null= True, blank=True, related_name = "_viajes")
+	conductor = models.ForeignKey(Conductor, null= True, blank=True, related_name = "conductor")
 
 	class Meta:
 		verbose_name = "Viaje"
@@ -46,6 +46,9 @@ class Viaje(models.Model):
 
 	def __unicode__(self):
 		return str(self)
+
+	def _tramos(self):
+		return self.tramos
 
 
 

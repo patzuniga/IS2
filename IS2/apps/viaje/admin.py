@@ -11,11 +11,11 @@ class CustomTramo(admin.ModelAdmin):
 class CustomViaje(admin.ModelAdmin):
 	class Meta:
 		model = Viaje
-	list_display = ['id', 'conductor', ]
+	list_display = ['id', 'conductor']
 
 
 
-admin.site.unregister(Viaje)
+#admin.site.unregister(Viaje)
 admin.site.register(Viaje, CustomViaje)
 admin.site.register(Tramo, CustomTramo)
 admin.site.register(Parada, CustomParada)

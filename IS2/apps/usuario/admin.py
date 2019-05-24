@@ -12,10 +12,10 @@ class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = Usuario
-    list_display = ['password', 'username',]
+    list_display = ['username','password', 'id',]
 
 
-admin.site.unregister(Usuario)
+#admin.site.unregister(Usuario)
 admin.site.register(Usuario, CustomUserAdmin)
 admin.site.register(Perfil)
 admin.site.register(Interes_Personal)
