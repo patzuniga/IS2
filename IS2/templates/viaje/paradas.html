@@ -1,6 +1,30 @@
 {% extends 'login/base2.html' %}
 
 {% block content %}
+    <style>
+       #map {
+    width: 25%;
+    height: 300px;
+}
+    #map2{
+    width: 25%;
+    height: 300px;
+}
+.controls {
+    margin-top: 10px;
+    border: 1px solid transparent;
+    border-radius: 2px 0 0 2px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    height: 32px;
+    outline: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+.button {
+    color: green;
+}
+    </style>
+
 <header class="w3-display-container w3-content w3-hide-small" style="max-width:1500px">
   <img class="w3-image" src="https://www.gapyear.com/wp-content/uploads/2017/11/RoadTipsMain.jpg" alt="London" width="1500" height="500">
   <div class="w3-display-middle" style="width:65%">
@@ -16,13 +40,37 @@
         {% csrf_token %}
            {{ form.as_p}}
       </div>
-      </div>
+      <div style="font-weight:bold">
+                  Origen: <input type="text" id="where_load"  name = "origen" required class="vTextField" maxlength="30" />
+              </div>
+              <br>
+            <div id="map"></div>
+            <br>
+            <ul id="geoData">
+                <li>Full Address: <span id="location"></span></li>
+                <li>Country: <span id="country"></span></li>
+                <li>Latitude: <span id="lat"></span></li>
+                <li>Longitude: <span id="long"></span></li>
+                <br>
+                <input type="hidden" id = "lati1" name="lati1" value="" />
+                <input type="hidden" id = "long1" name="long1" value="" />
+            </ul>
       <p><button class="w3-button w3-dark-grey" type = "submit" >Agregar Parada</button></p>
       <p><button class="w3-button w3-dark-grey" href="/viaje/success">Publicar Viaje</button></p>
     </form>
     </div>
 </header>
+<script>
+    var onLoaded = function() {
+       // I am assuming your field has id of where_load, it might be different
+        var location_input = document.getElementById('where_load');
+        var autocomplete = new google.maps.places.Autocomplete(location_input);
 
+    }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?libraries=places&callback=onLoaded" async defer></script> 
+            
+</script>
 <script>
 // Tabs
 function openLink(evt, linkName) {

@@ -29,6 +29,7 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
+#GOOGLE_MAPS_API_KEY = 
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -39,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'apps.conductor',
     'apps.usuario',
-    'apps.viaje'
+    'apps.viaje',
+    'leaflet',
 ]
 
 MIDDLEWARE = [

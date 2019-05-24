@@ -80,7 +80,7 @@ def Viajelist(request):
 def success(request):
 	return render(request, 'viaje/listo.html', {})	
 
-def viaje_paradas(request,viaje):
+def viaje_paradas(request):
 	print("ajskldjaklsjdkasjdlkajdkl")
 	if request.method == 'POST':
 		form = ParadasForm(request.POST)
@@ -89,4 +89,4 @@ def viaje_paradas(request,viaje):
 			return viaje_paradas(request,viaje)
 	else:
 		form = ParadasForm()
-		return render(request,viaje,'viaje/paradas.html', {'form':form})
+		return render(request,'viaje/paradas.html', {'form':form})

@@ -20,8 +20,8 @@ class Tramo(models.Model):
 	hora_llegada = models.CharField(max_length=30,null=False, default = "15:00")
 	fecha = models.CharField(max_length=30,null=False, default = "21/10/18")
 	asientos_disponibles =  models.IntegerField(null=True,blank=True)
-	origen = models.ForeignKey(Parada,related_name="ParadaOrigen", null=True, blank=True)
-	destino = models.ForeignKey(Parada,related_name="ParadaDestino", null=True, blank=True)
+	origen = models.ForeignKey(Parada,related_name="ParadaOrigen", null=True, blank=True, on_delete = models.CASCADE,)
+	destino = models.ForeignKey(Parada,related_name="ParadaDestino", null=True, blank=True, on_delete = models.CASCADE,)
 	
 	class Meta:
 		verbose_name = "Tramo"
@@ -38,7 +38,7 @@ class Viaje(models.Model):
 	tarifaPreferencias = models.IntegerField(null=True,blank=True)
 	max_personas_atras = models.IntegerField(null=True,blank=True)
 	tramos = models.ManyToManyField(Tramo, null = False)
-	conductor = models.ForeignKey(Conductor, null= True, blank=True)
+	conductor = models.ForeignKey(Conductor, null= True, blank=True, on_delete = models.CASCADE,)
 
 	class Meta:
 		verbose_name = "Viaje"
