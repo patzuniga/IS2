@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.signals import request_finished
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+#from apps.viaje.models import Tramo
 # Create your models here.
 
 class Usuario(AbstractUser):

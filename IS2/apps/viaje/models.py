@@ -1,5 +1,6 @@
 from django.db import models
 from apps.conductor.models import Conductor
+from apps.usuario.models import Usuario
 #from apps.usuario.models import *
 
 # Create your models here.
@@ -53,4 +54,9 @@ class Viaje(models.Model):
 
 
 
-	
+class Reserva(models.Model):
+	estado = models.CharField(max_length=10)
+	precio = models.IntegerField()
+	plazas_pedidas = models.IntegerField()
+	usuario = models.ForeignKey(Usuario, null= True, blank=True)
+	tramos = models.ManyToManyField(Tramo, null = False)
