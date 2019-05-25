@@ -1,6 +1,6 @@
 from django.conf.urls import url, include
 
-from apps.viaje.views import viaje_view, success, viaje_paradas
+from apps.viaje.views import viaje_view, success, viaje_paradas,viaje
 from apps.viaje.views import viaje_listo, Viajelist
 
 urlpatterns = [
@@ -9,4 +9,5 @@ urlpatterns = [
 	url(r'^success$', success, name='success'),
 	url(r'^viajes$', Viajelist, name='viaje_list'),
 	url(r'^paradas$', viaje_paradas, name='paradas'),
+	url(r'^mapa_ejemplo$', viaje, name='viaje'),
 ]

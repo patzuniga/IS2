@@ -7,14 +7,13 @@ from apps.conductor.models import Conductor
 from apps.usuario.models import Usuario
 from django.views.generic import ListView
 from django.forms import formset_factory
-aux = []
+
 def index(request):
 	return render(request,'viaje/index.html')
 
 def viaje_view(request):
 	if request.method == 'POST':
 		form = ViajeForm(request.POST)
-		aux = []
 		if form.is_valid():
 			viaje = Viaje()
 			viaje.fecha = form.cleaned_data['fecha']
@@ -27,13 +26,15 @@ def viaje_view(request):
 			u = Usuario.objects.get(id=current_user.id)
 			viaje.conductor = u.conductor_set.all()[0]
 			viaje.save()
+			aux = []
+			request.session['viaje'] = viaje.id
 			#Paradas en aux
-			aux.append([form.cleaned_data['fecha'], form.cleaned_data['hora_origen'], form.cleaned_data['origen'].split()[0], form.cleaned_data['origen']])
-			aux.append([form.cleaned_data['fecha_destino'], form.cleaned_data['hora_destino'], form.cleaned_data['destino'].split()[0], form.cleaned_data['destino']])
-			print("lolololololololol")
-			lol.append(request)
-			lol.append(viaje)
-			return viaje_paradas(lol)
+			aux.append([form.cleaned_data['fecha'].strftime("%d/%m/%Y"), form.cleaned_data['hora_origen'], form.cleaned_data['origen'].split()[0], form.cleaned_data['origen']])
+			aux.append([form.cleaned_data['fecha_destino'].strftime("%d/%m/%Y"), form.cleaned_data['hora_destino'], form.cleaned_data['destino'].split()[0], form.cleaned_data['destino']])
+			request.session['paradas'] = aux
+			return viaje_paradas(request)
+		else:
+			return render(request,'viaje/paradas.html',{'form':form})
 	else:
 		form = ViajeForm()
 		return render(request,'viaje/crear2.html',{'form':form})
@@ -43,7 +44,7 @@ def viaje_list(request):
 	contexto = {'viajes':viaje}
 	return render(request, 'viaje/viaje_list.html', contexto)
 
-def viaje_listo(request,viaje):
+def viaje_listo(request):
 	aux.sort()
 	for i in range(0,len(aux),2):
 		par1 = Parada()
@@ -81,19 +82,45 @@ def Viajelist(request):
 
 def success(request):
 	return render(request, 'viaje/listo.html', {})	
-
-def viaje_paradas(diccionario):
-	print("ajskldjaklsjdkasjdlkajdkl")
-	if diccionario[0].method == 'POST':
-		form = ParadasForm(request.POST)
-		if form.is_valid():
-			aux.append([form.cleaned_data['fecha'], form.cleaned_data['hora'], form.cleaned_data['direccion']])
-			return viaje_paradas(request,viaje)
-		else:
-			print("perror")
-			form = ParadasForm()
-			return render( diccionario,'viaje/paradas.html', {'form':form})
-	else:
-		print("perror")
+#Pasarle direccion y ciudad (inlcuirlo en el html de paradas)
+#ver si aux esta vacío y ahi mandar la pag
+#actulizar paradas 
+def viaje_paradas(request):
+	try:
+		request.session['viaje']
+		if request.method == 'POST':
+			aux = []
+			aux = request.session['paradas']
+			print(aux)
+			form = ParadasForm(request.POST)
+			print("jkhdjksadhsjdksak")
+			if form.is_valid():
+				print("hsjkhfjkdhfjkhsjkfhjksf1111111111111111111111111111111111")
+				aux.append([form.cleaned_data['fecha'].strftime("%d/%m/%Y"), form.cleaned_data['hora'],form.cleaned_data['direccion'].split(',')[0], form.cleaned_data['direccion']])
+				form = ParadasForm()
+				request.session['paradas'] = aux
 		form = ParadasForm()
-		return render(diccionario,'viaje/paradas.html', {'form':form})
+		print("noooooo")
+		return render(request,'viaje/paradas.html',{'form':form})
+	except:
+		print("lololololo")
+		form = ViajeForm()
+		return redirect("/viaje/nuevo")
+
+import json
+
+def viaje(request):
+	paradas = []
+	viaje = Viaje.objects.get(id=13)
+	tramitos = viaje.tramos.all()
+	ultimo = len(tramitos)
+	for i in range(len(tramitos)):
+		if i != len(tramitos)-1:
+			paradas.append(tramitos[i].origen.direccion)
+		else :
+			paradas.append(tramitos[i].origen.direccion)
+			paradas.append(tramitos[i].destino.direccion)
+	print(paradas)
+	json_cities = json.dumps(paradas)
+	print(ultimo)
+	return render (request,'viaje/ejemplo.html', {'paradas':json_cities, 'ultimo':ultimo})

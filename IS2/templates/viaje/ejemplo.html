@@ -1,0 +1,97 @@
+{% extends 'login/base2.html' %}
+
+{% block content %}
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        height: 60%;
+        float: center;
+        width: 70%;
+      }
+      #directions-panel {
+        margin-top: 10px;
+        background-color: #FFEE77;
+        padding: 10px;
+        overflow: scroll;
+        height: 174px;
+    </style>
+
+<header class="w3-display-container w3-content w3-hide-small" style="max-width:1500px">
+  <img class="w3-image" src="https://www.gapyear.com/wp-content/uploads/2017/11/RoadTipsMain.jpg" alt="London" width="1500" height="500">
+  <div class="w3-display-middle" style="width:65%">
+    <div class="w3-bar w3-black">
+      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Agregar Paradas</button>
+    </div>
+    <!-- Tabs -->
+    <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
+      <h3>Publica tu viaje con nosotros</h3>
+      <div class="w3-row-padding" style="margin:0 -16px;">
+        <div id="map"></div>
+        <div id="directions-panel"></div>
+        Origen: <input type="text" input id="searchInput"  name = "origen" required class="vTextField" maxlength="30" >
+      </div>
+      <p><button class="w3-button w3-dark-grey" type = "submit" >Agregar Parada</button></p>
+      <p><button class="w3-button w3-dark-grey" href="/viaje/success">Publicar Viaje</button></p>
+    </div>
+</header>
+    <script>
+      function initMap() {
+        var directionsService = new google.maps.DirectionsService;
+        var directionsDisplay = new google.maps.DirectionsRenderer;
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 6,
+          center: {lat: 41.85, lng: -87.65}
+        });
+        directionsDisplay.setMap(map);
+
+          calculateAndDisplayRoute(directionsService, directionsDisplay);
+      }
+
+      function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+        var cities = {{ paradas|safe }};
+        var waypts = [];
+        var checkboxArray = cities;
+        for (var i = 1; i < checkboxArray.length-1; i++) {
+          //if (checkboxArray.options[i].selected) {
+            waypts.push({
+              location: checkboxArray[i],
+              stopover: true
+            });
+          //}
+        }
+
+        directionsService.route({
+          origin: checkboxArray[0],
+          destination: checkboxArray[checkboxArray.length-1],
+          waypoints: waypts,
+          optimizeWaypoints: true,
+          travelMode: 'DRIVING'
+        }, function(response, status) {
+          if (status === 'OK') {
+            directionsDisplay.setDirections(response);
+            var route = response.routes[0];
+            var summaryPanel = document.getElementById('directions-panel');
+            summaryPanel.innerHTML = '';
+            // For each route, display summary information.
+            for (var i = 0; i < route.legs.length; i++) {
+             var routeSegment = i + 1;
+              summaryPanel.innerHTML += '<b>Route Segment: ' + routeSegment +
+                  '</b><br>';
+              summaryPanel.innerHTML += route.legs[i].start_address + ' to ';
+              summaryPanel.innerHTML += route.legs[i].end_address + '<br>';
+              summaryPanel.innerHTML += route.legs[i].distance.text + '<br><br>';
+            }
+          } else {
+            window.alert('Directions request failed due to ' + status);
+          }
+        });
+      }
+    </script>
+    <!--<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAD6Q31QwQK0pv7twtzD32efp6hLa0uFEs&callback=initMap">
+    </script> -->
+{% endblock %}
