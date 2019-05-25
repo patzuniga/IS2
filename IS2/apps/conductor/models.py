@@ -1,6 +1,5 @@
 from django.db import models
 from apps.usuario.models import Usuario
-#from apps.viaje.models import Viaje
 # Create your models here.
 
 

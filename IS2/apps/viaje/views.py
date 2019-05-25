@@ -47,8 +47,10 @@ def viaje_list(request):
 	return render(request, 'viaje/viaje_list.html', contexto)
 
 def viaje_listo(request):
+	viaje  = Viaje.objects.get(id = Viaje.objects.latest('id').id)
+	aux = request.session['paradas']
 	aux.sort()
-	for i in range(0,len(aux),2):
+	for i in range(0,len(aux)-1):
 		par1 = Parada()
 		par1.nombre = aux[i][2]
 		par1.direccion = aux[i][3]
@@ -72,7 +74,7 @@ def viaje_listo(request):
 		viaje.tramos.add(tramo)
 	aux = []
 	viaje.save()
-	return redirect("viaje/success")
+	return viaje_ver(request)
 
 def Viajelist(request):
 	lista = []
@@ -100,21 +102,30 @@ def viaje_paradas(request):
 		aux = []
 		aux = request.session['paradas']
 		form = ParadasForm(request.POST)
-		if form.is_valid():
-			direccion = str(request.POST['direccion'])
-			aux.append([form.cleaned_data['fecha'].strftime("%d/%m/%Y"), form.cleaned_data['hora'],direccion.split(',')[0], direccion])
-			request.session['paradas'] = aux
-			form = ParadasForm()
-			return render(request,'viaje/paradas.html',{'form':form})
-		else:
-			form = ParadasForm()
-			return render(request,'viaje/paradas.html',{'form':form})
+		if request.POST.get("agregar"):
+			if form.is_valid():
+				direccion = str(request.POST['direccion'])
+				aux.append([form.cleaned_data['fecha'].strftime("%d/%m/%Y"), form.cleaned_data['hora'],direccion.split(',')[0], direccion])
+				request.session['paradas'] = aux
+				form = ParadasForm()
+				return render(request,'viaje/paradas.html',{'form':form})
+			else:
+				form = ParadasForm()
+				return render(request,'viaje/paradas.html',{'form':form})
+		elif request.POST.get("publicar"):
+			if form.is_valid():
+				direccion = str(request.POST['direccion'])
+				aux.append([form.cleaned_data['fecha'].strftime("%d/%m/%Y"), form.cleaned_data['hora'],direccion.split(',')[0], direccion])
+				request.session['paradas'] = aux
+				return viaje_listo(request)
+			else:
+				return viaje_listo(request)
 
 import json
 
-def viaje(request):
+def viaje_ver(request):
 	paradas = []
-	viaje = Viaje.objects.get(id=13)
+	viaje  = Viaje.objects.get(id = Viaje.objects.latest('id').id)
 	tramitos = viaje.tramos.all()
 	ultimo = len(tramitos)
 	for i in range(len(tramitos)):
