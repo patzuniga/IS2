@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.urls import reverse
 
 from apps.viaje.forms import ParadasForm, ViajeForm
 from apps.viaje.models import Viaje, Tramo, Parada
@@ -28,11 +29,12 @@ def viaje_view(request):
 			viaje.save()
 			aux = []
 			request.session['viaje'] = viaje.id
+			print(request.session['viaje'])
 			#Paradas en aux
 			aux.append([form.cleaned_data['fecha'].strftime("%d/%m/%Y"), form.cleaned_data['hora_origen'], form.cleaned_data['origen'].split()[0], form.cleaned_data['origen']])
 			aux.append([form.cleaned_data['fecha_destino'].strftime("%d/%m/%Y"), form.cleaned_data['hora_destino'], form.cleaned_data['destino'].split()[0], form.cleaned_data['destino']])
 			request.session['paradas'] = aux
-			return viaje_paradas(request)
+			return redirect('paradas')
 		else:
 			return render(request,'viaje/paradas.html',{'form':form})
 	else:
@@ -86,26 +88,27 @@ def success(request):
 #ver si aux esta vacío y ahi mandar la pag
 #actulizar paradas 
 def viaje_paradas(request):
-	try:
-		request.session['viaje']
-		if request.method == 'POST':
-			aux = []
-			aux = request.session['paradas']
-			print(aux)
-			form = ParadasForm(request.POST)
-			print("jkhdjksadhsjdksak")
-			if form.is_valid():
-				print("hsjkhfjkdhfjkhsjkfhjksf1111111111111111111111111111111111")
-				aux.append([form.cleaned_data['fecha'].strftime("%d/%m/%Y"), form.cleaned_data['hora'],form.cleaned_data['direccion'].split(',')[0], form.cleaned_data['direccion']])
-				form = ParadasForm()
-				request.session['paradas'] = aux
-		form = ParadasForm()
-		print("noooooo")
-		return render(request,'viaje/paradas.html',{'form':form})
-	except:
-		print("lololololo")
-		form = ViajeForm()
-		return redirect("/viaje/nuevo")
+	if request.method == 'GET':
+		try:
+			viaje = request.session['viaje']
+			form = ParadasForm()
+			return render(request,'viaje/paradas.html',{'form':form})
+		except:
+			form = ParadasForm()
+			return render(request,'viaje/paradas.html',{'form':form})
+	else:
+		aux = []
+		aux = request.session['paradas']
+		form = ParadasForm(request.POST)
+		if form.is_valid():
+			direccion = str(request.POST['direccion'])
+			aux.append([form.cleaned_data['fecha'].strftime("%d/%m/%Y"), form.cleaned_data['hora'],direccion.split(',')[0], direccion])
+			request.session['paradas'] = aux
+			form = ParadasForm()
+			return render(request,'viaje/paradas.html',{'form':form})
+		else:
+			form = ParadasForm()
+			return render(request,'viaje/paradas.html',{'form':form})
 
 import json
 
