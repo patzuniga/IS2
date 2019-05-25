@@ -55,5 +55,5 @@ class Reserva(models.Model):
 	estado = models.CharField(max_length=10)
 	precio = models.IntegerField()
 	plazas_pedidas = models.IntegerField()
-	usuario = models.ForeignKey(Usuario, null= True, blank=True)
+	usuario = models.ForeignKey(Usuario, null= True, blank=True, on_delete = models.CASCADE)
 	tramos = models.ManyToManyField(Tramo, null = False)
