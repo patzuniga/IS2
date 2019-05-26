@@ -1,33 +1,7 @@
 {% extends 'login/base2.html' %}
 
 {% block content %}
-
 <!-- Header -->
-<style>
-#customers {
-  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
-
-#customers td, #customers th {
-  border: 2px solid #ddd;
-  padding: 10px;
-}
-
-#customers tr:nth-child(even){background-color: #f2f2f2;}
-
-#customers tr:hover {background-color: #ddd;}
-
-#customers th {
-  padding-top: 12px;
-  padding-bottom: 12px;
-  text-align: left;
-  background-color: #4CAF50;
-  color: white;
-}
-</style>
-
 <header class="w3-display-container w3-content w3-hide-small" style="max-width:1500px">
   <img class="w3-image" src="https://www.gapyear.com/wp-content/uploads/2017/11/RoadTipsMain.jpg" alt="London" width="1500" height="500">
   <div class="w3-display-middle" style="width:65%">
@@ -39,7 +13,7 @@
       <h3>Tus Viajes</h3>
       <div class="w3-row-padding" style="margin:0 -16px;">
         <div class="w3-half">
-         <table id="customers" style = "overflow: scroll;">
+         <table class="table table-bordered">
 			<thead>
 			<tr>
 				<td>Origen</td>
@@ -55,7 +29,7 @@
 			{% for viaje in viajes %}
 			<td>{{ viaje.1.origen.nombre }}</td>
 			<td>{{ viaje.2.destino.nombre }}</td>
-			<td>{{ viaje.3 }}</td>
+			<td>{{ viaje.0.fecha }}</td>
       <td>{{ viaje.1.hora_salida }}</td>
       <td>{{ viaje.0.estado }}</td>
       </tr>

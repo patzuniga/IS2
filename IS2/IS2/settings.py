@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'apps.conductor',
     'apps.usuario',
     'apps.viaje',
+    'leaflet',
 ]
 
 MIDDLEWARE = [

@@ -4,12 +4,12 @@ from .models import Usuario
 
 class CustomUserCreationForm(UserCreationForm):
 
-    class Meta(UserCreationForm):
-        model = Usuario
-        fields = ('username', 'password', 'email', 'usuario')
+	class Meta(UserCreationForm):
+		model = Usuario
+		fields = ('username', 'password', 'email', 'usuario')
 
 class CustomUserChangeForm(UserChangeForm):
 
-    class Meta:
-        model = Usuario
-        fields = ('username', 'password', 'email', 'usuario')
+	class Meta:
+		model = Usuario
+		fields = ('username', 'password', 'email', 'usuario')

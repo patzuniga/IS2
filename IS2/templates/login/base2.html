@@ -1,7 +1,7 @@
-
+<!DOCTYPE html>
 {% load static %}
 <html>
-<title>NohJuimoh</title>
+<title></title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
@@ -15,20 +15,20 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", Arial, Helvetica, sans-serif}
 <body class="w3-light-grey" style="width: 100%; max-width: 1500px; height: auto;">
     <div class="w3-bar w3-white w3-border-bottom w3-xlarge" style="width: 100%; max-width: 1500px; height: auto;">
       <a href="#" class="w3-bar-item w3-button w3-text-red w3-hover-red" style = "width: 15%;height: auto;font-size:1.5vw"><b><i class="fa fa-map-marker w3-margin-right"></i>NohJuimoh</b></a>
-      <a href="logout" class="w3-bar-item w3-button w3-right w3-hover-white" style = "width: 10% ;height: auto;font-size:1.7vw"> Log out </a>
+      <a href="logout" class="w3-bar-item w3-button w3-right w3-hover-white" style = "width: 10% ;height: auto;font-size:1.7vw"> Log out
       <a href="{% url 'viaje_list' %}" class="w3-bar-item w3-button w3-right w3-hover-white" style = "width: 15% ;height: auto;font-size:1.7vw">Ver Viajes</a>
       <a href= "{% url 'viaje_crear' %}"  class="w3-bar-item w3-button w3-right w3-hover-white" style = "width: 15% ;height: auto;font-size:1.7vw">Publicar Viaje</a>
       <a href="#" class="w3-bar-item w3-button w3-right w3-hover-white" style = "width: 10% ;height: auto;font-size:1.7vw">{{user.username}}</a>
   </div>
-</div>
-</body>
 <!-- Header -->
+<header class="w3-display-container w3-content w3-hide-small" style="max-width:1500px">
+  </header>
             <!-- /menu profile quick info -->
 
     <!-- Tabs -->
 <!-- Page content -->
+<div class="w3-display-container w3-content w3-hide-small" style="max-width:1500px">
           {% block content %}
-        <div class="w3-display-container w3-content w3-hide-small" style="max-width:1500px">
        <img class="w3-image" src="https://www.gapyear.com/wp-content/uploads/2017/11/RoadTipsMain.jpg" alt="London" width="1500" height="500">
       <div class="w3-display-middle" style="width:65%">
                 <span>Bienvenido,</span>
@@ -36,10 +36,9 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", Arial, Helvetica, sans-serif}
                   <h1>Bienvenido, {{usuario.perfil.Nombre}} {{user.last_name}}</h1>
                   <p>Estas en NohJuimoh, sistema de busqueda de viajes. Elige una de las opciones laterales para iniciar.</p>
     </div>
-      </div>
           {% endblock %}
 <!-- End page content -->
-
+  </div>
 <!-- Footer -->
   <footer class="w3-container w3-center w3-opacity w3-margin-bottom">
       <h5>Find Us On</h5>
