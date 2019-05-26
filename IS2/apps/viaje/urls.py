@@ -9,5 +9,5 @@ urlpatterns = [
 	url(r'^success$', success, name='success'),
 	url(r'^viajes$', Viajelist, name='viaje_list'),
 	url(r'^paradas$', viaje_paradas, name='paradas'),
-	url(r'^mapa_ejemplo$', viaje_ver, name='viaje_ver'),
+	url(r'^mapa_ejemplo$', viaje_ver, name='mapa_ejemplo'),
 ]

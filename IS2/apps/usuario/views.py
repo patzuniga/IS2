@@ -9,7 +9,7 @@ from apps.usuario.models import Usuario
 
 @login_required()
 def home(request):
-	if request.user.is_authenticated() is not None:
+	if request.user.is_authenticated is not None:
 		try:
 			current_user = request.user
 			u = Usuario.objects.get(id=current_user.id)
