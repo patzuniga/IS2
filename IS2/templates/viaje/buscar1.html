@@ -1,0 +1,64 @@
+{% extends 'login/base.html' %}
+
+{% block content %}
+
+<!-- Header -->
+<style>
+#customers {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#customers td, #customers th {
+  border: 2px solid #ddd;
+  padding: 10px;
+}
+
+#customers tr:nth-child(even){background-color: #f2f2f2;}
+
+#customers tr:hover {background-color: #ddd;}
+
+#customers th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #4CAF50;
+  color: white;
+}
+</style>
+
+<header class="w3-display-container w3-content w3-hide-small" style="max-width:1500px">
+  <img class="w3-image" src="https://www.gapyear.com/wp-content/uploads/2017/11/RoadTipsMain.jpg" alt="London" width="1500" height="500">
+  <div class="w3-display-middle" style="width:65%">
+    <div class="w3-bar w3-black">
+      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Ver Viajes</button>
+    </div>
+    <!-- Tabs -->
+    <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
+      <h3>Viajes</h3>
+          {% csrf_token %}
+      <div class="w3-row-padding" style="margin:0 -16px;">
+        <h3> Viajes que coincidan con : De {{origen}} a {{destino}}
+        <div class="w3-half">
+         <table id="customers" style = "overflow: scroll;">
+			<thead>
+			<tr>
+				<td>Origen</td>
+				<td>Destino</td>
+				<td>Fecha de inicio</td>
+        <td>Hora de inicio</td>
+        <td>Precio</td>
+        <td>Autor</td>	
+			</tr>	
+			</thead>
+		<tbody>
+		<h1>Lo sentimos, no hay viajes que coincidan con tu búsqueda</h1>
+		</tbody>
+		</table> 
+    </div>
+</header>
+
+<!-- Page content -->
+  <!-- Contact -->
+{% endblock %}

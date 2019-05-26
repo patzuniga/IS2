@@ -9,6 +9,7 @@ urlpatterns = [
 	url(r'^success$', success, name='success'),
 	url(r'^viajes$', Viajelist, name='viaje_list'),
 	url(r'^paradas$', viaje_paradas, name='paradas'),
-	url(r'^mapa_ejemplo$', viaje_ver, name='mapa_ejempl'),
+	url(r'^mapa_ejemplo$', viaje_ver, name='mapa_ejemplo'),
 	url(r'^buscarviaje', buscar_viaje, name='buscar_viaje'),
+
 ]

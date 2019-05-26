@@ -59,7 +59,6 @@ class ParadasForm(forms.Form):
 	hora = forms.CharField(label = "Hora de llegada")
 
 class BuscarForm(forms.Form):
-
 	origen = forms.CharField(label = "Origen")
 	destino = forms.CharField(label = "Destino")
 	fecha = forms.CharField(label = "Fecha (DD/MM/YY)")

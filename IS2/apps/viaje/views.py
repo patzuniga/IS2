@@ -21,7 +21,7 @@ def viaje_view(request):
 			viaje.estado = "Registrado"
 			viaje.porta_maleta = form.cleaned_data['porta_maleta']
 			viaje.mascotas = form.cleaned_data['mascotas']
-			viaje.tarifapreferencias = form.cleaned_data['tarifapreferencias']
+			viaje.tarifaPreferencias = form.cleaned_data['tarifapreferencias']
 			viaje.max_personas_atras = form.cleaned_data['max_personas_atras']
 			current_user = request.user
 			u = Usuario.objects.get(id=current_user.id)
@@ -183,42 +183,49 @@ def viaje_ver(request):
 		return render (request, 'viaje/ejemplo.html', {"city_array" : json_cities})
 
 def buscar_viaje(request):
-	if request.method == 'POST':
+	if request.method == 'GET':
+		form = BuscarForm()
+		return render(request,'viaje/buscarviaje.html',{'form':form})
+	else:
 		resultado = []
 		form = BuscarForm(request.POST)
-		f = form.cleaned_data['fecha'].strftime("%d/%m/%Y")
-		s = form.cleaned_data['origen'].split()[0]
-		t = form.cleaned_data['destino'].split()[0]
-		viaje  = Viaje.objects.all()
-		#se revisan todos lo viajes
-		for v in viaje:
-			origen = False
-			destino = False
-			distancia = 0;
-			tramitos = viaje.tramos.all()
-			#se revisan los tramos del viaje
-			for t in tramitos:
-				#Como el origen se debe encontrar primero y no sirve que la ultima parada del viaje coincida con este, solo se revisa la primera parada del tramo
-				if(t.origen.nombre == s):
-					distancia = 0;
-					origen = True
-				#Solo importa ver si el destino existe cuando ya se encontró el origen
-				if(origen):
-					distancia += t.distancia
-					#si es que los asientos disponibles son 0 en el camino, el viaje no sirve. Pero debo seguir revisando ya que se podria pasar por ahi de nuevo
-					# y alli podrian haber asientos disponibles
-					if(t.asientos_disponibles == 0):
-						origen = False
-					elif(t.destino.nombre == t):
-						destino = True
-						break
-			if(origen and destino):
-				resultado.append([v,distancia])
-		if(resultado):
-			size = len(resultado)
-			return render(request, 'viaje/buscar2.html', {'viajes':resultado, 'size':size, 'origen':s, 'destino':t})
-
-
-	else:
-		form = BuscarForm()
-	return render(request,'viaje/buscarviaje.html',{'form':form})	
+		if form.is_valid():
+			f = form.cleaned_data['fecha']
+			s = form.cleaned_data['origen'].split()[0]
+			u = form.cleaned_data['destino'].split()[0]
+			viaje  = Viaje.objects.all()
+			#se revisan todos lo viajes
+			for v in viaje:
+				origen = False
+				destino = False
+				distancia = 0;
+				tramitos = v.tramos.all()
+				print(tramitos)
+				print(v.tarifaPreferencias)
+				#se revisan los tramos del viaje
+				for t in tramitos:
+					print(t)
+					print(t.distancia)
+					print(origen)
+					print(t.origen.nombre , s)
+					print(t.destino.nombre, u)
+					#Como el origen se debe encontrar primero y no sirve que la ultima parada del viaje coincida con este, solo se revisa la primera parada del tramo
+					if(t.origen.nombre == s):
+						distancia = 0;
+						origen = True
+						print(origen)
+					#Solo importa ver si el destino existe cuando ya se encontró el origen
+					if(origen):
+						distancia += float(t.distancia)
+						#si es que los asientos disponibles son 0 en el camino, el viaje no sirve. Pero debo seguir revisando ya que se podria pasar por ahi de nuevo
+						# y alli podrian haber asientos disponibles
+						if(t.asientos_disponibles == 0):
+							origen = False
+						elif(t.destino.nombre == u):
+							destino = True
+							break
+				if(origen and destino):
+					resultado.append([v,tramitos[0], tramitos[len(tramitos)-1],distancia*v.tarifaPreferencias])
+			return render(request, 'viaje/buscar2.html', {'viajes':resultado, 'origen':s, 'destino':u})
+		else:
+			return render(request,'viaje/buscarviaje.html',{'form':form})
