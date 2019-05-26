@@ -17,3 +17,4 @@ def home(request):
 			return render(request, 'usuario/index2.html',{})
 		except:
 			return render(request, 'usuario/index.html',{})
+

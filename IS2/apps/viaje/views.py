@@ -52,22 +52,29 @@ def viaje_listo(request):
 	aux = request.session['paradas']
 	aux.sort()
 	for i in range(0,len(aux)-1):
-		par1 = Parada()
-		par1.nombre = aux[i][2]
-		par1.direccion = aux[i][3]
-		par1.save()
+		if(i==0):
+			par1 = Parada()
+			par1.nombre = aux[i][2]
+			par1.direccion = aux[i][3]
+			par1.save()
 
-		par2 = Parada()
-		par2.nombre = aux[i+1][2]
-		par2.direccion = aux[i+1][3]
-		par2.save()
+			par2 = Parada()
+			par2.nombre = aux[i+1][2]
+			par2.direccion = aux[i+1][3]
+			par2.save()
+		else:
+			par1 = par2
+			par2 = Parada()
+			par2.nombre = aux[i+1][2]
+			par2.direccion = aux[i+1][3]
+			par2.save()
 
 		tramo = Tramo()
 		tramo.orden_en_viaje  = i
 		tramo.hora_salida = aux[i][1]
 		tramo.hora_llegada = aux[i+1][1]
 		tramo.fecha = aux[i][0]
-		tramo.asientos_disponibles = viaje.max_personas_atras + 1
+		tramo.asientos_disponibles = viaje.max_personas_atras
 		tramo.origen = par1
 		tramo.destino = par2
 		tramo.save()
@@ -143,19 +150,16 @@ import json
 
 def viaje_ver(request):
 	if request.method == "POST":
-		print("jijijijijijijjiji")
 		aux = request.POST['holiwi'].split()
 		print(aux)
 		viaje  = Viaje.objects.get(id = Viaje.objects.latest('id').id)
 		tramitos = viaje.tramos.all()
 		if(len(aux)//2 == len(tramitos)):
-			print("trabajando")
 			for i in range(len(tramitos)):
 				tramitos[i].distancia = float(aux[2*i])
 				tramitos[i].save()
 			return render(request, 'viaje/listo.html', {})	
 		else:
-			print("uff")
 			return render(request, 'viaje/listo.html', {})
 	else:
 		paradas = []
@@ -175,3 +179,44 @@ def viaje_ver(request):
 		json_cities = json.dumps(paradas)
 		print(json_cities)
 		return render (request, 'viaje/ejemplo.html', {"city_array" : json_cities})
+
+def buscar_viaje(request):
+	if request.method == "GET":
+		return render(request, 'viaje/buscar.html', {})
+	else:
+		resultado = []
+		form = BuscarForm(request.POST)
+		f = form.cleaned_data['fecha'].strftime("%d/%m/%Y")
+		s = form.cleaned_data['origen'].split()[0]
+		t = form.cleaned_data['destino'].split()[0]
+		viaje  = Viaje.objects.all()
+		#se revisan todos lo viajes
+		for v in viaje:
+			origen = False
+			destino = False
+			distancia = 0;
+			tramitos = viaje.tramos.all()
+			#se revisan los tramos del viaje
+			for t in tramitos:
+				#Como el origen se debe encontrar primero y no sirve que la ultima parada del viaje coincida con este, solo se revisa la primera parada del tramo
+				if(t.origen.nombre == s):
+					distancia = 0;
+					origen = True
+				#Solo importa ver si el destino existe cuando ya se encontró el origen
+				if(origen):
+					distancia += t.distancia
+					#si es que los asientos disponibles son 0 en el camino, el viaje no sirve. Pero debo seguir revisando ya que se podria pasar por ahi de nuevo
+					# y alli podrian haber asientos disponibles
+					if(t.asientos_disponibles == 0):
+						origen = False
+					elif(t.destino.nombre == t):
+						destino = True
+						break
+			if(origen and destino):
+				resultado.append([v,distancia])
+		if(resultado):
+			size = len(resultado)
+			return render(request, 'viaje/buscar2.html', {'viajes':resultado, 'size':size, 'origen':s, 'destino':t})
+
+
+				 
