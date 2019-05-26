@@ -78,17 +78,21 @@ def viaje_listo(request):
 
 def Viajelist(request):
 	lista = []
+	current_user = request.user
+	u = Usuario.objects.get(id=current_user.id)
+	conductor = u.conductor_set.all()[0]
 	for v in Viaje.objects.all():
-		if v.conductor == request.user._conductor:
+		if v.conductor == conductor:
+			aux = []
 			tramito = v.tramos.all()
-			lista.append(tramito[0])
+			aux.append(v)
+			aux.append(tramito[0])
+			aux.append(tramito[len(tramito)-1])
+			lista.append(aux)
 	return render(request, 'viaje/viaje_list.html', {'viajes':lista})
 
 def success(request):
 	return render(request, 'viaje/listo.html', {})	
-#Pasarle direccion y ciudad (inlcuirlo en el html de paradas)
-#ver si aux esta vacío y ahi mandar la pag
-#actulizar paradas 
 def viaje_paradas(request):
 	if request.method == 'GET':
 		try:
