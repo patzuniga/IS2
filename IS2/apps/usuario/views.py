@@ -16,9 +16,4 @@ def home(request):
 			u.conductor_set.all()[0]
 			return render(request, 'usuario/index2.html',{})
 		except:
-<<<<<<< HEAD
 			return render(request, 'usuario/index.html',{})
-
-=======
-			return render(request, 'usuario/index.html',{})
->>>>>>> ab1f588858fa7d9a5ac7523d7d1fe9d502eb8513

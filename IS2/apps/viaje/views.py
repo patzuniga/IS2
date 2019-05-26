@@ -81,7 +81,7 @@ def viaje_listo(request):
 		viaje.tramos.add(tramo)
 	aux = []
 	viaje.save()
-	return viaje_ver(request)
+	return redirect("mapa_ejempl")
 
 def Viajelist(request):
 	lista = []
@@ -95,11 +95,23 @@ def Viajelist(request):
 			aux.append(v)
 			aux.append(tramito[0])
 			aux.append(tramito[len(tramito)-1])
+			aux.append(str(v.fecha).split()[0])
 			lista.append(aux)
 	return render(request, 'viaje/viaje_list.html', {'viajes':lista})
 
-def success(request):
-	return render(request, 'viaje/listo.html', {})	
+def success(request,distancias):
+	aux = distancias['data']
+	viaje  = Viaje.objects.get(id = Viaje.objects.latest('id').id)
+	tramitos = viaje.tramos.all()
+	if(len(distancias) == len(tramitos)):
+		print("trabajando")
+		for i in aux:
+			tramitos[i].distancia = aux[i]
+			tramito[i].save()
+		return render(request, 'viaje/listo.html', {})	
+	else:
+		print("uff")
+		return render(request, 'viaje/listo.html', {})	
 
 def viaje_paradas(request):
 	if request.method == 'GET':
@@ -136,18 +148,20 @@ def viaje_paradas(request):
 import json
 
 def viaje_ver(request):
-<<<<<<< HEAD
 	if request.method == "POST":
+		print("jijijijijijijjiji")
 		aux = request.POST['holiwi'].split()
 		print(aux)
 		viaje  = Viaje.objects.get(id = Viaje.objects.latest('id').id)
 		tramitos = viaje.tramos.all()
 		if(len(aux)//2 == len(tramitos)):
+			print("trabajando")
 			for i in range(len(tramitos)):
 				tramitos[i].distancia = float(aux[2*i])
 				tramitos[i].save()
 			return render(request, 'viaje/listo.html', {})	
 		else:
+			print("uff")
 			return render(request, 'viaje/listo.html', {})
 	else:
 		paradas = []
@@ -169,9 +183,7 @@ def viaje_ver(request):
 		return render (request, 'viaje/ejemplo.html', {"city_array" : json_cities})
 
 def buscar_viaje(request):
-	if request.method == "GET":
-		return render(request, 'viaje/buscar.html', {})
-	else:
+	if request.method == 'POST':
 		resultado = []
 		form = BuscarForm(request.POST)
 		f = form.cleaned_data['fecha'].strftime("%d/%m/%Y")
@@ -207,28 +219,6 @@ def buscar_viaje(request):
 			return render(request, 'viaje/buscar2.html', {'viajes':resultado, 'size':size, 'origen':s, 'destino':t})
 
 
-				 
-=======
-	paradas = []
-	viaje  = Viaje.objects.get(id = Viaje.objects.latest('id').id)
-	tramitos = viaje.tramos.all()
-	ultimo = len(tramitos)
-	for i in range(len(tramitos)):
-		if i != len(tramitos)-1:
-			paradas.append(tramitos[i].origen.direccion)
-		else :
-			paradas.append(tramitos[i].origen.direccion)
-			paradas.append(tramitos[i].destino.direccion)
-	print(paradas)
-	json_cities = json.dumps(paradas)
-	print(ultimo)
-	return render (request,'viaje/ejemplo.html', {'paradas':json_cities, 'ultimo':ultimo})
-
-def buscar_viaje(request):
-	if request.method == 'POST':
-		form = BuscarForm(request.POST)
-
 	else:
 		form = BuscarForm()
 	return render(request,'viaje/buscarviaje.html',{'form':form})	
->>>>>>> ab1f588858fa7d9a5ac7523d7d1fe9d502eb8513

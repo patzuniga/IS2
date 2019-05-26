@@ -23,7 +23,7 @@ class Tramo(models.Model):
 	asientos_disponibles =  models.IntegerField(null=True,blank=True)
 	origen = models.ForeignKey(Parada,related_name="ParadaOrigen", null=True, blank=True, on_delete = models.CASCADE,)
 	destino = models.ForeignKey(Parada,related_name="ParadaDestino", null=True, blank=True, on_delete = models.CASCADE,)
-	
+	distancia  = models.FloatField(null=True,blank=True)
 	class Meta:
 		verbose_name = "Tramo"
 		verbose_name_plural = "Tramos"
