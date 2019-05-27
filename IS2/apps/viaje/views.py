@@ -81,7 +81,7 @@ def viaje_listo(request):
 		viaje.tramos.add(tramo)
 	aux = []
 	viaje.save()
-	return redirect("mapa_ejempl")
+	return redirect("mapa_ejemplo")
 
 def Viajelist(request):
 	lista = []

@@ -3,55 +3,31 @@
 {% block content %}
 
 <!-- Header -->
-<style>
-#customers {
-  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
-
-#customers td, #customers th {
-  border: 2px solid #ddd;
-  padding: 10px;
-}
-
-#customers tr:nth-child(even){background-color: #f2f2f2;}
-
-#customers tr:hover {background-color: #ddd;}
-
-#customers th {
-  padding-top: 12px;
-  padding-bottom: 12px;
-  text-align: left;
-  background-color: #4CAF50;
-  color: white;
-}
-</style>
-
 <header class="w3-display-container w3-content w3-hide-small" style="max-width:1500px">
   <img class="w3-image" src="https://www.gapyear.com/wp-content/uploads/2017/11/RoadTipsMain.jpg" alt="London" width="1500" height="500">
   <div class="w3-display-middle" style="width:65%">
     <div class="w3-bar w3-black">
-      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Ver Viajes</button>
+      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Buscar viajes</button>
     </div>
     <!-- Tabs -->
     <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
-      <h3>Viajes</h3>
+      <h3>Viajes que coincidan con : De {{origen}} a {{destino}} </h3>
           {% csrf_token %}
       <div class="w3-row-padding" style="margin:0 -16px;">
-        <h3> Viajes que coincidan con : De {{origen}} a {{destino}}
         <div class="w3-half">
-         <table id="customers" style = "overflow: scroll;">
-			<thead>
+         <table class="tablita" style = "overflow: scroll;" width="200%" >
+      <thead>
 			<tr>
-				<td>Origen</td>
-				<td>Destino</td>
-				<td>Fecha de inicio</td>
-        <td>Hora de inicio</td>
-        <td>Precio</td>
-        <td>Autor</td>	
-			</tr>	
-			</thead>
+        <tr id="head">
+        <th scope="col" >Origen</th>
+        <th scope="col" >Destino</th>
+        <th scope="col" >Fecha de inicio</th>
+        <th scope="col">Hora de inicio</th>
+        <th scope="col">Precio </th>
+        <th scope="col">Autor </th>
+        <th scope="col">Reservar</th>
+      </tr> 
+      </thead>
 		<tbody>
 		{% if viajes %}
 			<tr>
@@ -62,6 +38,7 @@
        <td>{{ viaje.1.hora_salida }}</td>
 			<td>{{ viaje.3}}</td>
       <td>{{ viaje.0.conductor.usuario }}</td>
+      <td ><button onclick=""><i class="fa fa-bell"" style="text-align: center;"></i></button></td>
       </tr>
 		{% endfor %}
 		

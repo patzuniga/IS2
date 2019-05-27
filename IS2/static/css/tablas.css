@@ -1,0 +1,33 @@
+.tablita tr{
+	background: #ddd; 
+	border-collapse: collapse;
+	}
+.tablita tr head{
+	background: black;
+}
+.tablita td{
+	text-align: center;
+}
+.tablita a,
+.tablita a:visited{
+  display: block;
+  padding: 7px;
+  text-decoration: none;
+  color: black;
+  background: #ddd;
+}
+}
+.tablita a:hover{
+  background: #D2D7D2;
+}	
+.round-button {
+  
+  text-align: center;
+    background: #ddd;
+}
+.round-button:hover {
+    background: #D2D7D2;
+}
+.button-table{
+	background: #ddd;
+}
