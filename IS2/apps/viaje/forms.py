@@ -53,6 +53,14 @@ class ViajeForm(forms.Form):
 	destino = forms.CharField(label="destino")
 	fecha_destino = forms.DateField(label = "Fecha de Termino")
 	hora_destino = forms.CharField(label = "Hora Destino")
+	def clean(self):
+		cleaned_data = super().clean()
+		f1 = cleaned_data.get("fecha")
+		h1 = cleaned_data.get("hora_origen")
+		f2 = cleaned_data.get("fecha_destino")
+		h2 = cleaned_data.get("hora_destino")
+		if (f2 < f1 or (f1 == f2 and h2 <= h1)):
+			raise forms.ValidationError("Fecha y hora de termino deben ser mayores a la fecha y hora de inicio.")
 
 class ParadasForm(forms.Form):
 	fecha = forms.DateField(label = "Fecha de llegada")

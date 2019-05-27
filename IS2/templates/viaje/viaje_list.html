@@ -33,13 +33,13 @@
     <tr class="clickable-row" >
 			<tr>
 			{% for viaje in viajes %}
-			 <td><a href="#">{{ viaje.1.origen.nombre }}</a></td>
-      <td><a href="#">{{ viaje.2.destino.nombre }}</a></td>
-      <td><a href="#">{{ viaje.3 }}</a></td>
-      <td> <a href="#">{{ viaje.1.hora_salida }}</td>
-      <td> <a href="#">{{ viaje.0.estado }}</td>
-      <td ><form method="get" action="editar_viaje"><button type="submit"><i class="fa fa-pencil" style="text-align: center;"></i></button></form></td>
-      <td ><button onclick=""><i class="fa fa-times " style="text-align: center;"></i></button></td>
+			<td><a href="{% url 'viaje_details' viaje.0.id %}">{{ viaje.1.origen.nombre }}</a></td>
+      <td><a href="{% url 'viaje_details' viaje.0.id %}">{{ viaje.2.destino.nombre }}</a></td>
+      <td><a href="{% url 'viaje_details' viaje.0.id %}">{{ viaje.3 }}</a></td>
+      <td> <a href="{% url 'viaje_details' viaje.0.id %}">{{ viaje.1.hora_salida }}</a></td>
+      <td> <a href="{% url 'viaje_details' viaje.0.id %}">{{ viaje.0.estado }}</a></td>
+     <td ><form method="get" action="/viaje/editarviaje"> <input type="hidden" id="idviaje" name="idviaje" value="{{ viaje.0.id }}"><button type="submit" class="round-button" ><i class="fa fa-pencil" style="text-align: center;"></i></button></form></td>
+      <td ><button class="round-button" onclick=""><i class="fa fa-times " style="text-align: center;"></i></button></td>
       </tr>
 		{% endfor %}
 		

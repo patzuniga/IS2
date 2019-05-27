@@ -36,7 +36,7 @@ def viaje_view(request):
 			request.session['paradas'] = aux
 			return redirect('paradas')
 		else:
-			return render(request,'viaje/paradas.html',{'form':form})
+			return render(request,'viaje/crear2.html',{'form':form})
 	else:
 		form = ViajeForm()
 		return render(request,'viaje/crear2.html',{'form':form})
@@ -104,13 +104,11 @@ def success(request,distancias):
 	viaje  = Viaje.objects.get(id = Viaje.objects.latest('id').id)
 	tramitos = viaje.tramos.all()
 	if(len(distancias) == len(tramitos)):
-		print("trabajando")
 		for i in aux:
 			tramitos[i].distancia = aux[i]
 			tramito[i].save()
 		return render(request, 'viaje/listo.html', {})	
 	else:
-		print("uff")
 		return render(request, 'viaje/listo.html', {})	
 
 def viaje_paradas(request):
@@ -149,7 +147,6 @@ import json
 
 def viaje_ver(request):
 	if request.method == "POST":
-		print("jijijijijijijjiji")
 		aux = request.POST['holiwi'].split()
 		print(aux)
 		viaje  = Viaje.objects.get(id = Viaje.objects.latest('id').id)
@@ -161,7 +158,6 @@ def viaje_ver(request):
 				tramitos[i].save()
 			return render(request, 'viaje/listo.html', {})	
 		else:
-			print("uff")
 			return render(request, 'viaje/listo.html', {})
 	else:
 		paradas = []
@@ -229,3 +225,31 @@ def buscar_viaje(request):
 			return render(request, 'viaje/buscar2.html', {'viajes':resultado, 'origen':s, 'destino':u})
 		else:
 			return render(request,'viaje/buscarviaje.html',{'form':form})
+
+def viaje_details(request, pk):
+	viajes=[]
+	if request.method == 'GET':
+		aux = Viaje.objects.get(id = pk)
+		tramitos = aux.tramos.all()
+		viajes.append(aux)
+		viajes.append(tramitos)
+		viajes.append(str(aux.fecha).split()[0])
+
+	paradas = []
+	viaje  = Viaje.objects.get(id = pk)
+	tramitos = viaje.tramos.all()
+	ultimo = len(tramitos)
+	for i in range(len(tramitos)):
+		if i != len(tramitos)-1:
+			paradas.append(tramitos[i].origen.direccion)
+		else :
+			paradas.append(tramitos[i].origen.direccion)
+			paradas.append(tramitos[i].destino.direccion)
+	json_cities = json.dumps(paradas)
+	return render(request, 'viaje/viaje_details.html', {'viajes':viajes, 'paradas':json_cities, 'ultimo':ultimo})
+
+def editarviaje(request):
+	if request.method == 'GET':
+		lol = request.GET["idviaje"]
+		viaje = Viaje.objects.get(id = lol)
+	return render (request, "viaje/editarviaje.html", {"viaje": viaje})

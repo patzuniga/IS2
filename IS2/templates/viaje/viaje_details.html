@@ -1,0 +1,108 @@
+{% extends 'login/base2.html' %}
+
+{% block content %}
+<!-- Header -->
+<header class="w3-display-container w3-content w3-hide-small" style="max-width:1500px" >
+  <img class="w3-image" src="https://www.gapyear.com/wp-content/uploads/2017/11/RoadTipsMain.jpg" alt="London" width="1500" height="500">
+  <div class="w3-display-middle" style="width:60%; vertical-align: text-top;"  >
+    <div class="w3-bar w3-black">
+      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Detalles de Tu Viaje</button>
+    </div>
+    <!-- Tabs -->
+    <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink"  >
+      <h3 style="text-align: center;">Tu Viaje</h3>
+      <div class="w3-row-padding"  style="margin:0 -16px;">
+        <div class="w3-half table-light" >
+        	<p><strong>Fecha Salida: </strong>{{viajes.2}} a las {{viajes.1.0.hora_salida}}</p>
+        	<p><strong>Tiene Porta-Maleta: </strong>{% if viajes.0.porta_maleta %} SI {% else %} NO {% endif %}</p>
+        	<p><strong>Tiene Silla de Niños: </strong>{% if viajes.0.silla_niños %} SI {% else %} NO {% endif %}</p>
+        	<p><strong>Permite Mascostas: </strong>{% if viajes.0.mascotas %} SI {% else %} NO {% endif %}</p>
+        	<p><strong>Tarifa Preferencias: </strong> {{viajes.0.tarifaPreferencias}}</p>
+        	<p><strong>Maximo Personas Asiento Trasero: </strong> {{viajes.0.max_personas_atras}}</p>
+        	<p><strong>Estado Viaje: </strong>{{viajes.0.estado}}</p>
+        	
+
+		    </div>
+		</div>
+		<div class="w3-row-padding">
+			<table class="tablita" style = "overflow: scroll;" width="100%">
+				<thead>
+			<tr id="head">
+				<th scope="col" >Origen</th>
+				<th scope="col" >Destino</th>
+				<th scope="col" >Fecha</th>
+        		<th scope="col"> Hora </th>
+	        	</tr>
+	        </thead>
+			<tbody>
+		{% if viajes.0 %}
+			<tr >
+			{% for viaje in viajes.1 %}
+
+			<td>{{ viaje.origen.nombre }}</td>
+			<td>{{ viaje.destino.nombre }}</td>
+			<td>{{ viaje.fecha }}</a></td>
+      		<td>{{ viaje.hora_llegada }}</td>
+            </tr>
+		{% endfor %}
+		
+		{% else %}
+		<h1>No hay registros de viajes</h1>
+		{% endif %}
+		</tbody> 
+		</table>
+		</div>
+		<div>
+			{% csrf_token %}
+   			<input type="hidden" name="holiwi"  id="holiwi">
+		</div>
+	</div>
+</header>
+<script>
+      function initMap() {
+        var directionsService = new google.maps.DirectionsService;
+        var directionsDisplay = new google.maps.DirectionsRenderer;
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 6,
+          center: {lat: 41.85, lng: -87.65}
+        });
+        directionsDisplay.setMap(map);
+          calculateAndDisplayRoute(directionsService, directionsDisplay);
+      }
+      function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+         var checkboxArray = {{ city_array|safe }};
+         var waypts = []
+        for (var i = 1; i < checkboxArray.length -1; i++) {
+            waypts.push({
+              location: checkboxArray[i],
+              stopover: true
+            });
+        }
+        directionsService.route({
+          origin: checkboxArray[0],
+          destination: checkboxArray[checkboxArray.length-1],
+          waypoints: waypts,
+          optimizeWaypoints: true,
+          travelMode: 'DRIVING'
+        }, function(response, status) {
+          if (status === 'OK') {
+            directionsDisplay.setDirections(response);
+            var route = response.routes[0];
+            var aux = '';
+            for (var i = 0; i < route.legs.length; i++) {
+             aux += ' ' + route.legs[i].distance.text
+            }
+            document.getElementById("holiwi").value = aux;
+          } else {
+            window.alert('Directions request failed due to ' + status);
+          }
+        });
+      }
+    </script>
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAD6Q31QwQK0pv7twtzD32efp6hLa0uFEs&callback=initMap">
+    </script>
+
+<!-- Page content -->
+  <!-- Contact -->
+{% endblock %}
