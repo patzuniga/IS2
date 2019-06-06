@@ -17,8 +17,8 @@ class Parada(models.Model):
 
 class Tramo(models.Model):
 	orden_en_viaje  = models.IntegerField(null=True,blank=True)
-	hora_salida = models.CharField(max_length=30,null=False, default = "15:00")
-	hora_llegada = models.CharField(max_length=30,null=False, default = "15:00")
+	hora_salida = models.TimeField(max_length=30,null=False, default = "15:00")
+	hora_llegada = models.TimeField(max_length=30,null=False, default = "15:00")
 	fecha = models.CharField(max_length=30,null=False, default = "21/10/18")
 	asientos_disponibles =  models.IntegerField(null=True,blank=True)
 	origen = models.ForeignKey(Parada,related_name="ParadaOrigen", null=True, blank=True, on_delete = models.CASCADE,)
@@ -56,4 +56,4 @@ class Reserva(models.Model):
 	precio = models.IntegerField()
 	plazas_pedidas = models.IntegerField()
 	usuario = models.ForeignKey(Usuario, null= True, blank=True, on_delete = models.CASCADE)
-	tramos = models.ManyToManyField(Tramo, null = False)
+	tramos = models.ManyToManyField(Tramo, null = False, related_name="Reserva")

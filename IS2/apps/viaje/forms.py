@@ -49,10 +49,10 @@ class ViajeForm(forms.Form):
 	tarifapreferencias = forms.IntegerField(label = "tarifa")
 	max_personas_atras = forms.IntegerField(label = "Num personas atras")
 	origen = forms.CharField(label="origen")
-	hora_origen = forms.CharField(label = "Hora Origen")
+	hora_origen = forms.TimeField(label = "Hora Origen")
 	destino = forms.CharField(label="destino")
 	fecha_destino = forms.DateField(label = "Fecha de Termino")
-	hora_destino = forms.CharField(label = "Hora Destino")
+	hora_destino = forms.TimeField(label = "Hora Destino")
 	def clean(self):
 		cleaned_data = super().clean()
 		f1 = cleaned_data.get("fecha")
@@ -64,10 +64,10 @@ class ViajeForm(forms.Form):
 
 class ParadasForm(forms.Form):
 	fecha = forms.DateField(label = "Fecha de llegada")
-	hora = forms.CharField(label = "Hora de llegada")
+	hora = forms.TimeField(label = "Hora de llegada")
 
 class BuscarForm(forms.Form):
 	origen = forms.CharField(label = "Origen")
 	destino = forms.CharField(label = "Destino")
-	fecha = forms.CharField(label = "Fecha (DD/MM/YY)")
+	fecha = forms.DateField(label = "Fecha (DD/MM/YY)")
 	
