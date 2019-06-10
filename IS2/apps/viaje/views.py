@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.forms import formset_factory
 
 def index(request):
-	return render(request,'viaje/index.html')
+	return render(request, 'usuario/index2.html')
 
 @login_required()
 def viaje_view(request):

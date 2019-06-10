@@ -15,10 +15,12 @@
          <form method="post">
         {% csrf_token %}
            {{ form.as_p}}
+       
       </div>
       </div>
-      <p><button class="w3-button w3-dark-grey" type = "submit" >Agregar Paradas</button></p>
-    </form>
+ <p><button class="w3-button w3-dark-grey" type = "submit" >Agregar Paradas</button></p>
+   </form>
+    <a href="{% url 'index' %}" class="w3-button w3-dark-grey" >Cancelar </a>
     </div>
 </header>
 
