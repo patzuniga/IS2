@@ -24,6 +24,7 @@ class Tramo(models.Model):
 	origen = models.ForeignKey(Parada,related_name="ParadaOrigen", null=True, blank=True, on_delete = models.CASCADE,)
 	destino = models.ForeignKey(Parada,related_name="ParadaDestino", null=True, blank=True, on_delete = models.CASCADE,)
 	distancia  = models.FloatField(null=True,blank=True)
+	viaje = models.IntegerField(null=True,blank=True)
 	class Meta:
 		verbose_name = "Tramo"
 		verbose_name_plural = "Tramos"
@@ -38,7 +39,7 @@ class Viaje(models.Model):
 	mascotas =  models.BooleanField(default=False)
 	tarifaPreferencias = models.IntegerField(null=True,blank=True)
 	max_personas_atras = models.IntegerField(null=True,blank=True)
-	tramos = models.ManyToManyField(Tramo, null = False)
+	tramos = models.ManyToManyField(Tramo, null = False, related_name = "Tramos")
 	conductor = models.ForeignKey(Conductor, null= True, blank=True, on_delete = models.CASCADE,)
 
 	class Meta:
@@ -52,7 +53,7 @@ class Viaje(models.Model):
 		return self.tramos
 
 class Reserva(models.Model):
-	estado = models.CharField(max_length=10)
+	estado = models.CharField(max_length=11)
 	precio = models.IntegerField()
 	plazas_pedidas = models.IntegerField()
 	usuario = models.ForeignKey(Usuario, null= True, blank=True, on_delete = models.CASCADE)
