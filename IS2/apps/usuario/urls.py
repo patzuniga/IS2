@@ -12,5 +12,5 @@ urlpatterns = [
 	url(r'^$', home),
 	url(r'^admin/', admin.site.urls),
 	url(r'^viaje/', include('apps.viaje.urls')),
-	url(r'^conductor/', include('apps.conductor.urls')),  
+	url(r'^conductor/', include('apps.conductor.urls')),
 ]

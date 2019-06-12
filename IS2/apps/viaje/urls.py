@@ -1,7 +1,7 @@
 from django.conf.urls import url, include
 
 from apps.viaje.views import viaje_view, success, viaje_paradas,viaje_ver
-from apps.viaje.views import viaje_listo, Viajelist, buscar_viaje,viaje_details,editarviaje
+from apps.viaje.views import viaje_listo, Viajelist, buscar_viaje,viaje_details,editarviaje,confirmarCan, realizar_reservas, cancelar
 
 urlpatterns = [
 #url(r'^$',index,name='index'),
@@ -13,4 +13,7 @@ urlpatterns = [
 	url(r'^buscarviaje', buscar_viaje, name='buscar_viaje'),
 	url(r'^viajes/details/(?P<pk>\d+)/$',viaje_details, name='viaje_details'),
 	url(r'^editarviaje$', editarviaje, name='editarviaje'),
+	url(r'^confirmarCan/(?P<pk>\d+)/$', confirmarCan, name='confirmarCan'),
+	url(r'^cancelar/(?P<pk>\d+)/$', cancelar, name='cancelar'),
+	url(r'^realizar_reservas/(?P<pk>\d+)/$', realizar_reservas, name='realizar_reservas'),
 ]

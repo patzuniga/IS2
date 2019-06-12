@@ -283,4 +283,41 @@ def editarviaje(request):
 	if request.method == 'GET':
 		lol = request.GET["idviaje"]
 		viaje = Viaje.objects.get(id = lol)
-	return render (request, "viaje/editarviaje.html", {"viaje": viaje})
+	return render (request, 'viaje/editarviaje.html', {'viaje': viaje})
+
+def confirmarCan(request, pk):
+	return render(request, 'viaje/confirmarCanc.html', {'id' : pk})
+
+def cancelar(request, pk):
+	#if(no hay reservas)
+	viaje = Viaje.objects.get(id=pk)
+	tramitos = viaje.tramos.all()
+	i = len(tramitos)-1
+	while i>=0:
+		tram=tramitos[i]
+		tram.destino.delete()
+		if i == 0:
+			tram.origen.delete()
+		tram.delete()
+		i=i-1
+	viaje.delete()
+	#esta hecho asi porque no se si hay una forma mas decente de hacerlo (Karonnte)
+	lista = []
+	current_user = request.user
+	u = Usuario.objects.get(id=current_user.id)
+	conductor = u.conductor_set.all()[0]
+	for v in Viaje.objects.all():
+		if v.conductor == conductor:
+			aux = []
+			tramito = v.tramos.all()
+			aux.append(v)
+			aux.append(tramito[0])
+			aux.append(tramito[len(tramito)-1])
+			aux.append(str(v.fecha).split()[0])
+			lista.append(aux)
+	return render(request, 'viaje/viaje_list.html', {'viajes':lista})
+
+def realizar_reservas(request, pk):
+	lista = []
+	
+	return render(request, 'viaje/realizar_reservas.html')

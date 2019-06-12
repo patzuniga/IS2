@@ -16,6 +16,7 @@
       <h3>Tus Viajes</h3>
       <div class="w3-row-padding" style="margin:0 -16px;">
         <div class="w3-half">
+        {% if viajes %}
         <table class="tablita" style = "overflow: scroll;" width="200%" >
 			<thead>
 			<tr id="head">
@@ -29,7 +30,7 @@
 			</tr>	
 			</thead>
 		<tbody>
-		{% if viajes %}
+	
     <tr class="clickable-row" >
 			<tr>
 			{% for viaje in viajes %}
@@ -38,8 +39,9 @@
       <td><a href="{% url 'viaje_details' viaje.0.id %}">{{ viaje.3 }}</a></td>
       <td> <a href="{% url 'viaje_details' viaje.0.id %}">{{ viaje.1.hora_salida }}</a></td>
       <td> <a href="{% url 'viaje_details' viaje.0.id %}">{{ viaje.0.estado }}</a></td>
-     <td ><form method="get" action="/viaje/editarviaje"> <input type="hidden" id="idviaje" name="idviaje" value="{{ viaje.0.id }}"><button type="submit" class="round-button" ><i class="fa fa-pencil" style="text-align: center;"></i></button></form></td>
-      <td ><button class="round-button" onclick=""><i class="fa fa-times " style="text-align: center;"></i></button></td>
+     <td ><form method="get" action="/viaje/editarviaje" style="vertical-align:middle;"> <input type="hidden" id="idviaje" name="idviaje" value="{{ viaje.0.id }}"><button type="submit" class="round-button" ><i class="fa fa-pencil"></i></button></form></td>
+      
+      <td ><a href="{% url 'confirmarCan' viaje.0.id %}"><button class="round-button" onclick=""><i class="fa fa-times " style="text-align: center;"></i></button></td>
       </tr>
 		{% endfor %}
 		
