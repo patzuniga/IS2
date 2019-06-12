@@ -1,10 +1,14 @@
 from django.conf.urls import url, include
+<<<<<<< HEAD
 
 from apps.viaje.views import viaje_view, success, viaje_paradas,viaje_ver
 from apps.viaje.views import viaje_listo, Viajelist, buscar_viaje,viaje_details,editarviaje,confirmarCan, realizar_reservas, cancelar
+=======
+from apps.viaje.views import *
+>>>>>>> 5c35377cd99f48bf6e7efcc1fd362845204bff32
 
 urlpatterns = [
-#url(r'^$',index,name='index'),
+ 	url(r'^$',index,name='index'),
 	url(r'^nuevo$', viaje_view, name='viaje_crear'),
 	url(r'^success$', success, name='success'),
 	url(r'^viajes$', Viajelist, name='viaje_list'),

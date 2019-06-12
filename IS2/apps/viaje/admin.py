@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Viaje, Tramo, Parada
+from .models import Viaje, Tramo, Parada, Reserva
 class CustomParada(admin.ModelAdmin):
 	class Meta:
 		model = Parada
@@ -13,11 +13,17 @@ class CustomViaje(admin.ModelAdmin):
 		model = Viaje
 	list_display = ['id', 'conductor']
 
+class CustomReserva(admin.ModelAdmin):
+	class Meta:
+		model = Viaje
+	list_display = ['id', 'usuario', 'precio']
+
 
 
 #admin.site.unregister(Viaje)
 admin.site.register(Viaje, CustomViaje)
 admin.site.register(Tramo, CustomTramo)
 admin.site.register(Parada, CustomParada)
+admin.site.register(Reserva, CustomReserva)
 
 

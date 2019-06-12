@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.forms import formset_factory
 
 def index(request):
-	return render(request,'viaje/index.html')
+	return render(request, 'usuario/index2.html')
 
 @login_required()
 def viaje_view(request):
@@ -81,6 +81,7 @@ def viaje_listo(request, pk):
 		tramo.asientos_disponibles = viaje.max_personas_atras
 		tramo.origen = par1
 		tramo.destino = par2
+		tramo.viaje = pk
 		tramo.save()
 
 		viaje.tramos.add(tramo)
@@ -121,8 +122,6 @@ def viaje_paradas(request,pk):
 		aux = request.session['paradas']
 		form = ParadasForm(request.POST)
 		if form.is_valid():
-			print(type(aux[1][0]))
-			print(type(aux[1][0]))
 			viaje = Viaje.objects.get(id = pk)
 			fo = viaje.fecha.strftime("%d/%m/%Y")
 			fd = aux[1][0]
@@ -167,7 +166,6 @@ import json
 def viaje_ver(request, pk):
 	if request.method == "POST":
 		aux = request.POST['holiwi'].split()
-		print(aux)
 		viaje  = Viaje.objects.get(id = pk)
 		tramitos = viaje.tramos.all()
 		if(len(aux)//2 == len(tramitos)):
@@ -180,7 +178,6 @@ def viaje_ver(request, pk):
 	else:
 		paradas = []
 		viaje  = Viaje.objects.get(id = pk)
-		print(viaje)
 		tramitos = viaje.tramos.all()
 		ultimo = len(tramitos)
 		for i in range(len(tramitos)):
