@@ -6,7 +6,7 @@
   <img class="w3-image" src="https://www.gapyear.com/wp-content/uploads/2017/11/RoadTipsMain.jpg" alt="London" width="1500" height="500">
   <div class="w3-display-topmiddle" style="width:75%; vertical-align: text-top; padding-top:5%"  >
     <div class="w3-bar w3-black">
-      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Reservas</button>
+      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Ver Reservas</button>
     </div>
     <!-- Tabs -->
     <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink"  >
@@ -28,6 +28,7 @@
         <th scope="col">Hora fin</th>
         <th scope="col" >Precio</th>
         <th scope="col">Estado</th>
+        <th scope="col">Eliminar</th>
 			</tr>	
 			</thead>
 		<tbody>
@@ -45,7 +46,7 @@
       <td>{{ reserva.8}}</a></td>
       <td>{{ reserva.9}}</a></td>
       <td>{{ reserva.10}}</a></td>
-      <td ><a href="{% url 'viaje_details' reserva.11 %}"><button class="round-button" onclick=""><i class="fa fa-times " style="text-align: center;"></i></button></td></a>
+      <td ><a href = "{% url 'confirmacion' reserva.11 %}"><button class="round-button" onclick=""><i class="fa fa-times " style="text-align: center;"></i></button></td></a>
       </tr>
 		{% endfor %}
 		

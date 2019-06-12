@@ -15,18 +15,18 @@ def home(request):
 			current_user = request.user
 			u = Usuario.objects.get(id=current_user.id)
 			u.conductor_set.all()[0]
-			return render(request, 'usuario/index2.html',{})
+			return render(request, 'usuario/index2.html',{'user': u})
 		except:
-			return render(request, 'usuario/index.html',{})
+			return render(request, 'usuario/index.html',{'user': u})
 
 def ver_reservas(request):
 	r = Reserva.objects.filter(usuario=request.user)
-	print(r)
-	aux = []
+	reservas =[]
 	for reserva in r:
 		tramos = reserva.tramos.all()
+		aux = []
 		aux.append(tramos[0].viaje)
-		aux.append(Viaje.objects.get(id=tramos[0].viaje))
+		aux.append(Viaje.objects.get(id=tramos[0].viaje).conductor.usuario)
 		aux.append(reserva.plazas_pedidas)
 		aux.append(tramos[0].origen.nombre)
 		aux.append(tramos[len(tramos)-1].destino.nombre)
@@ -36,5 +36,19 @@ def ver_reservas(request):
 		aux.append(tramos[len(tramos)-1].hora_llegada)
 		aux.append(reserva.precio)
 		aux.append(reserva.estado)
-		print(reserva.id)
-	return render(request, 'usuario/reservas.html',{'reservas' : aux})
+		aux.append(reserva.id)
+		reservas.append(aux)
+	return render(request, 'usuario/reservas.html',{'reservas' : reservas})
+
+def confirmacion(request, pk):
+	return render(request, 'usuario/confirmacion.html',{'id':pk})
+
+def cancelar_reserva(request, pk):
+	reserva = Reserva.objects.filter(id=pk)
+	try:
+		reserva[0].delete()
+		success = True
+	except:
+		success = False
+	return render(request, 'usuario/cancelar_reserva.html', {'exito': success})
+

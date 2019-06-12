@@ -17,9 +17,9 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", Arial, Helvetica, sans-serif}
     <div class="w3-bar w3-white w3-border-bottom w3-xlarge" style="width: 100%; max-width: 1500px; height: auto;">
       <a href="#" class="w3-bar-item w3-button w3-text-red w3-hover-red" style = "width: 15%;height: auto;font-size:1.5vw"><b><i class="fa fa-map-marker w3-margin-right"></i>NohJuimoh</b></a>
       <a href="logout" class="w3-bar-item w3-button w3-right w3-hover-white" style = "width: 10% ;height: auto;font-size:1.7vw"> Log out</a>
-      <a href="{% url 'buscar_viaje' %}"" class="w3-bar-item w3-button w3-right w3-hover-white" style = "width: 15% ;height: auto;font-size:1.7vw">Buscar Viaje</a>
-      <a href="#" class="w3-bar-item w3-button w3-right w3-hover-white" style = "width: 15% ;height: auto;font-size:1.7vw">Ver Reservas</a>
-      <a href="#" class="w3-bar-item w3-button w3-right w3-hover-white" style = "width: 10% ;height: auto;font-size:1.7vw">{{user.username}}</a>
+      <a href="{% url 'buscar_viaje' %}" class="w3-bar-item w3-button w3-right w3-hover-white" style = "width: 15% ;height: auto;font-size:1.7vw">Buscar Viaje</a>
+      <a href= "{% url 'ver_reservas' %}" class="w3-bar-item w3-button w3-right w3-hover-white" style = "width: 15% ;height: auto;font-size:1.7vw">Ver Reservas</a>
+      <a href="{% url 'home' %}" class="w3-bar-item w3-button w3-right w3-hover-white" style = "width: 10% ;height: auto;font-size:1.7vw">{{user.username}}</a>
   </div>
 </body>
 <!-- Page content -->
@@ -27,7 +27,7 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", Arial, Helvetica, sans-serif}
          <div class="w3-display-container w3-content w3-hide-small" style="max-width:1500px">
        <img class="w3-image" src="https://www.gapyear.com/wp-content/uploads/2017/11/RoadTipsMain.jpg" alt="London" width="1500" height="500">
       <div class="w3-display-middle" style="width:65%">
-                  <h1>Bienvenido, {{user.first_name}} {{user.last_name}}</h1>
+                  <h1>Bienvenido, {{user.nombres}} {{user.last_name}}</h1>
                   <p>Estas en NohJuimoh, sistema de busqueda de viajes. Elige una de las opciones laterales para iniciar.</p>
     </div>
   </div>
