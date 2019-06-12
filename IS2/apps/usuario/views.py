@@ -17,13 +17,7 @@ def home(request):
 			u.conductor_set.all()[0]
 			return render(request, 'usuario/index2.html',{'user': u})
 		except:
-<<<<<<< HEAD
 			return render(request, 'usuario/index.html',{})
-
-
-	
-=======
-			return render(request, 'usuario/index.html',{'user': u})
 
 def ver_reservas(request):
 	r = Reserva.objects.filter(usuario=request.user)
@@ -68,5 +62,3 @@ def cancelar_reserva(request, pk):
 	except:
 		success = False
 	return render(request, 'usuario/cancelar_reserva.html', {'exito': success})
-
->>>>>>> 5c35377cd99f48bf6e7efcc1fd362845204bff32

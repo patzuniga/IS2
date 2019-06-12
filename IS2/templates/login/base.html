@@ -18,13 +18,9 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", Arial, Helvetica, sans-serif}
       <a href="#" class="w3-bar-item w3-button w3-text-red w3-hover-red" style = "width: 15%;height: auto;font-size:1.5vw"><b><i class="fa fa-map-marker w3-margin-right"></i>NohJuimoh</b></a>
       <a href="logout" class="w3-bar-item w3-button w3-right w3-hover-white" style = "width: 10% ;height: auto;font-size:1.7vw"> Log out</a>
       <a href="{% url 'buscar_viaje' %}" class="w3-bar-item w3-button w3-right w3-hover-white" style = "width: 15% ;height: auto;font-size:1.7vw">Buscar Viaje</a>
-<<<<<<< HEAD
-      <a href="#" class="w3-bar-item w3-button w3-right w3-hover-white" style = "width: 15% ;height: auto;font-size:1.7vw">Ver Reservas</a>
-      <a href="#" class="w3-bar-item w3-button w3-right w3-hover-white" style = "width: 10% ;height: auto;font-size:1.7vw">{{user.username}}</a>
-=======
       <a href= "{% url 'ver_reservas' %}" class="w3-bar-item w3-button w3-right w3-hover-white" style = "width: 15% ;height: auto;font-size:1.7vw">Ver Reservas</a>
       <a href="{% url 'home' %}" class="w3-bar-item w3-button w3-right w3-hover-white" style = "width: 10% ;height: auto;font-size:1.7vw">{{user.username}}</a>
->>>>>>> 5c35377cd99f48bf6e7efcc1fd362845204bff32
+
   </div>
 </body>
 <!-- Page content -->
