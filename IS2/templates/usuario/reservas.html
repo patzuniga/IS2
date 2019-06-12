@@ -17,6 +17,7 @@
         <table class="tablita" style = "overflow: scroll;" width="200%" >
 			<thead>
 			<tr id="head">
+        <th scope="col" >Reserva</th>
         <th scope="col" >Viaje</th>
         <th scope="col" >Conductor</th>
         <th scope="col" >Plazas</th>
@@ -35,7 +36,8 @@
     <tr class="clickable-row" >
 			<tr>
 		{% for reserva in reservas %}
-	  <td>{{ reserva.0}}</a></td>
+      <td>{{ reserva.11}}</a></td>
+	    <td>{{ reserva.0}}</a></td>
       <td>{{ reserva.1}}</a></td>
       <td>{{ reserva.2}}</a></td>
       <td>{{ reserva.3}}</a></td>

@@ -46,8 +46,19 @@ def confirmacion(request, pk):
 def cancelar_reserva(request, pk):
 	reserva = Reserva.objects.filter(id=pk)
 	try:
-		reserva[0].delete()
-		success = True
+		tramitos = reserva.tramos.all()
+		now = datetime.now()
+		if(tramitos[0].fecha ==  now.date()):
+			if(tramitos[0].hora_salida > now.time + datetime.timedelta(hours = 2)):
+				reserva[0].delete()
+				success = True
+			else:
+				success = False
+		elif(tramitos[0].fecha < now.date()):
+			reserva[0].delete()
+			success = True
+		else:
+			success = False
 	except:
 		success = False
 	return render(request, 'usuario/cancelar_reserva.html', {'exito': success})
