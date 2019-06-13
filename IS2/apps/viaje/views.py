@@ -206,9 +206,10 @@ def buscar_viaje(request):
 		f = request.POST['fecha']
 		s = request.POST['origen'].split(',')[0].replace(",","")
 		u = request.POST['destino'].split(',')[0].replace(",","")
-		viaje  = Viaje.objects.all()
+		viaje  = Viaje.objects.filter(fecha = f)
 		#se revisan todos lo viajes
-		print("adshjkdhasjkhdkahsdjhasjdhkasjhdjkad ")
+		origen = False
+		destino = False
 		print(viaje)
 		for v in viaje:
 			origen = False
