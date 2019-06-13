@@ -43,13 +43,12 @@
       <td ><a href="{% url 'realizar_reservas' viaje.0.id %}"><button class="round-button"><i class="fa fa-bell"" style="text-align: center;"></i></button></td> 
       </tr>
 		{% endfor %}
-		
-		{% else %}
-		<h1>Lo sentimos, no hay viajes que coincidan con tu búsqueda</h1>
-		{% endif %}
 		</tbody>
 		</table> 
     </div>
+    {% else %}
+    <h5>Lo sentimos, no hay viajes que coincidan con tu búsqueda</h5>
+    {% endif %}
 </header>
 
 <!-- Page content -->

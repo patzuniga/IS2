@@ -43,18 +43,26 @@
           {% csrf_token %}
            Parada : <input type="text" id="where_load"  name = "direccion" required class="vTextField" maxlength="30" />
            {{ form.as_p}}
-      <p><button class="w3-button w3-dark-grey" type = "submit" name="agregar" value="1" >Agregar Parada</button></p>
-      <p><button class="w3-button w3-dark-grey" name="publicar" value="1" >Publicar Viaje</button></p>
+         </div>
+         <br>
+       <div class="w3-clear w3-center nextprev">
+          <a href="{% url 'index' %}" class="w3-button w3-dark-grey" >Cancelar </a>
+          <button class="w3-button w3-dark-grey" name="publicar" value="1" style="margin-left: 4%">Publicar Viaje</button>
+          <button class="w3-button w3-dark-grey" type = "submit" name="agregar"  value="1" style="margin-left: 4%">Agregar Parada</button>
+      </div>
     </form>
-    <a href="{% url 'index' %}" class="w3-button w3-dark-grey" >Cancelar </a>
     </div>
   </div>
 </header>
 <script>
-    var onLoaded = function() {
-       // I am assuming your field has id of where_load, it might be different
+function onLoaded() {
+
+ var options = {
+  types: ['(cities)'],
+  componentRestrictions: {country: "cl"}
+ };
         var location_input = document.getElementById('where_load');
-        var autocomplete = new google.maps.places.Autocomplete(location_input);
+        var autocomplete = new google.maps.places.Autocomplete(location_input,options);
 
     }
 </script>
