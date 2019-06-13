@@ -20,6 +20,7 @@ class Conductor(models.Model):
 	#viajes = models.ForeignKey(Viaje, null= True, blank=True, related_name = "viajes")
 	car = models.OneToOneField(Vehiculo, null = True, blank = True, on_delete=models.CASCADE)
 	autoaceptar_reservas = models.BooleanField(default=False)
+	reservas_por_aprobar = models.IntegerField(default = 0)
 	
 	class Meta:
 		verbose_name = "Conductor"
