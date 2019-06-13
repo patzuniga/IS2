@@ -290,11 +290,35 @@ def viaje_details(request, pk):
 
 
 @login_required()
-def editarviaje(request):
+def editarviaje(request,idviaje):
+	viaje = Viaje.objects.get(id=idviaje)
+	tramitos = viaje.tramos.all()
 	if request.method == 'GET':
-		lol = request.GET["idviaje"]
-		viaje = Viaje.objects.get(id = lol)
-	return render (request, 'viaje/editarviaje.html', {'viaje': viaje})
+		form = ViajeForm()
+	else:
+		form = ViajeForm(request.POST)
+		if form.is_valid():
+			viaje.fecha = form.cleaned_data['fecha']
+			viaje.estado = "Registrado"
+			viaje.porta_maleta = form.cleaned_data['porta_maleta']
+			viaje.mascotas = form.cleaned_data['mascotas']
+			viaje.tarifaPreferencias = form.cleaned_data['tarifapreferencias']
+			viaje.max_personas_atras = form.cleaned_data['max_personas_atras']
+			tramitos[0].origen.direccion = form.cleaned_data['origen']
+			tramitos[0].origen.nombre = form.cleaned_data['origen']
+			tramitos[0].hora_salida = form.cleaned_data['hora_origen']
+			tramitos[0].origen.save()
+			tramitos[0].save()
+			print(tramitos[0].origen.nombre)
+			tramitos[len(tramitos)-1].destino.direccion = form.cleaned_data['destino']
+			tramitos[len(tramitos)-1].destino.nombre = form.cleaned_data['destino']
+			tramitos[len(tramitos)-1].hora_llegada = form.cleaned_data['hora_destino']
+			tramitos[len(tramitos)-1].fecha = form.cleaned_data['fecha_destino']
+			tramitos[len(tramitos)-1].destino.save()
+			tramitos[len(tramitos)-1].save()
+			viaje.save()
+		return redirect('viaje_list')
+	return render(request, 'viaje/editarviaje.html', {'form':form})
 
 def confirmarCan(request, pk):
 	return render(request, 'viaje/confirmarCanc.html', {'id' : pk})

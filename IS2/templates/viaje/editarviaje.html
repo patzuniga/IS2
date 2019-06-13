@@ -10,21 +10,16 @@
     <!-- Tabs -->
     <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
       <h3><strong>Editar viaje </strong></h3>
-      <div class="w3-row-padding" style="margin:0 -16px;">
+           <div class="w3-row-padding" style="margin:0 -16px;">
         <div class="w3-half">
-
-
          <form method="post">
-          <p><strong>Fecha de inicio: </strong><input type="text" name="fecha_inicio" value="{{viaje.fecha}}" required></p>
-          <p><strong>Porta Maletas: </strong><input type="checkbox" name="porta_maleta" value="{{viaje.porta_maleta}}" ></p>
-          <p><strong>Silla para niños: </strong><input type="checkbox" name="silla_niños" value="{{viaje.silla_niños}}" ></p>
-          <p><strong> Mascotas: </strong><input type="checkbox" name="mascotas" value="{{viaje.mascotas}}" ></p>
-          <p><strong>Tarifa: </strong><input type="text" name="tarifa" value="{{viaje.tarifaPreferencias}}" required></p>
-          <p><strong>Numero de personas atras: </strong><input type="text" name="max_personas_atras" value="{{viaje.max_personas_atras}}" required></p>
-          <button class="w3-button w3-dark-grey" type="submit">Guardar</button>
-         </form>
+        {% csrf_token %}
+           {{ form.as_p}}
       </div>
       </div>
+       <p><button class="w3-button w3-dark-grey" type = "submit" >Guardar</button></p>
+   </form>
+    <a href="{% url 'index' %}" class="w3-button w3-dark-grey" >Cancelar </a>
     </div>
 </header>
 
