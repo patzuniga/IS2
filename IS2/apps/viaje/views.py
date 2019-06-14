@@ -52,7 +52,7 @@ def viaje_view(request):
 			if request.POST.get("agregar"):
 				return redirect('paradas')
 			elif request.POST.get("publicar"):
-				return viaje_listo(request)
+				return viaje_ver(request)
 
 		else:
 			return render(request,'viaje/crear2.html',{'form':form})
@@ -264,7 +264,7 @@ def viaje_ver(request):
 			request.session['viaje'].update( {'distancias' : aux} )
 			print(request.session['viaje'])
 			return viaje_listo(request)
-		elif request.POST.get("publicar2"):
+		elif request.POST.get("publicar2") or request.POST.get("publicar"):
 			print("publicar")
 			jotason = []
 			paradas.sort()
@@ -275,7 +275,7 @@ def viaje_ver(request):
 			request.session['viaje']['paradas'] = paradas
 			print("paradas", paradas)
 			print("request", request)
-			return render (request, 'viaje/ejemplo.html', {"city_array" : json_cities})
+			return render (request, 'viaje/ejemplo.html', {"city_array" : json_cities, "paradas": paradas, "max": len(paradas)-1})
 	else:
 		raise Http404  
 		#aux = request.POST['holiwi'].split()
@@ -521,3 +521,7 @@ def guardar_reservas(request):
 
 	
 	return render(request, 'usuario/index.html')
+
+def cancelar_crear_viaje(request):
+	request.session['viaje'] = ''
+	return redirect('home')
