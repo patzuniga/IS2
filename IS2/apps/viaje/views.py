@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.urls import reverse
 
 from apps.viaje.forms import ParadasForm, ViajeForm, BuscarForm
-from apps.viaje.models import Viaje, Tramo, Parada
+from apps.viaje.models import Viaje, Tramo, Parada, Reserva
 from apps.conductor.models import Conductor
 from apps.usuario.models import Usuario
 from django.views.generic import ListView
@@ -170,7 +170,7 @@ def viaje_ver(request, pk):
 		tramitos = viaje.tramos.all()
 		if(len(aux)//2 == len(tramitos)):
 			for i in range(len(tramitos)):
-				tramitos[i].distancia = float(aux[2*i])
+				tramitos[i].distancia = float(aux[2*i].replace(',',''))
 				tramitos[i].save()
 			return success(request,pk)	
 		else:
@@ -298,23 +298,72 @@ def cancelar(request, pk):
 		tram.delete()
 		i=i-1
 	viaje.delete()
-	#esta hecho asi porque no se si hay una forma mas decente de hacerlo (Karonnte)
-	lista = []
-	current_user = request.user
-	u = Usuario.objects.get(id=current_user.id)
-	conductor = u.conductor_set.all()[0]
-	for v in Viaje.objects.all():
-		if v.conductor == conductor:
-			aux = []
-			tramito = v.tramos.all()
-			aux.append(v)
-			aux.append(tramito[0])
-			aux.append(tramito[len(tramito)-1])
-			aux.append(str(v.fecha).split()[0])
-			lista.append(aux)
-	return render(request, 'viaje/viaje_list.html', {'viajes':lista})
+	return Viajelist(request)
 
-def realizar_reservas(request, pk):
-	lista = []
+def realizar_reservas(request):
+	if request.method == 'GET':
+		idviaje=request.GET['idviaje']
+		Origen=request.GET['Origen']
+		Destino=request.GET['Destino']
+		viaje=Viaje.objects.get(id=idviaje)
+		tramos = []
+		distancia =0;
+		aux=False
+		tramitos=viaje.tramos.all()
+		asientos=tramitos[0].asientos_disponibles
+		for tr in tramitos:
+			if tr.origen.nombre == Origen and aux==False:
+				tramos.append(tr)
+				distancia+=tr.distancia
+				if tr.asientos_disponibles<asientos:
+					asientos=asientos_disponibles
+				aux=True		
+			elif tr.destino.nombre == Destino:
+				ultimo=tr
+				distancia+=tr.distancia
+				if tr.asientos_disponibles<asientos:
+					asientos=asientos_disponibles
+				break
+			elif aux:
+				tramos.append(tr)
+				distancia+=tr.distancia
+				if tr.asientos_disponibles<asientos:
+					asientos=asientos_disponibles
+		precio=distancia*viaje.tarifaPreferencias
+		v=[idviaje,precio,distancia,asientos]
+	return render(request, 'viaje/realizar_reservas.html', {'viaje':v , 'tramos':tramos,'ultimo':ultimo})
+
+def guardar_reservas(request):
+	if request.method == 'GET':
+		reserva = Reserva()
+		asientos=request.GET['asientos']
+		origen=request.GET['origen']
+		idviaje=request.GET['idviaje']
+		destino=request.GET['destino']
+		precio=request.GET['precio']
+		pasajero=request.user
+		viaje=Viaje.objects.get(id=idviaje)
+		tramitos=viaje.tramos.all()
+		aux=False
+		reserva.precio=float(precio.replace(',','.'))
+		reserva.plazas_pedidas=asientos
+		reserva.estado="Por Aprobar"
+		reserva.usuario=pasajero
+		reserva.save()
+		for tram in tramitos:
+			if tram.origen.nombre == origen and aux==False:
+				tram.asientos_disponibles-=int(asientos)
+				tram.save()
+				reserva.tramos.add(tram)	
+				aux=True		
+			elif aux:
+				tram.asientos_disponibles-=int(asientos)
+				tram.save()
+				print(tram.asientos_disponibles)
+				reserva.tramos.add(tram)	
+				aux=True
+			elif tram.destino.nombre == destino:
+				break
+
 	
-	return render(request, 'viaje/realizar_reservas.html')
+	return render(request, 'usuario/index.html')

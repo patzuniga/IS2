@@ -13,5 +13,6 @@ urlpatterns = [
 	url(r'^editarviaje$', editarviaje, name='editarviaje'),
 	url(r'^confirmarCan/(?P<pk>\d+)/$', confirmarCan, name='confirmarCan'),
 	url(r'^cancelar/(?P<pk>\d+)/$', cancelar, name='cancelar'),
-	url(r'^realizar_reservas/(?P<pk>\d+)/$', realizar_reservas, name='realizar_reservas'),
+	url(r'^realizar_reservas$', realizar_reservas, name='realizar_reservas'),
+	url(r'^guardar_reservas$', guardar_reservas, name='guardar_reservas'),
 ]
