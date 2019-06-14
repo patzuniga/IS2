@@ -1,5 +1,6 @@
 from django import forms
 from apps.viaje.models import Viaje
+import datetime
 """
 class ViajeForm(forms.Form):
 
@@ -42,7 +43,7 @@ from .models import *
 
 class ViajeForm(forms.Form):
 
-	fecha = forms.DateField(label = "Fecha de inicio")
+	fecha = forms.DateField(label = "Fecha (DD/MM/YY)")
 	porta_maleta = forms.BooleanField(required = False)
 	silla_niños = forms.BooleanField(required = False)
 	mascotas = forms.BooleanField(required = False)
@@ -51,7 +52,7 @@ class ViajeForm(forms.Form):
 	#origen = forms.CharField(label="origen")
 	hora_origen = forms.TimeField(label = "Hora Origen")
 	#destino = forms.CharField(label="destino")
-	fecha_destino = forms.DateField(label = "Fecha de Termino")
+	fecha_destino = forms.DateField(label = "Fecha (DD/MM/YY)")
 	hora_destino = forms.TimeField(label = "Hora Destino")
 	def clean(self):
 		cleaned_data = super().clean()
@@ -87,6 +88,13 @@ class ParadasForm(forms.Form):
 	hora = forms.TimeField(label = "Hora de llegada")
 
 class BuscarForm(forms.Form):
-	origen = forms.CharField(label = "Origen")
-	destino = forms.CharField(label = "Destino")
+	#origen = forms.CharField(label = "Origen")
+	#destino = forms.CharField(label = "Destino")
 	fecha = forms.DateField(label = "Fecha (DD/MM/YY)")
+	#def clean(self):
+	#	cleaned_data = super().clean()
+	#	f1 = cleaned_data.get("fecha").strftime("%d/%m/%Y")
+		#now = datetime.datetime.now()
+	#	now = now.strftime("%d/%m/%Y")
+	#	if (f1 < now):
+	#		raise forms.ValidationError("Fecha no puede ser menor que la fecha actual.")
