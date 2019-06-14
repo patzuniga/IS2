@@ -13,9 +13,11 @@
         <h3>¿Está seguro de querer cancelar su reserva?</h3>
       <div class="w3-row-padding" style="margin:0 -16px;">
           <h6>Una vez confirmada la operación, la reserva {{id}} será eliminada de forma permanente</h6>
-          <br>
+      </div>
+       <div style="text-align: center;">
           <a href="{% url 'cancelar_reserva' id %}" class="w3-button w3-dark-grey" >Confirmar </a>
           <a href="{% url 'ver_reservas' %}" class="w3-button w3-dark-grey" >Cancelar </a>
+      </div>
 	</div>
 </header>
 

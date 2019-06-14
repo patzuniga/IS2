@@ -39,7 +39,7 @@
       <td><a href="{% url 'viaje_details' viaje.0.id %}">{{ viaje.3 }}</a></td>
       <td> <a href="{% url 'viaje_details' viaje.0.id %}">{{ viaje.1.hora_salida }}</a></td>
       <td> <a href="{% url 'viaje_details' viaje.0.id %}">{{ viaje.0.estado }}</a></td>
-     <td ><form method="get" action="/viaje/editarviaje" style="vertical-align:middle;"> <input type="hidden" id="idviaje" name="idviaje" value="{{ viaje.0.id }}"><button type="submit" class="round-button" ><i class="fa fa-pencil"></i></button></form></td>
+     <td ><a href="{% url 'editarviaje' viaje.0.id %}"> <button type="submit" class="round-button" ><i class="fa fa-pencil"></i></button></a></td>
       
       <td ><a href="{% url 'confirmarCan' viaje.0.id %}"><button class="round-button" onclick=""><i class="fa fa-times " style="text-align: center;"></i></button></td>
       </tr>

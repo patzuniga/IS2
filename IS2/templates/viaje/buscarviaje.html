@@ -13,15 +13,35 @@
         <div class="w3-half">
          <form method="post">
         {% csrf_token %}
-           {{ form.as_p}}
+           Origen : <input type="text" id="origen"  name = "origen" required class="vTextField" maxlength="30" />
+           <br>
+           Destino : <input type="text" id="destino"  name = "destino" required class="vTextField" maxlength="30" />
+           <br>
+           Fecha : <input type="date" name="fecha">
+
       </div>
       </div>
       <p><button class="w3-button w3-dark-grey" type = "submit" >Buscar viaje</button></p>
     </form>
     </div>
 </header>
+<script>
+function onLoaded() {
 
-<script> 
+ var options = {
+  types: ['(cities)'],
+  componentRestrictions: {country: "cl"}
+ };
+        var location_input = document.getElementById('origen');
+        var location_input2 = document.getElementById('destino');
+        var autocomplete = new google.maps.places.Autocomplete(location_input,options);
+        var autocomplete = new google.maps.places.Autocomplete(location_input2,options);
+    }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAD6Q31QwQK0pv7twtzD32efp6hLa0uFEs&libraries=places&callback=onLoaded"></script>
+            
+</script>
+<script>
 // Tabs
 function openLink(evt, linkName) {
   var i, x, tablinks;
