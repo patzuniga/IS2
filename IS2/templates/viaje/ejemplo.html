@@ -30,7 +30,7 @@
       <div id="map" class="w3-display-middle" ></div>
       <form method="post" id="myform">
         {% csrf_token %}
-   <input type="hidden" name="holiwi"  id="holiwi">
+   <input type= "hidden" name="holiwi"  id="holiwi">
 <!--
    <div class="w3-row-padding">
     <h3>Paradas </h3>
@@ -57,8 +57,6 @@
     </table>
     </div>
     <div>-->
-      {% csrf_token %}
-        <input type="hidden" name="holiwi"  id="holiwi">
    <div class="w3-clear w3-center nextprev">
           <a href="{% url 'cancelar_crear_viaje' %}"><button class="w3-button w3-dark-grey" style="margin-top:20vw" >Cancelar </button></a>
           <button class="w3-button w3-dark-grey" name="listo" value="1" style="margin-top:20vw" >Publicar Viaje </button>

@@ -19,7 +19,17 @@ def index(request):
 def viaje_view(request):
 	if request.method == 'POST':
 		form = ViajeForm(request.POST)
-		if form.is_valid():
+		if request.POST.get("listo"):
+			print(request.POST['holiwi'])
+			distancias = request.POST['holiwi'].split()
+			print("distancias" ,distancias)
+			aux = []
+			for i in range(len(distancias)//2):
+				aux.append(float(distancias[2*i].replace(',','')))
+			request.session['viaje'].update( {'distancias' : aux} )
+			print("raiooooz", request.session['viaje'])
+			return viaje_listo(request)
+		elif form.is_valid():
 			#viaje = Viaje()
 			#viaje.fecha = form.cleaned_data['fecha']
 			#viaje.estado = "Registrado"
@@ -115,6 +125,7 @@ def viaje_listo(request):
 		tramo.distancia = request.session['viaje']['distancias'][i]
 		tramo.viaje = viaje.id
 		tramo.save()
+		print("He guardado un tramito")
 		viaje.tramos.add(tramo)
 	viaje.save()
 	return success(request,viaje.id)	
@@ -194,6 +205,8 @@ def viaje_paradas(request):
 			aux = request.session['viaje']
 			request.session['viaje'] = aux
 			return render(request,'viaje/paradas.html',{'form':form})
+		if request.POST.get("listo"):
+			return viaje_ver(request)
 		elif form.is_valid():
 			aux = []
 			aux = request.session['viaje']['paradas']
@@ -236,8 +249,6 @@ def viaje_paradas(request):
 	#	elif request.POST.get("publicar"):
 	#		request.session['paradas'] = aux
 	#		return viaje_listo(request, pk)
-		elif request.POST.get("listo"):
-			return viaje_ver(request)
 		else:
 			form = ParadasForm()
 			return render(request,'viaje/paradas.html',{'form':form})
