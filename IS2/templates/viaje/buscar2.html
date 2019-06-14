@@ -14,9 +14,9 @@
       <h3>Viajes que coincidan con : De {{origen}} a {{destino}} </h3>
           {% csrf_token %}
       <div class="w3-row-padding" style="margin:0 -16px;">
-        <div class="w3-half">
-            {% if viajes %}
-         <table class="tablita" style = "overflow: scroll;" width="200%" >
+        <div class="w3-container">
+          {% if viajes %}
+         <table class="tablita" style = "overflow: scroll;" width="100%" >
       <thead>
 			<tr>
         <tr id="head">
@@ -38,17 +38,22 @@
       <td><a href="{% url 'viaje_details' viaje.0.id %}">{{ viaje.2.destino.nombre }}</a></td>
        <td><a href="{% url 'viaje_details' viaje.0.id %}">{{ viaje.1.fecha }}</a></td>
        <td><a href="{% url 'viaje_details' viaje.0.id %}">{{ viaje.1.hora_salida }}</a></td>
-			<td><a href="{% url 'viaje_details' viaje.0.id %}">{{ viaje.3}}</a></td>
+			<td><a href="{% url 'viaje_details' viaje.0.id %}">{{ viaje.3 }}</a></td>
       <td><a href="{% url 'viaje_details' viaje.0.id %}">{{ viaje.0.conductor.usuario }}</a></td>
-      <td ><a href="{% url 'realizar_reservas' viaje.0.id %}"><button class="round-button"><i class="fa fa-bell"" style="text-align: center;"></i></button></td> 
+      <td ><form method="get" action="/viaje/realizar_reservas" style="vertical-align:middle;">
+        <input type="hidden" id="idviaje" name="idviaje" value="{{ viaje.0.id }}">
+        <input type="hidden" id="precio" name="precio" value="{{ viaje.3 }}">
+        <input type="hidden" id="Origen" name="Origen" value="{{ origen }}">
+        <input type="hidden" id="Destino" name="Destino" value="{{ destino }}"> 
+        <button type="submit" class="round-button" ><i class="fa fa-bell"></i></button></form></td>
       </tr>
 		{% endfor %}
 		</tbody>
 		</table> 
-    </div>
-    {% else %}
-    <h5>Lo sentimos, no hay viajes que coincidan con tu búsqueda</h5>
+      {% else %}
+    <h1>Lo sentimos, no hay viajes que coincidan con tu búsqueda</h1>
     {% endif %}
+    </div>
 </header>
 
 <!-- Page content -->

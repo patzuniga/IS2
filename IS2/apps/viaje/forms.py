@@ -90,4 +90,3 @@ class BuscarForm(forms.Form):
 	origen = forms.CharField(label = "Origen")
 	destino = forms.CharField(label = "Destino")
 	fecha = forms.DateField(label = "Fecha (DD/MM/YY)")
-	
