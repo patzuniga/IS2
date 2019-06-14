@@ -9,6 +9,9 @@ from apps.usuario.models import Usuario
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
 import time
+import json
+from datetime import datetime
+from django.http import Http404  
 
 def index(request):
 	return render(request, 'usuario/index2.html')
@@ -18,28 +21,39 @@ def viaje_view(request):
 	if request.method == 'POST':
 		form = ViajeForm(request.POST)
 		if form.is_valid():
-			viaje = Viaje()
-			viaje.fecha = form.cleaned_data['fecha']
-			viaje.estado = "Registrado"
-			viaje.porta_maleta = form.cleaned_data['porta_maleta']
-			viaje.mascotas = form.cleaned_data['mascotas']
-			viaje.tarifaPreferencias = form.cleaned_data['tarifapreferencias']
-			viaje.max_personas_atras = form.cleaned_data['max_personas_atras']
-			current_user = request.user
-			u = Usuario.objects.get(id=current_user.id)
-			viaje.conductor = u.conductor_set.all()[0]
-			viaje.save()
+			#viaje = Viaje()
+			#viaje.fecha = form.cleaned_data['fecha']
+			#viaje.estado = "Registrado"
+			#viaje.porta_maleta = form.cleaned_data['porta_maleta']
+			#viaje.mascotas = form.cleaned_data['mascotas']
+			#viaje.tarifaPreferencias = form.cleaned_data['tarifapreferencias']
+			#viaje.max_personas_atras = form.cleaned_data['max_personas_atras']
+			#current_user = request.user
+			#u = Usuario.objects.get(id=current_user.id)
+			#viaje.conductor = u.conductor_set.all()[0]
+			#viaje.save()
+			aux2 = dict()
+			aux2['fecha'] = form.cleaned_data['fecha'].strftime("%d/%m/%Y")
+			aux2['porta_maleta'] = form.cleaned_data['porta_maleta']
+			aux2['mascotas'] = form.cleaned_data['mascotas']
+			aux2['tarifaPreferencias'] = form.cleaned_data['tarifapreferencias']
+			aux2['max_personas_atras'] = form.cleaned_data['max_personas_atras']
+			#current_user = request.user
+			#u = Usuario.objects.get(id=current_user.id)
+			#viaje.conductor = u.conductor_set.all()[0]
 			aux = []
-			request.session['viaje'] = viaje.id
-			print(request.session['viaje'])
+			#request.session['viaje'] = viaje.id
+			#print(request.session['viaje'])
 			#Paradas en aux
 			aux.append([form.cleaned_data['fecha'].strftime("%d/%m/%Y"), form.cleaned_data['hora_origen'].strftime("%H:%M"), request.POST['origen'].split(',')[0].replace(',',''), request.POST['origen']])
 			aux.append([form.cleaned_data['fecha_destino'].strftime("%d/%m/%Y"), form.cleaned_data['hora_destino'].strftime("%H:%M"), request.POST['destino'].split(',')[0].replace(',',''), request.POST['destino']])
-			request.session['paradas'] = aux
+			#request.session['paradas'] = aux
+			aux2['paradas'] = aux
+			request.session['viaje'] = aux2
 			if request.POST.get("agregar"):
-				return redirect('paradas', pk = viaje.id)
+				return redirect('paradas')
 			elif request.POST.get("publicar"):
-				return viaje_listo(request, viaje.id)
+				return viaje_listo(request)
 
 		else:
 			return render(request,'viaje/crear2.html',{'form':form})
@@ -55,43 +69,92 @@ def viaje_list(request):
 
 #Funcion intermedia que solo crea paradas y tramos del viaje
 @login_required()
-def viaje_listo(request, pk):
-	viaje  = Viaje.objects.get(id = pk)
-	aux = request.session['paradas']
-	aux.sort()
-	for i in range(0,len(aux)-1):
+def viaje_listo(request):
+	print("hola que tal como estas todo bien ", request.session['viaje'])
+	try:
+		hola = request.session['viaje']
+		paradas = request.session['viaje']['paradas']
+	except:
+		raise Http404
+	viaje = Viaje()
+	viaje.fecha = datetime.strptime(request.session['viaje']['fecha'], "%d/%m/%Y")
+	viaje.estado = "Registrado"
+	viaje.porta_maleta = request.session['viaje']['porta_maleta']
+	viaje.mascotas = request.session['viaje']['mascotas']
+	viaje.tarifaPreferencias = request.session['viaje']['tarifaPreferencias']
+	viaje.max_personas_atras = request.session['viaje']['max_personas_atras']
+	current_user = request.user
+	u = Usuario.objects.get(id=current_user.id)
+	viaje.conductor = u.conductor_set.all()[0]
+	viaje.save()
+	for i in range(len(paradas)-1):
 		if(i==0):
 			par1 = Parada()
-			par1.nombre = aux[i][2]
-			par1.direccion = aux[i][3]
+			par1.nombre = paradas[i][2]
+			par1.direccion = paradas[i][3]
 			par1.save()
 
 			par2 = Parada()
-			par2.nombre = aux[i+1][2]
-			par2.direccion = aux[i+1][3]
+			par2.nombre = paradas[i+1][2]
+			par2.direccion = paradas[i+1][3]
 			par2.save()
 		else:
 			par1 = par2
 			par2 = Parada()
-			par2.nombre = aux[i+1][2]
-			par2.direccion = aux[i+1][3]
+			par2.nombre = paradas[i+1][2]
+			par2.direccion = paradas[i+1][3]
 			par2.save()
 
 		tramo = Tramo()
 		tramo.orden_en_viaje  = i
-		tramo.hora_salida = aux[i][1]
-		tramo.hora_llegada = aux[i+1][1]
-		tramo.fecha = aux[i][0]
-		tramo.asientos_disponibles = viaje.max_personas_atras
+		tramo.hora_salida = paradas[i][1]
+		tramo.hora_llegada = paradas[i+1][1]
+		tramo.fecha = paradas[i][0]
+		tramo.asientos_disponibles = request.session['viaje']['max_personas_atras']
 		tramo.origen = par1
 		tramo.destino = par2
-		tramo.viaje = pk
+		tramo.distancia = request.session['viaje']['distancias'][i]
+		tramo.viaje = viaje.id
 		tramo.save()
-
 		viaje.tramos.add(tramo)
-	aux = []
 	viaje.save()
-	return redirect("mapa_ejemplo", pk)
+	return success(request,viaje.id)	
+	#viaje  = Viaje.objects.get(id = pk)
+	#aux = request.session['paradas']
+	#aux.sort()
+	#for i in range(0,len(aux)-1):
+	#	if(i==0):
+	#		par1 = Parada()
+	#		par1.nombre = aux[i][2]
+	#		par1.direccion = aux[i][3]
+	#		par1.save()
+
+	#		par2 = Parada()
+	#		par2.nombre = aux[i+1][2]
+	#		par2.direccion = aux[i+1][3]
+	#		par2.save()
+	#	else:
+	#		par1 = par2
+	#		par2 = Parada()
+	#		par2.nombre = aux[i+1][2]
+	#		par2.direccion = aux[i+1][3]
+	#		par2.save()
+
+	#	tramo = Tramo()
+	#	tramo.orden_en_viaje  = i
+	#	tramo.hora_salida = aux[i][1]
+	#	tramo.hora_llegada = aux[i+1][1]
+	#	tramo.fecha = aux[i][0]
+	#	tramo.asientos_disponibles = viaje.max_personas_atras
+	#	tramo.origen = par1
+	#	tramo.destino = par2
+	#	tramo.viaje = pk
+	#	tramo.save()
+
+	#	viaje.tramos.add(tramo)
+	#aux = []
+	#viaje.save()
+	#return redirect("mapa_ejemplo")
 
 @login_required()
 def Viajelist(request):
@@ -117,83 +180,130 @@ def success(request, pk):
 
 #Funcion que se conecta con agregar paradas, se llama asi misma hasta que se publique el viaje o se aprete cancelar
 @login_required()
-def viaje_paradas(request,pk):
-	if request.method == 'GET':
-		form = ParadasForm()
-		return render(request,'viaje/paradas.html',{'form':form})
-	else:
-		aux = []
-		aux = request.session['paradas']
+def viaje_paradas(request):
+	print("hola que tal como estas todo bien ", request.session['viaje'])
+	try:
+		hola = request.session['viaje']
+		hola2 = request.session['viaje']['paradas']
+	except:
+		raise Http404  
+	if(request.method == 'POST'):
 		form = ParadasForm(request.POST)
-		if form.is_valid():
-			viaje = Viaje.objects.get(id = pk)
-			fo = viaje.fecha.strftime("%d/%m/%Y")
+		if request.POST.get('agregar'):
+			form = ParadasForm()
+			aux = dict()
+			aux = request.session['viaje']
+			request.session['viaje'] = aux
+			return render(request,'viaje/paradas.html',{'form':form})
+		elif form.is_valid():
+			aux = []
+			aux = request.session['viaje']['paradas']
+	#	if form.is_valid():
+	#		viaje = Viaje.objects.get(id = pk)
+	#		fo = viaje.fecha.strftime("%d/%m/%Y")
+			fo = request.session['viaje']['fecha']
 			fd = aux[1][0]
 			fp = form.cleaned_data['fecha'].strftime("%d/%m/%Y")
 			ho = aux[0][1]
 			hd =  aux[1][1]
 			hp = form.cleaned_data['hora'].strftime("%H:%M")
-			print("hora ",hp)
-			print("hora origen ",ho)
-			print("hora destino ",hd)
-			print(hp > hd, "hora parada mayor que hora destino")
+	#		print("hora ",hp)
+	#		print("hora origen ",ho)
+	#		print("hora destino ",hd)
+	#		print(hp > hd, "hora parada mayor que hora destino")
 			if (fp < fo or fd < fp or (fo == fp and hp <= ho) or (fd == fp and hd <= hp)):
 				error = "Fecha y hora de la parada deben ser consistentes con las fechas y horas de origen y destino."
 				form = ParadasForm()
 				return render(request,'viaje/paradas.html',{'form':form, 'error': error})
-			elif request.POST.get("agregar"):
+			elif request.POST.get("agregar2"):
+				print("Agregue una parada")
 				direccion = str(request.POST['direccion'])
 				aux.append([fp, hp,direccion.split(',')[0].replace(',',''), direccion])
-				request.session['paradas'] = aux
+				aux2 = dict()
+				aux2 = request.session['viaje']
+				request.session['viaje'] = aux2
+				request.session['viaje']['paradas'] = aux
 				form = ParadasForm()
 				return render(request,'viaje/paradas.html',{'form':form})
-			elif request.POST.get("publicar"):
-					direccion = str(request.POST['direccion'])
-					aux.append([fp, hp,direccion.split(',')[0].replace(',',''), direccion])
-					request.session['paradas'] = aux
-					return viaje_listo(request, pk)
+			elif request.POST.get("publicar2"):
+				direccion = str(request.POST['direccion'])
+				aux.append([fp, hp,direccion.split(',')[0].replace(',',''), direccion])
+				request.session['viaje']['paradas'] = aux
+				return viaje_ver(request)
 			else:
 				error = "Ha ocurrido un error inesperado. Disculpe por las molestias"
 				form = ParadasForm()
 				return render(request,'viaje/paradas.html',{'form':form, 'error': error})
-		elif request.POST.get("publicar"):
-			request.session['paradas'] = aux
-			return viaje_listo(request, pk)
+	#	elif request.POST.get("publicar"):
+	#		request.session['paradas'] = aux
+	#		return viaje_listo(request, pk)
+		elif request.POST.get("listo"):
+			return viaje_ver(request)
 		else:
 			form = ParadasForm()
 			return render(request,'viaje/paradas.html',{'form':form})
-
-import json
+	form = ParadasForm()
+	return render(request,'viaje/paradas.html',{'form':form})
 
 #Funcion que se encarga de pasarle todos las paradas del viaje al mapa para mostrar el viaje
 @login_required()
-def viaje_ver(request, pk):
+def viaje_ver(request):
+	print("viaje_ver ", request.session['viaje'])
+	try:
+		hola = request.session['viaje']
+		paradas = request.session['viaje']['paradas']
+	except:
+		raise Http404  
 	if request.method == "POST":
-		aux = request.POST['holiwi'].split()
-		viaje  = Viaje.objects.get(id = pk)
-		tramitos = viaje.tramos.all()
-		if(len(aux)//2 == len(tramitos)):
-			for i in range(len(tramitos)):
-				tramitos[i].distancia = float(aux[2*i])
-				tramitos[i].save()
-			return success(request,pk)	
-		else:
-			return success(request,pk)
+		if request.POST.get("listo"):
+			print("listo")
+			distancias = request.POST['holiwi'].split()
+			print(distancias)
+			aux = []
+			for i in range(len(distancias)//2):
+				aux.append(float(distancias[2*i].replace(',','')))
+			request.session['viaje'].update( {'distancias' : aux} )
+			print(request.session['viaje'])
+			return viaje_listo(request)
+		elif request.POST.get("publicar2"):
+			print("publicar")
+			jotason = []
+			paradas.sort()
+			for p in paradas:
+				jotason.append(p[3])
+			json_cities = json.dumps(jotason)
+			request.session['viaje'] = hola
+			request.session['viaje']['paradas'] = paradas
+			print("paradas", paradas)
+			print("request", request)
+			return render (request, 'viaje/ejemplo.html', {"city_array" : json_cities})
 	else:
-		paradas = []
-		viaje  = Viaje.objects.get(id = pk)
-		tramitos = viaje.tramos.all()
-		ultimo = len(tramitos)
-		for i in range(len(tramitos)):
-			if i != len(tramitos)-1:
-				paradas.append(tramitos[i].origen.direccion)
-			else :
-				paradas.append(tramitos[i].origen.direccion)
-				paradas.append(tramitos[i].destino.direccion)
-		print(paradas)
-		json_cities = json.dumps(paradas)
-		print(json_cities)
-		return render (request, 'viaje/ejemplo.html', {"city_array" : json_cities})
+		raise Http404  
+		#aux = request.POST['holiwi'].split()
+		#viaje  = Viaje.objects.get(id = pk)
+		#tramitos = viaje.tramos.all()
+		#if(len(aux)//2 == len(tramitos)):
+		#	for i in range(len(tramitos)):
+		#		tramitos[i].distancia = float(aux[2*i])
+		#		tramitos[i].save()
+		#	return success(request,pk)	
+		#else:
+		#	return success(request,pk)
+	#else:
+		#paradas = []
+		#viaje  = Viaje.objects.get(id = pk)
+		#tramitos = viaje.tramos.all()
+		#ultimo = len(tramitos)
+		#for i in range(len(tramitos)):
+		#	if i != len(tramitos)-1:
+		#		paradas.append(tramitos[i].origen.direccion)
+		#	else :
+		#		paradas.append(tramitos[i].origen.direccion)
+		#		paradas.append(tramitos[i].destino.direccion)
+		#print(paradas)
+		#json_cities = json.dumps(paradas)
+		#print(json_cities)
+		#return render (request, 'viaje/ejemplo.html', {"city_array" : json_cities})
 
 @login_required()
 def buscar_viaje(request):
@@ -206,7 +316,7 @@ def buscar_viaje(request):
 		f = request.POST['fecha']
 		s = request.POST['origen'].split(',')[0].replace(",","")
 		u = request.POST['destino'].split(',')[0].replace(",","")
-		viaje  = Viaje.objects.filter(fecha = f)
+		viaje  = Viaje.objects.filter()
 		#se revisan todos lo viajes
 		origen = False
 		destino = False
@@ -226,7 +336,7 @@ def buscar_viaje(request):
 				print(t.origen.nombre , s)
 				print(t.destino.nombre, u)
 				#Como el origen se debe encontrar primero y no sirve que la ultima parada del viaje coincida con este, solo se revisa la primera parada del tramo
-				if(t.origen.nombre == s):
+				if(t.origen.nombre == s and t.fecha == f):
 					distancia = 0;
 					origen = True
 					print(origen)
