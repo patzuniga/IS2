@@ -15,9 +15,9 @@
     <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
       <h3>Tus Viajes</h3>
       <div class="w3-row-padding" style="margin:0 -16px;">
-        <div class="w3-half">
+        <div class="w3-container">
         {% if viajes %}
-        <table class="tablita" style = "overflow: scroll;" width="200%" >
+        <table class="tablita" style = "overflow: scroll;" width="100%" >
 			<thead>
 			<tr id="head">
         <th scope="col" >Origen</th>
@@ -44,12 +44,11 @@
       <td ><a href="{% url 'confirmarCan' viaje.0.id %}"><button class="round-button" onclick=""><i class="fa fa-times " style="text-align: center;"></i></button></td>
       </tr>
 		{% endfor %}
-		
-		{% else %}
-		<h1>No hay registros de viajes</h1>
-		{% endif %}
 		</tbody>
 		</table> 
+      {% else %}
+    <h1>No hay registros de viajes</h1>
+    {% endif %}
     </div>
 </header>
 
