@@ -323,7 +323,7 @@ def buscar_viaje(request):
 		resultado = []
 		#form = BuscarForm(request.POST)
 		#if form.is_valid():
-		f = request.POST['fecha']
+		f =  datetime.strptime(request.POST['fecha'], '%Y-%m-%d').strftime('%m/%d/%Y')
 		s = request.POST['origen'].split(',')[0].replace(",","")
 		u = request.POST['destino'].split(',')[0].replace(",","")
 		viaje  = Viaje.objects.filter()
