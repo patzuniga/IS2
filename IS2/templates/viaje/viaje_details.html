@@ -13,50 +13,86 @@
       <h3 style="text-align: center;">Tu Viaje</h3>
       <div class="w3-row-padding"  style="margin:0 -16px;">
         <div class="w3-half table-light" >
-        	<p><strong>Fecha Salida: </strong>{{viajes.2}} a las {{viajes.1.0.hora_salida}}</p>
-        	<p><strong>Tiene Porta-Maleta: </strong>{% if viajes.0.porta_maleta %} SI {% else %} NO {% endif %}</p>
-        	<p><strong>Tiene Silla de Niños: </strong>{% if viajes.0.silla_niños %} SI {% else %} NO {% endif %}</p>
-        	<p><strong>Permite Mascostas: </strong>{% if viajes.0.mascotas %} SI {% else %} NO {% endif %}</p>
-        	<p><strong>Tarifa Preferencias: </strong> {{viajes.0.tarifaPreferencias}}</p>
-        	<p><strong>Maximo Personas Asiento Trasero: </strong> {{viajes.0.max_personas_atras}}</p>
-        	<p><strong>Estado Viaje: </strong>{{viajes.0.estado}}</p>
-        	
+          <p><strong>Fecha Salida: </strong>{{viajes.2}} a las {{viajes.1.0.hora_salida}}</p>
+          <p><strong>Tiene Porta-Maleta: </strong>{% if viajes.0.porta_maleta %} SI {% else %} NO {% endif %}</p>
+          <p><strong>Tiene Silla de Niños: </strong>{% if viajes.0.silla_niños %} SI {% else %} NO {% endif %}</p>
+          <p><strong>Permite Mascostas: </strong>{% if viajes.0.mascotas %} SI {% else %} NO {% endif %}</p>
+          <p><strong>Tarifa Preferencias: </strong> {{viajes.0.tarifaPreferencias}}</p>
+          <p><strong>Maximo Personas Asiento Trasero: </strong> {{viajes.0.max_personas_atras}}</p>
+          <p><strong>Estado Viaje: </strong>{{viajes.0.estado}}</p>
+          
 
-		    </div>
-		</div>
-		<div class="w3-row-padding">
-			<table class="tablita" style = "overflow: scroll;" width="100%">
-				<thead>
-			<tr id="head">
-				<th scope="col" >Origen</th>
-				<th scope="col" >Destino</th>
+        </div>
+    </div>
+    <div class="w3-row-padding">
+      <table class="tablita" style = "overflow: scroll;" width="100%">
+        <thead>
+      <tr id="head">
+        <th scope="col" >Origen</th>
+        <th scope="col" >Destino</th>
         <th scope="col"> Hora </th>
         <th scope="col" >Fecha</th>
-	        	</tr>
-	        </thead>
-			<tbody>
-		{% if viajes.0 %}
-			<tr >
-			{% for viaje in viajes.1 %}
+            </tr>
+          </thead>
+      <tbody>
+    {% if viajes.0 %}
+      <tr >
+      {% for viaje in viajes.1 %}
 
-			<td>{{ viaje.origen.nombre }}</td>
-			<td>{{ viaje.destino.nombre }}</td>
+      <td>{{ viaje.origen.nombre }}</td>
+      <td>{{ viaje.destino.nombre }}</td>
       <td>{{ viaje.hora_llegada }}</td>
       <td>{{ viaje.fecha }}</a></td>
             </tr>
-		{% endfor %}
-		
-		{% else %}
-		<h1>No hay registros de viajes</h1>
-		{% endif %}
-		</tbody> 
-		</table>
-		</div>
-		<div>
-			{% csrf_token %}
-   			<input type="hidden" name="holiwi"  id="holiwi">
-		</div>
-	</div>
+    {% endfor %}
+    
+    {% else %}
+    <h1>No hay registros de viajes</h1>
+    {% endif %}
+    </tbody> 
+    </table>
+    </div>
+    <div>
+      {% csrf_token %}
+        <input type="hidden" name="holiwi"  id="holiwi">
+    </div>
+    <h3 style="text-align: center;">Reservas pendientes para este viaje</h3>
+    <div class="w3-row-padding" style="margin:0 -16px;">
+        <div class="w3-half">
+          {% if reservas %}
+        <table class="tablita" style = "overflow: scroll;" width="200%" >
+      <thead>
+      <tr id="head">
+        <th scope="col" >Reserva id</th>
+        <th scope="col" >Plazas</th>
+        <th scope="col" >Origen</th>
+        <th scope="col" >Destino</th>
+        <th scope="col" >Precio</th>
+        <th scope="col">Estado</th>
+        <th scope="col">Aceptar o rechazar</th>
+      </tr> 
+      </thead>
+    <tbody>
+    <tr class="clickable-row" >
+      <tr>
+    {% for reserva in reservas %}
+      <td>{{ reserva.0}}</a></td>
+      <td>{{ reserva.1}}</a></td>
+      <td>{{ reserva.2}}</a></td>
+      <td>{{ reserva.3}}</a></td>
+      <td>{{ reserva.4}}</a></td>
+      <td>{{ reserva.5}}</a></td>
+      <td >Aqui falta 2 botones</td></a>
+      </tr>
+    {% endfor %}
+    
+    {% else %}
+    <h3>No han realizado ninguna reserva para este viaje</h3>
+    {% endif %}
+    </tbody>
+    </table> 
+    </div>
+  </div>
 </header>
 <script>
       function initMap() {

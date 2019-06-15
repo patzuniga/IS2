@@ -408,11 +408,27 @@ def viaje_details(request, pk):
 		current_user = request.user
 		u = Usuario.objects.get(id=current_user.id)
 		u.conductor_set.all()[0]
-		return render(request, 'viaje/viaje_details.html', {'viajes':viajes, 'paradas':json_cities, 'ultimo':ultimo})
+		r=Reserva.objects.all()
+		reservas = []
+		for reserva in r:
+			tramosreserva = reserva.tramos.all()
+			aux = []
+			print(reserva.tramos.all()[0].viaje == int(pk))
+			if reserva.tramos.all()[0].viaje == int(pk):
+				aux.append(reserva.id)
+				aux.append(reserva.plazas_pedidas)
+				aux.append(tramosreserva[0].origen.nombre)
+				aux.append(tramosreserva[len(tramosreserva)-1].destino.nombre)
+				aux.append(reserva.precio)
+				aux.append(reserva.estado)
+				reservas.append(aux)
+				print("despues de todo.id")
+		return render(request, 'viaje/viaje_details.html', {'viajes':viajes, 'paradas':json_cities, 'ultimo':ultimo,'reservas':reservas})
 		#Caso en que un pasajero quiera ver detalles de un viaje buscado
 	except:
 		return render(request, 'viaje/viaje_details_buscar.html',{'viajes':viajes, 'paradas':json_cities, 'ultimo':ultimo})
 	
+
 
 
 @login_required()
