@@ -7,6 +7,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from apps.usuario.models import Usuario
 from apps.viaje.models import Reserva,Viaje
+from datetime import datetime 
+from datetime import timedelta
 
 @login_required()
 def home(request):
@@ -19,6 +21,7 @@ def home(request):
 		except:
 			return render(request, 'usuario/index.html',{})
 
+@login_required()
 def ver_reservas(request):
 	r = Reserva.objects.filter(usuario=request.user)
 	reservas =[]
@@ -40,22 +43,38 @@ def ver_reservas(request):
 		reservas.append(aux)
 	return render(request, 'usuario/reservas.html',{'reservas' : reservas})
 
+@login_required()
 def confirmacion(request, pk):
 	return render(request, 'usuario/confirmacion.html',{'id':pk})
 
+@login_required()
 def cancelar_reserva(request, pk):
-	reserva = Reserva.objects.filter(id=pk)
+	reservas = Reserva.objects.filter(id=pk)
+	reserva = reservas[0] 
 	try:
 		tramitos = reserva.tramos.all()
-		now = datetime.now()
-		if(tramitos[0].fecha ==  now.date()):
-			if(tramitos[0].hora_salida > now.time + datetime.timedelta(hours = 2)):
-				reserva[0].delete()
+		if(tramitos[0].fecha ==  datetime.now().strftime("%d/%m/%Y") ):
+			if(tramitos[0].hora_salida.strftime('%H:%M:%S') > (datetime.now() + timedelta(hours=2)).strftime('%H:%M:%S')):
+				for t in tramitos:
+					t.asientos_disponibles += reserva.plazas_pedidas
+					t.save()
+				if(reserva.estado == "Por aprobar"):
+					v = Viaje.objects.get(id=tramitos[0].viaje)
+					v.conductor.reservas_por_aprobar -= 1
+					v.conductor.save()
+				reserva.delete()
 				success = True
 			else:
 				success = False
-		elif(tramitos[0].fecha < now.date()):
-			reserva[0].delete()
+		elif(tramitos[0].fecha < datetime.now().strftime("%d/%m/%Y")):
+			for t in tramitos:
+					t.asientos_disponibles += reserva.plazas_pedidas
+					t.save()
+			if(reserva.estado == "Por aprobar"):
+					v = Viaje.objects.get(id=tramitos[0].viaje)
+					v.conductor.reservas_por_aprobar -= 1
+					v.conductor.save()
+			reserva.delete()
 			success = True
 		else:
 			success = False
