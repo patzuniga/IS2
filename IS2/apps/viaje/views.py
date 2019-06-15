@@ -455,9 +455,11 @@ def editarviaje(request,idviaje):
 		return redirect('viaje_list')
 	return render(request, 'viaje/editarviaje.html', {'form':form})
 
+@login_required()
 def confirmarCan(request, pk):
 	return render(request, 'viaje/confirmarCanc.html', {'id' : pk})
 
+@login_required()
 def cancelar(request, pk):
 	#if(no hay reservas)
 	viaje = Viaje.objects.get(id=pk)
@@ -473,6 +475,7 @@ def cancelar(request, pk):
 	viaje.delete()
 	return Viajelist(request)
 
+@login_required()
 def realizar_reservas(request):
 	if request.method == 'GET':
 		idviaje=request.GET['idviaje']
@@ -506,6 +509,7 @@ def realizar_reservas(request):
 		v=[idviaje,precio,distancia,asientos]
 	return render(request, 'viaje/realizar_reservas.html', {'viaje':v , 'tramos':tramos,'ultimo':ultimo})
 
+@login_required()
 def guardar_reservas(request):
 	if request.method == 'GET':
 		reserva = Reserva()
@@ -523,6 +527,9 @@ def guardar_reservas(request):
 		reserva.estado="Por Aprobar"
 		reserva.usuario=pasajero
 		reserva.save()
+		v = Viaje.objects.get(id=idviaje)
+		v.conductor.reservas_por_aprobar += 1
+		v.conductor.save()
 		for tram in tramitos:
 			if aux:
 				tram.asientos_disponibles-=int(asientos)
@@ -543,6 +550,7 @@ def guardar_reservas(request):
 	
 	return render(request, 'usuario/index.html')
 
+@login_required()
 def cancelar_crear_viaje(request):
 	request.session['viaje'] = ''
 	return redirect('home')
