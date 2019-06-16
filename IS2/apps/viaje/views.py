@@ -24,15 +24,22 @@ def viaje_view(request):
 		try:
 			print(form)
 		except:
-			return redirect('cancelar_crear_viaje')
+			if(request.POST.get("cancelar") is not None):
+				return redirect('cancelar_crear_viaje')
 		if request.POST.get("listo"):
 			print(request.POST['holiwi'])
 			distancias = request.POST['holiwi'].split()
 			print("distancias" ,distancias)
+			print(request.session['viaje'])
 			aux = []
 			for i in range(len(distancias)//2):
 				aux.append(float(distancias[2*i].replace(',','')))
-			request.session['viaje'].update( {'distancias' : aux} )
+			try:
+				request.session['viaje'].update( {'distancias' : aux} )
+			except:
+				mensaje = "Ha ocurrido un error, intenta publicar tu viaje nuevamente"
+				form = ViajeForm()
+				return render(request,'viaje/crear2.html',{'form':form, 'error': mensaje})
 			return viaje_listo(request)
 		elif form.is_valid():
 			#viaje = Viaje()
@@ -190,6 +197,7 @@ def Viajelist(request):
 
 @login_required()
 def success(request, pk):
+	print("success")
 	viaje  = Viaje.objects.get(id = pk)
 	return render(request, 'viaje/listo.html', {'id': pk})	
 
@@ -613,15 +621,15 @@ def guardar_reservas(request):
 		v.conductor.save()
 		for tram in tramitos:
 			if aux:
-				tram.asientos_disponibles-=int(asientos)
-				tram.save()
+				#tram.asientos_disponibles-=int(asientos)
+				#tram.save()
 				print(tram.asientos_disponibles)
 				reserva.tramos.add(tram)	
 				aux=True
 
 			if tram.origen.nombre == origen and aux==False:
-				tram.asientos_disponibles-=int(asientos)
-				tram.save()
+				#tram.asientos_disponibles-=int(asientos)
+				#tram.save()
 				reserva.tramos.add(tram)	
 				aux=True		
 			

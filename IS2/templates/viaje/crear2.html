@@ -52,6 +52,10 @@
     <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
       <h3>Publica tu viaje con nosotros</h3>
       <div class="w3-row-padding" style="margin:0 -16px;">
+        {% if error %}
+          <h5>{{error}}</h5>
+          <br>
+          {% endif %}
         <div class="w3-half">
          <form method="post">
         {% csrf_token %}
