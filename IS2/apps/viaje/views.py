@@ -172,14 +172,22 @@ def Viajelist(request):
 	current_user = request.user
 	u = Usuario.objects.get(id=current_user.id)
 	conductor = u.conductor_set.all()[0]
+	res = Reserva.objects.all()
 	for v in Viaje.objects.all():
 		if v.conductor == conductor:
 			aux = []
+			resHechas = 0
+			for reserva in res:
+				if reserva.tramos.all()[0].viaje == v.id:
+					resHechas+=reserva.plazas_pedidas
 			tramito = v.tramos.all()
 			aux.append(v)
 			aux.append(tramito[0])
 			aux.append(tramito[len(tramito)-1])
 			aux.append(str(v.fecha).split()[0])
+			aux.append(len(tramito))
+			aux.append(v.max_personas_atras)
+			aux.append(resHechas)
 			lista.append(aux)
 	return render(request, 'viaje/viaje_list.html', {'viajes':lista})
 
@@ -366,7 +374,7 @@ def buscar_viaje(request):
 							destino = True
 							break
 				if(origen and destino):
-					resultado.append([v,tramitos[0], tramitos[len(tramitos)-1],distancia*v.tarifaPreferencias])
+					resultado.append([v,tramitos[0], tramitos[len(tramitos)-1],distancia*v.tarifaPreferencias, len(tramitos)])
 			if(resultado):
 				return render(request, 'viaje/buscar2.html', {'viajes':resultado, 'origen':s, 'destino':u})
 			else:
@@ -388,17 +396,22 @@ def tiene_reservas(pk):
 @login_required()
 def viaje_details(request, pk):
 	viajes=[]
+	paradas = []
+	trams = []
+	viaje  = Viaje.objects.get(id = pk)
+	tramitos = viaje.tramos.all()
+	for tr in tramitos:
+		trams.append([tr,viaje.max_personas_atras-tr.asientos_disponibles])
+	ultimo = len(tramitos)
+	print(tramitos)
+	print(trams)
 	if request.method == 'GET':
 		aux = Viaje.objects.get(id = pk)
 		tramitos = aux.tramos.all()
 		viajes.append(aux)
-		viajes.append(tramitos)
+		viajes.append(trams)
 		viajes.append(str(aux.fecha).split()[0])
 
-	paradas = []
-	viaje  = Viaje.objects.get(id = pk)
-	tramitos = viaje.tramos.all()
-	ultimo = len(tramitos)
 	for i in range(len(tramitos)):
 		if i != len(tramitos)-1:
 			paradas.append(tramitos[i].origen.direccion)
@@ -499,30 +512,31 @@ def realizar_reservas(request):
 		Destino=request.GET['Destino']
 		viaje=Viaje.objects.get(id=idviaje)
 		tramos = []
-		distancia =0;
+		resPedidas = []
+		distancia =0
 		aux=False
 		tramitos=viaje.tramos.all()
 		asientos=tramitos[0].asientos_disponibles
 		for tr in tramitos:
 			if aux:
-				tramos.append(tr)
+				tramos.append([tr,viaje.max_personas_atras-tr.asientos_disponibles])
 				distancia+=tr.distancia
 				if tr.asientos_disponibles<asientos:
 					asientos=asientos_disponibles
 			if tr.origen.nombre == Origen and aux==False:
-				tramos.append(tr)
+				tramos.append([tr,viaje.max_personas_atras-tr.asientos_disponibles])
 				distancia+=tr.distancia
 				if tr.asientos_disponibles<asientos:
 					asientos=asientos_disponibles
 				aux=True		
 			if tr.destino.nombre == Destino:
 				ultimo=tr
-				distancia+=tr.distancia
 				if tr.asientos_disponibles<asientos:
 					asientos=asientos_disponibles
 				break
 		precio=distancia*viaje.tarifaPreferencias
 		v=[idviaje,precio,distancia,asientos]
+		print(tramos)
 	return render(request, 'viaje/realizar_reservas.html', {'viaje':v , 'tramos':tramos,'ultimo':ultimo})
 
 @login_required()
@@ -548,6 +562,7 @@ def guardar_reservas(request):
 		v.conductor.save()
 		for tram in tramitos:
 			if aux:
+				#i(quiero que se )
 				tram.asientos_disponibles-=int(asientos)
 				tram.save()
 				print(tram.asientos_disponibles)

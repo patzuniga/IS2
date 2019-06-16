@@ -7,11 +7,10 @@
 
 <header class="w3-display-container w3-content w3-hide-small" style="max-width:1500px">
   <img class="w3-image" src="https://www.gapyear.com/wp-content/uploads/2017/11/RoadTipsMain.jpg" alt="London" width="1500" height="500">
-  <div class="w3-display-middle" style="width:65%">
+  <div class="w3-display-middle" style="width:75%">
     <div class="w3-bar w3-black">
       <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Ver Viajes</button>
     </div>
-    <!-- Tabs -->
     <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
       <h3>Tus Viajes</h3>
       <div class="w3-row-padding" style="margin:0 -16px;">
@@ -23,8 +22,11 @@
         <th scope="col" >Origen</th>
         <th scope="col" >Destino</th>
         <th scope="col" >Fecha</th>
-        <th scope="col">Hora</th>
+        <th scope="col" width="6%">Hora</th>      
         <th scope="col">Estado </th>
+        <th scope="col" width="6%">N° Paradas</th>
+        <th scope="col" width="6%">Asientos Totales</th>
+        <th scope="col">Reservas</th>
         <th scope="col">Editar </th>
         <th scope="col">Cancelar</th>
 			</tr>	
@@ -39,13 +41,17 @@
       <td><a href="{% url 'viaje_details' viaje.0.id %}">{{ viaje.3 }}</a></td>
       <td> <a href="{% url 'viaje_details' viaje.0.id %}">{{ viaje.1.hora_salida }}</a></td>
       <td> <a href="{% url 'viaje_details' viaje.0.id %}">{{ viaje.0.estado }}</a></td>
+      <td> <a href="{% url 'viaje_details'  viaje.0.id %}">{{ viaje.4 }}</a></td>
+      <td> <a href="{% url 'viaje_details'  viaje.0.id %}">{{ viaje.5 }}</a></td>
+      <td> <a href="{% url 'viaje_details' viaje.0.id %}">{{ viaje.6 }}</a></td>      
      <td ><a href="{% url 'editarviaje' viaje.0.id %}"> <button type="submit" class="round-button" ><i class="fa fa-pencil"></i></button></a></td>
       
-      <td ><a href="{% url 'confirmarCan' viaje.0.id %}"><button class="round-button" onclick=""><i class="fa fa-times " style="text-align: center;"></i></button></td>
+      <td ><a href="{% url 'confirmarCan' viaje.0.id %}"><button class="round-button" onclick=""><i class="fa fa-times " style="text-align: center;"></i></button></a></td>
       </tr>
 		{% endfor %}
 		</tbody>
-		</table> 
+		</table>
+   
       {% else %}
     <h1>No hay registros de viajes</h1>
     {% endif %}

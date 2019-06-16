@@ -5,7 +5,7 @@
 <!-- Header -->
 <header class="w3-display-container w3-content w3-hide-small" style="max-width:1500px">
   <img class="w3-image" src="https://www.gapyear.com/wp-content/uploads/2017/11/RoadTipsMain.jpg" alt="London" width="1500" height="500">
-  <div class="w3-display-middle" style="width:65%">
+  <div class="w3-display-middle" style="width:75%">
     <div class="w3-bar w3-black">
       <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Buscar viajes</button>
     </div>
@@ -20,13 +20,15 @@
       <thead>
 			<tr>
         <tr id="head">
-        <th scope="col" >Origen</th>
-        <th scope="col" >Destino</th>
-        <th scope="col" >Fecha de inicio</th>
-        <th scope="col">Hora de inicio</th>
+        <th scope="col" width="16%">Origen</th>
+        <th scope="col" width="16%">Destino</th>
+        <th scope="col" width="13%">Fecha de inicio</th>
+        <th scope="col" >Hora de inicio</th>
         <th scope="col">Precio </th>
         <th scope="col">Autor </th>
-        <th scope="col">Reservar</th>
+        <th scope="col" width="6%">N° Paradas</th>
+        <th scope="col" width="6%">Asientos Disp.</th>
+        <th scope="col" width="3%" >Reservar</th>
       </tr> 
       </thead>
 		<tbody>
@@ -40,6 +42,8 @@
        <td><a href="{% url 'viaje_details' viaje.0.id %}">{{ viaje.1.hora_salida }}</a></td>
 			<td><a href="{% url 'viaje_details' viaje.0.id %}">{{ viaje.3 }}</a></td>
       <td><a href="{% url 'viaje_details' viaje.0.id %}">{{ viaje.0.conductor.usuario }}</a></td>
+      <td><a href="{% url 'viaje_details' viaje.0.id %}">{{ viaje.4 }}</a></td>
+      <td><a href="{% url 'viaje_details' viaje.0.id %}">{{ viaje.1.asientos_disponibles }}</a></td>
       <td ><form method="get" action="/viaje/realizar_reservas" style="vertical-align:middle;">
         <input type="hidden" id="idviaje" name="idviaje" value="{{ viaje.0.id }}">
         <input type="hidden" id="precio" name="precio" value="{{ viaje.3 }}">
