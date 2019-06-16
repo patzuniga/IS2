@@ -75,7 +75,7 @@ class EditarViajeForm(forms.Form):
 	porta_maleta = forms.BooleanField(required = False)
 	silla_niños = forms.BooleanField(required = False)
 	mascotas = forms.BooleanField(required = False)
-	tarifapreferencias = forms.IntegerField(label = "tarifa")
+	tarifapreferencias = forms.IntegerField(label = "Tarifa")
 	max_personas_atras = forms.IntegerField(label = "Num personas atras")
 	origen = forms.CharField(label="origen")
 	hora_origen = forms.TimeField(label = "Hora Origen")

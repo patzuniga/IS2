@@ -13,13 +13,14 @@
       <h3 style="text-align: center;">Tu Viaje</h3>
       <div class="w3-row-padding"  style="margin:0 -16px;">
         <div class="w3-half table-light" >
-        	<p><strong>Fecha Salida: </strong>{{viajes.2}} a las {{viajes.1.0.hora_salida}}</p>
-        	<p><strong>Tiene Porta-Maleta: </strong>{% if viajes.0.porta_maleta %} SI {% else %} NO {% endif %}</p>
-        	<p><strong>Tiene Silla de Niños: </strong>{% if viajes.0.silla_niños %} SI {% else %} NO {% endif %}</p>
-        	<p><strong>Permite Mascostas: </strong>{% if viajes.0.mascotas %} SI {% else %} NO {% endif %}</p>
-        	<p><strong>Tarifa Preferencias: </strong> {{viajes.0.tarifaPreferencias}}</p>
-        	<p><strong>Plazas: </strong> {{viajes.0.plazas_disponibles}}</p>
-        	<p><strong>Estado Viaje: </strong>{{viajes.0.estado}}</p>
+          <p><strong>Fecha Salida: </strong>{{viajes.2}} a las {{viajes.1.0.0.hora_salida}}</p>
+          <p><strong>Tiene Porta-Maleta: </strong>{% if viajes.0.porta_maleta %} SI {% else %} NO {% endif %}</p>
+          <p><strong>Tiene Silla de Niños: </strong>{% if viajes.0.silla_niños %} SI {% else %} NO {% endif %}</p>
+          <p><strong>Permite Mascostas: </strong>{% if viajes.0.mascotas %} SI {% else %} NO {% endif %}</p>
+          <p><strong>Tarifa : </strong> {{viajes.0.tarifaPreferencias}}</p>
+          <p><strong>Asientos Totales: </strong> {{viajes.0.max_personas_atras}}</p>
+          <p><strong>Estado Viaje: </strong>{{viajes.0.estado}}</p>
+          
         </div>
     </div>
     <div class="w3-row-padding">
@@ -28,8 +29,9 @@
       <tr id="head">
         <th scope="col" >Origen</th>
         <th scope="col" >Destino</th>
-        <th scope="col"> Hora </th>
+        <th scope="col"> Hora Llegada</th>
         <th scope="col" >Fecha</th>
+        <th scope="col" >Asientos Disp.</th>
             </tr>
           </thead>
       <tbody>
@@ -37,11 +39,12 @@
       <tr >
       {% for viaje in viajes.1 %}
 
-      <td>{{ viaje.origen.nombre }}</td>
-      <td>{{ viaje.destino.nombre }}</td>
-      <td>{{ viaje.hora_llegada }}</td>
-      <td>{{ viaje.fecha }}</a></td>
-            </tr>
+      <td>{{ viaje.0.origen.nombre }}</td>
+      <td>{{ viaje.0.destino.nombre }}</td>
+      <td>{{ viaje.0.hora_llegada }}</td>
+      <td>{{ viaje.0.fecha }}</a></td>
+      <td>{{ viaje.0.asientos_disponibles }}</a></td>      
+      </tr>
     {% endfor %}
     
     {% else %}
@@ -88,7 +91,8 @@
     <h3>No han realizado ninguna reserva para este viaje</h3>
     {% endif %}
     </tbody>
-    </table> 
+    </table><br>
+     <input type=button value="Atras" onClick="javascript:history.go(-1);" style="margin-left: 2%" class="w3-button w3-dark-grey"> 
     </div>
   </div>
 </header>

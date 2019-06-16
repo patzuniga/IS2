@@ -184,14 +184,23 @@ def Viajelist(request):
 	current_user = request.user
 	u = Usuario.objects.get(id=current_user.id)
 	conductor = u.conductor_set.all()[0]
+	res = Reserva.objects.all()
 	for v in Viaje.objects.all():
 		if v.conductor == conductor:
 			aux = []
+			resHechas = 0
+			for reserva in res:
+				if reserva.tramos.all()[0].viaje == v.id and reserva.estado == "Aceptada" :
+					resHechas+=reserva.plazas_pedidas
 			tramito = v.tramos.all().order_by('orden_en_viaje')
 			aux.append(v)
 			aux.append(tramito[0])
 			aux.append(tramito[len(tramito)-1])
-			aux.append(v.fecha)
+			print(v.fecha)
+			aux.append(str(v.fecha).split()[0])
+			aux.append(len(tramito))
+			aux.append(v.plazas_disponibles)
+			aux.append(resHechas)
 			lista.append(aux)
 	return render(request, 'viaje/viaje_list.html', {'viajes':lista})
 
@@ -352,6 +361,7 @@ def buscar_viaje(request):
 				destino = False
 				distancia = 0;
 				tramitos = v.tramos.all()
+				asientos=v.plazas_disponibles
 				print(tramitos)
 				print(v.tarifaPreferencias)
 				#se revisan los tramos del viaje
@@ -365,12 +375,16 @@ def buscar_viaje(request):
 					print(t.fecha == f)
 					#Como el origen se debe encontrar primero y no sirve que la ultima parada del viaje coincida con este, solo se revisa la primera parada del tramo
 					if(t.origen.nombre == s and t.fecha == f):
-						distancia = 0;
+						distancia = 0
 						origen = True
 						print(origen)
 					#solo importa ver si el destino existe cuando ya se encontró el origen
 					if(origen):
 						distancia += float(t.distancia)
+						
+						if(asientos>t.asientos_disponibles):
+							asientos=t.asientos_disponibles
+
 						#si es que los asientos disponibles son 0 en el camino, el viaje no sirve. Pero debo seguir revisando ya que se podria pasar por ahi de nuevo
 						# y alli podrian haber asientos disponibles
 						if(t.asientos_disponibles == 0):
@@ -379,7 +393,7 @@ def buscar_viaje(request):
 							destino = True
 							break
 				if(origen and destino):
-					resultado.append([v,tramitos[0], tramitos[len(tramitos)-1],distancia*v.tarifaPreferencias])
+					resultado.append([v,tramitos[0], tramitos[len(tramitos)-1],distancia*v.tarifaPreferencias, len(tramitos),asientos])
 			if(resultado):
 				return render(request, 'viaje/buscar2.html', {'viajes':resultado, 'origen':s, 'destino':u})
 			else:
@@ -406,6 +420,15 @@ def error1(request):
 @login_required()
 def viaje_details(request, pk):
 	viajes=[]
+	paradas = []
+	trams = []
+	viaje  = Viaje.objects.get(id = pk)
+	tramitos = viaje.tramos.all()
+	for tr in tramitos:
+		trams.append([tr,viaje.plazas_disponibles-tr.asientos_disponibles])
+	ultimo = len(tramitos)
+	print(tramitos)
+	print(trams)
 	if request.method == 'GET':
 		aux = Viaje.objects.get(id = pk)
 		tramitos = aux.tramos.all().order_by('orden_en_viaje')
@@ -413,13 +436,9 @@ def viaje_details(request, pk):
 			print(i.orden_en_viaje)
 			print("origen: ", i.origen.nombre)
 		viajes.append(aux)
-		viajes.append(tramitos)
-		viajes.append(aux.fecha)
+		viajes.append(trams)
+		viajes.append(str(aux.fecha).split()[0])
 
-	paradas = []
-	viaje  = Viaje.objects.get(id = pk)
-	tramitos = viaje.tramos.all()
-	ultimo = len(tramitos)
 	for i in range(len(tramitos)):
 		if i != len(tramitos)-1:
 			paradas.append(tramitos[i].origen.direccion)
@@ -572,30 +591,31 @@ def realizar_reservas(request):
 		Destino=request.GET['Destino']
 		viaje=Viaje.objects.get(id=idviaje)
 		tramos = []
-		distancia =0;
+		resPedidas = []
+		distancia =0
 		aux=False
 		tramitos=viaje.tramos.all()
 		asientos=tramitos[0].asientos_disponibles
 		for tr in tramitos:
 			if aux:
-				tramos.append(tr)
+				tramos.append([tr,viaje.plazas_disponibles-tr.asientos_disponibles])
 				distancia+=tr.distancia
 				if tr.asientos_disponibles<asientos:
 					asientos=asientos_disponibles
 			if tr.origen.nombre == Origen and aux==False:
-				tramos.append(tr)
+				tramos.append([tr,viaje.plazas_disponibles-tr.asientos_disponibles])
 				distancia+=tr.distancia
 				if tr.asientos_disponibles<asientos:
 					asientos=asientos_disponibles
 				aux=True		
 			if tr.destino.nombre == Destino:
 				ultimo=tr
-				distancia+=tr.distancia
 				if tr.asientos_disponibles<asientos:
 					asientos=asientos_disponibles
 				break
 		precio=distancia*viaje.tarifaPreferencias
 		v=[idviaje,precio,distancia,asientos]
+		print(tramos)
 	return render(request, 'viaje/realizar_reservas.html', {'viaje':v , 'tramos':tramos,'ultimo':ultimo})
 
 @login_required()
@@ -609,7 +629,10 @@ def guardar_reservas(request):
 		precio=request.GET['precio']
 		pasajero=request.user
 		viaje=Viaje.objects.get(id=idviaje)
-		tramitos=viaje.tramos.all()
+		tramitos = viaje.tramos.all()
+		print(tramitos)
+		print(origen)
+		print(destino)
 		aux=False
 		reserva.precio=float(precio.replace(',','.'))
 		reserva.plazas_pedidas=asientos
@@ -635,8 +658,7 @@ def guardar_reservas(request):
 			
 			if tram.destino.nombre == destino:
 				break
-
-	
+		reserva.save()
 	return render(request, 'usuario/index.html')
 
 @login_required()
