@@ -16,5 +16,6 @@ urlpatterns = [
 	url(r'^cancelar/(?P<pk>\d+)/$', cancelar, name='cancelar'),
 	url(r'^realizar_reservas$', realizar_reservas, name='realizar_reservas'),
 	url(r'^guardar_reservas$', guardar_reservas, name='guardar_reservas'),
+	url(r'^error1$', error1 , name='cancelar_editar_error'),
 
 ]

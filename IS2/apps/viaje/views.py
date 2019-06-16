@@ -17,8 +17,14 @@ def index(request):
 
 @login_required()
 def viaje_view(request):
+	print(request.POST.get("cancelar"))
+	print("naaaa")
 	if request.method == 'POST':
 		form = ViajeForm(request.POST)
+		try:
+			print(form)
+		except:
+			return redirect('cancelar_crear_viaje')
 		if request.POST.get("listo"):
 			print(request.POST['holiwi'])
 			distancias = request.POST['holiwi'].split()
@@ -27,7 +33,6 @@ def viaje_view(request):
 			for i in range(len(distancias)//2):
 				aux.append(float(distancias[2*i].replace(',','')))
 			request.session['viaje'].update( {'distancias' : aux} )
-			print("raiooooz", request.session['viaje'])
 			return viaje_listo(request)
 		elif form.is_valid():
 			#viaje = Viaje()
@@ -36,7 +41,7 @@ def viaje_view(request):
 			#viaje.porta_maleta = form.cleaned_data['porta_maleta']
 			#viaje.mascotas = form.cleaned_data['mascotas']
 			#viaje.tarifaPreferencias = form.cleaned_data['tarifapreferencias']
-			#viaje.max_personas_atras = form.cleaned_data['max_personas_atras']
+			#viaje.plazas_disponibles = form.cleaned_data['plazas_disponibles']
 			#current_user = request.user
 			#u = Usuario.objects.get(id=current_user.id)
 			#viaje.conductor = u.conductor_set.all()[0]
@@ -46,7 +51,7 @@ def viaje_view(request):
 			aux2['porta_maleta'] = form.cleaned_data['porta_maleta']
 			aux2['mascotas'] = form.cleaned_data['mascotas']
 			aux2['tarifaPreferencias'] = form.cleaned_data['tarifapreferencias']
-			aux2['max_personas_atras'] = form.cleaned_data['max_personas_atras']
+			aux2['plazas_disponibles'] = form.cleaned_data['plazas_disponibles']
 			#current_user = request.user
 			#u = Usuario.objects.get(id=current_user.id)
 			#viaje.conductor = u.conductor_set.all()[0]
@@ -91,7 +96,7 @@ def viaje_listo(request):
 	viaje.porta_maleta = request.session['viaje']['porta_maleta']
 	viaje.mascotas = request.session['viaje']['mascotas']
 	viaje.tarifaPreferencias = request.session['viaje']['tarifaPreferencias']
-	viaje.max_personas_atras = request.session['viaje']['max_personas_atras']
+	viaje.plazas_disponibles = request.session['viaje']['plazas_disponibles']
 	current_user = request.user
 	u = Usuario.objects.get(id=current_user.id)
 	viaje.conductor = u.conductor_set.all()[0]
@@ -118,8 +123,8 @@ def viaje_listo(request):
 		tramo.orden_en_viaje  = i
 		tramo.hora_salida = paradas[i][1]
 		tramo.hora_llegada = paradas[i+1][1]
-		tramo.fecha = paradas[i][0]
-		tramo.asientos_disponibles = request.session['viaje']['max_personas_atras']
+		tramo.fecha = datetime.strptime(paradas[i][0], "%d/%m/%Y")
+		tramo.asientos_disponibles = request.session['viaje']['plazas_disponibles']
 		tramo.origen = par1
 		tramo.destino = par2
 		tramo.distancia = request.session['viaje']['distancias'][i]
@@ -155,7 +160,7 @@ def viaje_listo(request):
 	#	tramo.hora_salida = aux[i][1]
 	#	tramo.hora_llegada = aux[i+1][1]
 	#	tramo.fecha = aux[i][0]
-	#	tramo.asientos_disponibles = viaje.max_personas_atras
+	#	tramo.asientos_disponibles = viaje.plazas_disponibles
 	#	tramo.origen = par1
 	#	tramo.destino = par2
 	#	tramo.viaje = pk
@@ -179,7 +184,7 @@ def Viajelist(request):
 			aux.append(v)
 			aux.append(tramito[0])
 			aux.append(tramito[len(tramito)-1])
-			aux.append(str(v.fecha).split()[0])
+			aux.append(v.fecha)
 			lista.append(aux)
 	return render(request, 'viaje/viaje_list.html', {'viajes':lista})
 
@@ -326,7 +331,7 @@ def buscar_viaje(request):
 		resultado = []
 		form = BuscarForm(request.POST)
 		if form.is_valid():
-			f =  form.cleaned_data['fecha'].strftime("%d/%m/%Y")
+			f =  form.cleaned_data['fecha']
 			s = request.POST['origen'].split(',')[0].replace(",","")
 			u = request.POST['destino'].split(',')[0].replace(",","")
 			viaje  = Viaje.objects.filter()
@@ -372,18 +377,23 @@ def buscar_viaje(request):
 			else:
 				return render(request,'viaje/buscar2.html',{'viajes':resultado, 'origen':s, 'destino':u})
 		else:
-			form = BuscarForm()
-			return render(request,'viaje/buscarviaje.html',{})
+			return render(request,'viaje/buscarviaje.html',{'form': form})
 def tiene_reservas(pk):
 	aux = Viaje.objects.get(id = pk)
 	tramitos = aux.tramos.all()
 	for i in tramitos:
 		try:
-			aux = tramitos.reserva
-			return True
+			reservas = i.reservas.all()
+			for r in reservas:
+				if(r.estado == "Por Aprobar" or r.estado == "Aprobada"):
+					return True
 		except:
 			continue
 	return False
+
+@login_required()
+def error1(request):
+	return render(request, 'viaje/error1.html', {})
 
 @login_required()
 def viaje_details(request, pk):
@@ -393,7 +403,7 @@ def viaje_details(request, pk):
 		tramitos = aux.tramos.all()
 		viajes.append(aux)
 		viajes.append(tramitos)
-		viajes.append(str(aux.fecha).split()[0])
+		viajes.append(aux.fecha)
 
 	paradas = []
 	viaje  = Viaje.objects.get(id = pk)
@@ -420,6 +430,8 @@ def viaje_details(request, pk):
 
 @login_required()
 def editarviaje(request,idviaje):
+	if(tiene_reservas(idviaje)):
+		return redirect('cancelar_editar_error')
 	viaje = Viaje.objects.get(id=idviaje)
 	tramitos = viaje.tramos.all()
 	if request.method == 'GET':
@@ -432,7 +444,7 @@ def editarviaje(request,idviaje):
 			viaje.porta_maleta = form.cleaned_data['porta_maleta']
 			viaje.mascotas = form.cleaned_data['mascotas']
 			viaje.tarifaPreferencias = form.cleaned_data['tarifapreferencias']
-			viaje.max_personas_atras = form.cleaned_data['max_personas_atras']
+			viaje.plazas_disponibles = form.cleaned_data['plazas_disponibles']
 			tramitos[0].origen.direccion = form.cleaned_data['origen']
 			print("Antes del save :" , tramitos[0].origen.direccion)
 			tramitos[0].origen.save()
@@ -461,7 +473,8 @@ def confirmarCan(request, pk):
 
 @login_required()
 def cancelar(request, pk):
-	#if(no hay reservas)
+	if(tiene_reservas(pk)):
+		return redirect('cancelar_editar_error')
 	viaje = Viaje.objects.get(id=pk)
 	tramitos = viaje.tramos.all()
 	i = len(tramitos)-1

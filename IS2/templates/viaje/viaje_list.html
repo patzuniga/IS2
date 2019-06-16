@@ -41,7 +41,7 @@
       <td> <a href="{% url 'viaje_details' viaje.0.id %}">{{ viaje.0.estado }}</a></td>
      <td ><a href="{% url 'editarviaje' viaje.0.id %}"> <button type="submit" class="round-button" ><i class="fa fa-pencil"></i></button></a></td>
       
-      <td ><a href="{% url 'confirmarCan' viaje.0.id %}"><button class="round-button" onclick=""><i class="fa fa-times " style="text-align: center;"></i></button></td>
+      <td ><a href="{% url 'confirmarCan' viaje.0.id %}"><button class="round-button" onclick=""><i class="fa fa-times" style="text-align: center;"></i></button></td>
       </tr>
 		{% endfor %}
 		</tbody>

@@ -9,6 +9,7 @@ from apps.usuario.models import Usuario
 from apps.viaje.models import Reserva,Viaje
 from datetime import datetime 
 from datetime import timedelta
+import pytz
 
 @login_required()
 def home(request):
@@ -53,27 +54,18 @@ def cancelar_reserva(request, pk):
 	reserva = reservas[0] 
 	try:
 		tramitos = reserva.tramos.all()
-		if(tramitos[0].fecha ==  datetime.now().strftime("%d/%m/%Y") ):
-			if(tramitos[0].hora_salida.strftime('%H:%M:%S') > (datetime.now() + timedelta(hours=2)).strftime('%H:%M:%S')):
-				for t in tramitos:
-					t.asientos_disponibles += reserva.plazas_pedidas
-					t.save()
-				if(reserva.estado == "Por aprobar"):
-					v = Viaje.objects.get(id=tramitos[0].viaje)
-					v.conductor.reservas_por_aprobar -= 1
-					v.conductor.save()
-				reserva.delete()
-				success = True
-			else:
-				success = False
-		elif(tramitos[0].fecha < datetime.now().strftime("%d/%m/%Y")):
+		tz = pytz.timezone('Chile/Continental')
+		actual = datetime.strptime(datetime.now(tz=tz).strftime("%d/%m/%Y %H:%M:%S") , "%d/%m/%Y %H:%M:%S")
+		fecha_origen = datetime.strptime(datetime.combine(tramitos[0].fecha,tramitos[0].hora_salida).strftime("%d/%m/%Y %H:%M:%S") , "%d/%m/%Y %H:%M:%S")
+		actual_2 = (actual + timedelta(hours=2))
+		if(fecha_origen > actual_2):
 			for t in tramitos:
-					t.asientos_disponibles += reserva.plazas_pedidas
-					t.save()
+				t.asientos_disponibles += reserva.plazas_pedidas
+				t.save()
 			if(reserva.estado == "Por aprobar"):
-					v = Viaje.objects.get(id=tramitos[0].viaje)
-					v.conductor.reservas_por_aprobar -= 1
-					v.conductor.save()
+				v = Viaje.objects.get(id=tramitos[0].viaje)
+				v.conductor.reservas_por_aprobar -= 1
+				v.conductor.save()
 			reserva.delete()
 			success = True
 		else:
