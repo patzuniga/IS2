@@ -180,7 +180,7 @@ def Viajelist(request):
 	for v in Viaje.objects.all():
 		if v.conductor == conductor:
 			aux = []
-			tramito = v.tramos.all()
+			tramito = v.tramos.all().order_by('orden_en_viaje')
 			aux.append(v)
 			aux.append(tramito[0])
 			aux.append(tramito[len(tramito)-1])
@@ -400,7 +400,10 @@ def viaje_details(request, pk):
 	viajes=[]
 	if request.method == 'GET':
 		aux = Viaje.objects.get(id = pk)
-		tramitos = aux.tramos.all()
+		tramitos = aux.tramos.all().order_by('orden_en_viaje')
+		for i in tramitos:
+			print(i.orden_en_viaje)
+			print("origen: ", i.origen.nombre)
 		viajes.append(aux)
 		viajes.append(tramitos)
 		viajes.append(aux.fecha)
@@ -449,36 +452,85 @@ def editarviaje(request,idviaje):
 	if(tiene_reservas(idviaje)):
 		return redirect('cancelar_editar_error')
 	viaje = Viaje.objects.get(id=idviaje)
+	print(viaje)
 	tramitos = viaje.tramos.all()
+	print("tramitos", tramitos)
+	i = 0
+	for t in tramitos:
+		print(i)
+		print(t)
+		print(t.origen.nombre)
+		print(t.destino.nombre)
+		i +=1
+	print(len(tramitos)-1)
 	if request.method == 'GET':
 		form = EditarViajeForm()
 	else:
 		form = EditarViajeForm(request.POST)
 		if form.is_valid():
-			viaje.fecha = form.cleaned_data['fecha']
-			viaje.estado = "Registrado"
-			viaje.porta_maleta = form.cleaned_data['porta_maleta']
-			viaje.mascotas = form.cleaned_data['mascotas']
-			viaje.tarifaPreferencias = form.cleaned_data['tarifapreferencias']
-			viaje.plazas_disponibles = form.cleaned_data['plazas_disponibles']
-			tramitos[0].origen.direccion = form.cleaned_data['origen']
-			print("Antes del save :" , tramitos[0].origen.direccion)
-			tramitos[0].origen.save()
-			time.sleep(1)
-			print("Despues del save :" , tramitos[0].origen.direccion)
-			tramitos[0].origen.nombre = form.cleaned_data['origen'].split(',')[0].replace(',','')
-			tramitos[0].hora_salida = form.cleaned_data['hora_origen']
-			tramitos[0].origen.save()
-			tramitos[0].save()
-			tramitos[len(tramitos)-1].destino.direccion = form.cleaned_data['destino']
-			tramitos[len(tramitos)-1].destino.nombre = form.cleaned_data['destino']
-			tramitos[len(tramitos)-1].hora_llegada = form.cleaned_data['hora_destino']
-			tramitos[len(tramitos)-1].fecha = form.cleaned_data['fecha_destino']
-			tramitos[len(tramitos)-1].destino.save()
-			tramitos[len(tramitos)-1].save()
-			for a in tramitos:
-				print(a.hora_salida, a.origen.nombre, a.origen.direccion)
-			viaje.tramos.set(tramitos, clear=True)
+			#viaje.fecha = form.cleaned_data['fecha']
+			#viaje.estado = "Registrado"
+			#viaje.porta_maleta = form.cleaned_data['porta_maleta']
+			#viaje.mascotas = form.cleaned_data['mascotas']
+			#viaje.tarifaPreferencias = form.cleaned_data['tarifapreferencias']
+			#viaje.plazas_disponibles = form.cleaned_data['plazas_disponibles']
+			#tramitos[0].origen.direccion = form.cleaned_data['origen']
+			pks = []
+			for t in tramitos:
+				pks.append(t.id)
+
+			par1 = Parada()
+			par1.nombre = form.cleaned_data['origen'].split(',')[0].replace(',','')
+			par1.direccion = form.cleaned_data['origen']
+			par1.save()
+
+			par2 = Parada()
+			par2.nombre = form.cleaned_data['origen'].split(',')[0].replace(',','')
+			par2.direccion = form.cleaned_data['origen']
+			par2.save()
+
+			tramo1 = Tramo()
+			tramo1.orden_en_viaje  = 0
+			tramo1.hora_salida = form.cleaned_data['hora_origen']
+			print("hora llegada ",tramitos[0].hora_llegada)
+			print("ex origen ",tramitos[0].origen.nombre)
+			print("destino ",tramitos[0].destino.nombre)
+			tramo1.hora_llegada = tramitos[0].hora_llegada
+			tramo1.fecha = form.cleaned_data['fecha']
+			tramo1.asientos_disponibles = 4
+			print(par1)
+			print(par1.id)
+			print(par1.nombre)
+			tramo1.origen = par1
+			tramo1.destino = tramitos[0].destino
+			tramo1.distancia = 0
+			tramo1.viaje = viaje.id
+			tramo1.save()
+			pks[0] = tramo1.id
+
+			tramo2 = Tramo()
+			print(tramitos[len(tramitos)-1])
+			print("origen ", tramitos[len(tramitos)-1].origen.nombre)
+			print("ex destino ", print(tramitos[len(tramitos)-1].destino.nombre))
+			tramo2.orden_en_viaje  = len(tramitos)-1
+			tramo2.hora_salida = tramitos[len(tramitos)-1].hora_salida
+			tramo2.hora_llegada = tramitos[len(tramitos)-1].hora_llegada
+			tramo2.fecha = tramitos[len(tramitos)-1].fecha
+			tramo2.asientos_disponibles = 4
+			tramo2.origen = tramitos[len(tramitos)-1].origen
+			tramo2.destino = par2
+			tramo2.distancia = 0
+			tramo2.viaje = viaje.id
+			tramo2.save()
+			pks[len(tramitos)-1] = tramo2.id
+			viaje.tramos.clear()
+			i = 0
+			for pk in pks:
+				tramon = Tramo.objects.get(id = pk)
+				print("tramo ", i)
+				print("origen : ", tramon.origen.nombre , " destino : ", tramon.destino.nombre)
+				viaje.tramos.add(tramon)
+				i +=1
 			viaje.save()
 		return redirect('viaje_list')
 	return render(request, 'viaje/editarviaje.html', {'form':form})
