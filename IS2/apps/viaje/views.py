@@ -17,8 +17,14 @@ def index(request):
 
 @login_required()
 def viaje_view(request):
+	print(request.POST.get("cancelar"))
+	print("naaaa")
 	if request.method == 'POST':
 		form = ViajeForm(request.POST)
+		try:
+			print(form)
+		except:
+			return redirect('cancelar_crear_viaje')
 		if request.POST.get("listo"):
 			print(request.POST['holiwi'])
 			distancias = request.POST['holiwi'].split()
@@ -27,7 +33,6 @@ def viaje_view(request):
 			for i in range(len(distancias)//2):
 				aux.append(float(distancias[2*i].replace(',','')))
 			request.session['viaje'].update( {'distancias' : aux} )
-			print("raiooooz", request.session['viaje'])
 			return viaje_listo(request)
 		elif form.is_valid():
 			#viaje = Viaje()
@@ -36,7 +41,7 @@ def viaje_view(request):
 			#viaje.porta_maleta = form.cleaned_data['porta_maleta']
 			#viaje.mascotas = form.cleaned_data['mascotas']
 			#viaje.tarifaPreferencias = form.cleaned_data['tarifapreferencias']
-			#viaje.max_personas_atras = form.cleaned_data['max_personas_atras']
+			#viaje.plazas_disponibles = form.cleaned_data['plazas_disponibles']
 			#current_user = request.user
 			#u = Usuario.objects.get(id=current_user.id)
 			#viaje.conductor = u.conductor_set.all()[0]
@@ -46,7 +51,7 @@ def viaje_view(request):
 			aux2['porta_maleta'] = form.cleaned_data['porta_maleta']
 			aux2['mascotas'] = form.cleaned_data['mascotas']
 			aux2['tarifaPreferencias'] = form.cleaned_data['tarifapreferencias']
-			aux2['max_personas_atras'] = form.cleaned_data['max_personas_atras']
+			aux2['plazas_disponibles'] = form.cleaned_data['plazas_disponibles']
 			#current_user = request.user
 			#u = Usuario.objects.get(id=current_user.id)
 			#viaje.conductor = u.conductor_set.all()[0]
@@ -91,7 +96,7 @@ def viaje_listo(request):
 	viaje.porta_maleta = request.session['viaje']['porta_maleta']
 	viaje.mascotas = request.session['viaje']['mascotas']
 	viaje.tarifaPreferencias = request.session['viaje']['tarifaPreferencias']
-	viaje.max_personas_atras = request.session['viaje']['max_personas_atras']
+	viaje.plazas_disponibles = request.session['viaje']['plazas_disponibles']
 	current_user = request.user
 	u = Usuario.objects.get(id=current_user.id)
 	viaje.conductor = u.conductor_set.all()[0]
@@ -118,8 +123,8 @@ def viaje_listo(request):
 		tramo.orden_en_viaje  = i
 		tramo.hora_salida = paradas[i][1]
 		tramo.hora_llegada = paradas[i+1][1]
-		tramo.fecha = paradas[i][0]
-		tramo.asientos_disponibles = request.session['viaje']['max_personas_atras']
+		tramo.fecha = datetime.strptime(paradas[i][0], "%d/%m/%Y")
+		tramo.asientos_disponibles = request.session['viaje']['plazas_disponibles']
 		tramo.origen = par1
 		tramo.destino = par2
 		tramo.distancia = request.session['viaje']['distancias'][i]
@@ -155,7 +160,7 @@ def viaje_listo(request):
 	#	tramo.hora_salida = aux[i][1]
 	#	tramo.hora_llegada = aux[i+1][1]
 	#	tramo.fecha = aux[i][0]
-	#	tramo.asientos_disponibles = viaje.max_personas_atras
+	#	tramo.asientos_disponibles = viaje.plazas_disponibles
 	#	tramo.origen = par1
 	#	tramo.destino = par2
 	#	tramo.viaje = pk
@@ -178,15 +183,16 @@ def Viajelist(request):
 			aux = []
 			resHechas = 0
 			for reserva in res:
-				if reserva.tramos.all()[0].viaje == v.id:
+				if reserva.tramos.all()[0].viaje == v.id and reserva.estado == "Aceptada" :
 					resHechas+=reserva.plazas_pedidas
-			tramito = v.tramos.all()
+			tramito = v.tramos.all().order_by('orden_en_viaje')
 			aux.append(v)
 			aux.append(tramito[0])
 			aux.append(tramito[len(tramito)-1])
+			print(v.fecha)
 			aux.append(str(v.fecha).split()[0])
 			aux.append(len(tramito))
-			aux.append(v.max_personas_atras)
+			aux.append(v.plazas_disponibles)
 			aux.append(resHechas)
 			lista.append(aux)
 	return render(request, 'viaje/viaje_list.html', {'viajes':lista})
@@ -334,7 +340,7 @@ def buscar_viaje(request):
 		resultado = []
 		form = BuscarForm(request.POST)
 		if form.is_valid():
-			f =  form.cleaned_data['fecha'].strftime("%d/%m/%Y")
+			f =  form.cleaned_data['fecha']
 			s = request.POST['origen'].split(',')[0].replace(",","")
 			u = request.POST['destino'].split(',')[0].replace(",","")
 			viaje  = Viaje.objects.filter()
@@ -347,6 +353,7 @@ def buscar_viaje(request):
 				destino = False
 				distancia = 0;
 				tramitos = v.tramos.all()
+				asientos=v.plazas_disponibles
 				print(tramitos)
 				print(v.tarifaPreferencias)
 				#se revisan los tramos del viaje
@@ -360,12 +367,16 @@ def buscar_viaje(request):
 					print(t.fecha == f)
 					#Como el origen se debe encontrar primero y no sirve que la ultima parada del viaje coincida con este, solo se revisa la primera parada del tramo
 					if(t.origen.nombre == s and t.fecha == f):
-						distancia = 0;
+						distancia = 0
 						origen = True
 						print(origen)
 					#solo importa ver si el destino existe cuando ya se encontró el origen
 					if(origen):
 						distancia += float(t.distancia)
+						
+						if(asientos>t.asientos_disponibles):
+							asientos=t.asientos_disponibles
+
 						#si es que los asientos disponibles son 0 en el camino, el viaje no sirve. Pero debo seguir revisando ya que se podria pasar por ahi de nuevo
 						# y alli podrian haber asientos disponibles
 						if(t.asientos_disponibles == 0):
@@ -374,24 +385,29 @@ def buscar_viaje(request):
 							destino = True
 							break
 				if(origen and destino):
-					resultado.append([v,tramitos[0], tramitos[len(tramitos)-1],distancia*v.tarifaPreferencias, len(tramitos)])
+					resultado.append([v,tramitos[0], tramitos[len(tramitos)-1],distancia*v.tarifaPreferencias, len(tramitos),asientos])
 			if(resultado):
 				return render(request, 'viaje/buscar2.html', {'viajes':resultado, 'origen':s, 'destino':u})
 			else:
 				return render(request,'viaje/buscar2.html',{'viajes':resultado, 'origen':s, 'destino':u})
 		else:
-			form = BuscarForm()
-			return render(request,'viaje/buscarviaje.html',{})
+			return render(request,'viaje/buscarviaje.html',{'form': form})
 def tiene_reservas(pk):
 	aux = Viaje.objects.get(id = pk)
 	tramitos = aux.tramos.all()
 	for i in tramitos:
 		try:
-			aux = tramitos.reserva
-			return True
+			reservas = i.reservas.all()
+			for r in reservas:
+				if(r.estado == "Por Aprobar" or r.estado == "Aprobada"):
+					return True
 		except:
 			continue
 	return False
+
+@login_required()
+def error1(request):
+	return render(request, 'viaje/error1.html', {})
 
 @login_required()
 def viaje_details(request, pk):
@@ -401,13 +417,16 @@ def viaje_details(request, pk):
 	viaje  = Viaje.objects.get(id = pk)
 	tramitos = viaje.tramos.all()
 	for tr in tramitos:
-		trams.append([tr,viaje.max_personas_atras-tr.asientos_disponibles])
+		trams.append([tr,viaje.plazas_disponibles-tr.asientos_disponibles])
 	ultimo = len(tramitos)
 	print(tramitos)
 	print(trams)
 	if request.method == 'GET':
 		aux = Viaje.objects.get(id = pk)
-		tramitos = aux.tramos.all()
+		tramitos = aux.tramos.all().order_by('orden_en_viaje')
+		for i in tramitos:
+			print(i.orden_en_viaje)
+			print("origen: ", i.origen.nombre)
 		viajes.append(aux)
 		viajes.append(trams)
 		viajes.append(str(aux.fecha).split()[0])
@@ -449,37 +468,88 @@ def viaje_details(request, pk):
 
 @login_required()
 def editarviaje(request,idviaje):
+	if(tiene_reservas(idviaje)):
+		return redirect('cancelar_editar_error')
 	viaje = Viaje.objects.get(id=idviaje)
+	print(viaje)
 	tramitos = viaje.tramos.all()
+	print("tramitos", tramitos)
+	i = 0
+	for t in tramitos:
+		print(i)
+		print(t)
+		print(t.origen.nombre)
+		print(t.destino.nombre)
+		i +=1
+	print(len(tramitos)-1)
 	if request.method == 'GET':
 		form = EditarViajeForm()
 	else:
 		form = EditarViajeForm(request.POST)
 		if form.is_valid():
-			viaje.fecha = form.cleaned_data['fecha']
-			viaje.estado = "Registrado"
-			viaje.porta_maleta = form.cleaned_data['porta_maleta']
-			viaje.mascotas = form.cleaned_data['mascotas']
-			viaje.tarifaPreferencias = form.cleaned_data['tarifapreferencias']
-			viaje.max_personas_atras = form.cleaned_data['max_personas_atras']
-			tramitos[0].origen.direccion = form.cleaned_data['origen']
-			print("Antes del save :" , tramitos[0].origen.direccion)
-			tramitos[0].origen.save()
-			time.sleep(1)
-			print("Despues del save :" , tramitos[0].origen.direccion)
-			tramitos[0].origen.nombre = form.cleaned_data['origen'].split(',')[0].replace(',','')
-			tramitos[0].hora_salida = form.cleaned_data['hora_origen']
-			tramitos[0].origen.save()
-			tramitos[0].save()
-			tramitos[len(tramitos)-1].destino.direccion = form.cleaned_data['destino']
-			tramitos[len(tramitos)-1].destino.nombre = form.cleaned_data['destino']
-			tramitos[len(tramitos)-1].hora_llegada = form.cleaned_data['hora_destino']
-			tramitos[len(tramitos)-1].fecha = form.cleaned_data['fecha_destino']
-			tramitos[len(tramitos)-1].destino.save()
-			tramitos[len(tramitos)-1].save()
-			for a in tramitos:
-				print(a.hora_salida, a.origen.nombre, a.origen.direccion)
-			viaje.tramos.set(tramitos, clear=True)
+			#viaje.fecha = form.cleaned_data['fecha']
+			#viaje.estado = "Registrado"
+			#viaje.porta_maleta = form.cleaned_data['porta_maleta']
+			#viaje.mascotas = form.cleaned_data['mascotas']
+			#viaje.tarifaPreferencias = form.cleaned_data['tarifapreferencias']
+			#viaje.plazas_disponibles = form.cleaned_data['plazas_disponibles']
+			#tramitos[0].origen.direccion = form.cleaned_data['origen']
+			pks = []
+			for t in tramitos:
+				pks.append(t.id)
+
+			par1 = Parada()
+			par1.nombre = form.cleaned_data['origen'].split(',')[0].replace(',','')
+			par1.direccion = form.cleaned_data['origen']
+			par1.save()
+
+			par2 = Parada()
+			par2.nombre = form.cleaned_data['origen'].split(',')[0].replace(',','')
+			par2.direccion = form.cleaned_data['origen']
+			par2.save()
+
+			tramo1 = Tramo()
+			tramo1.orden_en_viaje  = 0
+			tramo1.hora_salida = form.cleaned_data['hora_origen']
+			print("hora llegada ",tramitos[0].hora_llegada)
+			print("ex origen ",tramitos[0].origen.nombre)
+			print("destino ",tramitos[0].destino.nombre)
+			tramo1.hora_llegada = tramitos[0].hora_llegada
+			tramo1.fecha = form.cleaned_data['fecha']
+			tramo1.asientos_disponibles = 4
+			print(par1)
+			print(par1.id)
+			print(par1.nombre)
+			tramo1.origen = par1
+			tramo1.destino = tramitos[0].destino
+			tramo1.distancia = 0
+			tramo1.viaje = viaje.id
+			tramo1.save()
+			pks[0] = tramo1.id
+
+			tramo2 = Tramo()
+			print(tramitos[len(tramitos)-1])
+			print("origen ", tramitos[len(tramitos)-1].origen.nombre)
+			print("ex destino ", print(tramitos[len(tramitos)-1].destino.nombre))
+			tramo2.orden_en_viaje  = len(tramitos)-1
+			tramo2.hora_salida = tramitos[len(tramitos)-1].hora_salida
+			tramo2.hora_llegada = tramitos[len(tramitos)-1].hora_llegada
+			tramo2.fecha = tramitos[len(tramitos)-1].fecha
+			tramo2.asientos_disponibles = 4
+			tramo2.origen = tramitos[len(tramitos)-1].origen
+			tramo2.destino = par2
+			tramo2.distancia = 0
+			tramo2.viaje = viaje.id
+			tramo2.save()
+			pks[len(tramitos)-1] = tramo2.id
+			viaje.tramos.clear()
+			i = 0
+			for pk in pks:
+				tramon = Tramo.objects.get(id = pk)
+				print("tramo ", i)
+				print("origen : ", tramon.origen.nombre , " destino : ", tramon.destino.nombre)
+				viaje.tramos.add(tramon)
+				i +=1
 			viaje.save()
 		return redirect('viaje_list')
 	return render(request, 'viaje/editarviaje.html', {'form':form})
@@ -490,7 +560,8 @@ def confirmarCan(request, pk):
 
 @login_required()
 def cancelar(request, pk):
-	#if(no hay reservas)
+	if(tiene_reservas(pk)):
+		return redirect('cancelar_editar_error')
 	viaje = Viaje.objects.get(id=pk)
 	tramitos = viaje.tramos.all()
 	i = len(tramitos)-1
@@ -519,12 +590,12 @@ def realizar_reservas(request):
 		asientos=tramitos[0].asientos_disponibles
 		for tr in tramitos:
 			if aux:
-				tramos.append([tr,viaje.max_personas_atras-tr.asientos_disponibles])
+				tramos.append([tr,viaje.plazas_disponibles-tr.asientos_disponibles])
 				distancia+=tr.distancia
 				if tr.asientos_disponibles<asientos:
 					asientos=asientos_disponibles
 			if tr.origen.nombre == Origen and aux==False:
-				tramos.append([tr,viaje.max_personas_atras-tr.asientos_disponibles])
+				tramos.append([tr,viaje.plazas_disponibles-tr.asientos_disponibles])
 				distancia+=tr.distancia
 				if tr.asientos_disponibles<asientos:
 					asientos=asientos_disponibles

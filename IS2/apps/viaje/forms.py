@@ -1,6 +1,7 @@
 from django import forms
 from apps.viaje.models import Viaje
-import datetime
+from datetime import datetime
+import pytz
 """
 class ViajeForm(forms.Form):
 
@@ -47,27 +48,34 @@ class ViajeForm(forms.Form):
 	porta_maleta = forms.BooleanField(required = False)
 	silla_niños = forms.BooleanField(required = False)
 	mascotas = forms.BooleanField(required = False)
-	tarifapreferencias = forms.IntegerField(label = "tarifa")
-	max_personas_atras = forms.IntegerField(label = "Num personas atras")
+	tarifapreferencias = forms.IntegerField(label = "Tarifa" , min_value= 0)
+	plazas_disponibles = forms.IntegerField(label = "Plazas disponibles", min_value= 0)
 	#origen = forms.CharField(label="origen")
 	hora_origen = forms.TimeField(label = "Hora Origen")
 	#destino = forms.CharField(label="destino")
 	fecha_destino = forms.DateField(label = "Fecha (DD/MM/YY)")
 	hora_destino = forms.TimeField(label = "Hora Destino")
+	
 	def clean(self):
 		cleaned_data = super().clean()
 		f1 = cleaned_data.get("fecha")
 		h1 = cleaned_data.get("hora_origen")
 		f2 = cleaned_data.get("fecha_destino")
 		h2 = cleaned_data.get("hora_destino")
-		if (f2 < f1 or (f1 == f2 and h2 <= h1)):
-			raise forms.ValidationError("Fecha y hora de termino deben ser mayores a la fecha y hora de inicio.")
+		tz = pytz.timezone('Chile/Continental')
+		actual = datetime.strptime(datetime.now(tz=tz).strftime("%d/%m/%Y %H:%M:%S") , "%d/%m/%Y %H:%M:%S")
+		fecha_origen = datetime.strptime(datetime.combine(f1,h1).strftime("%d/%m/%Y %H:%M:%S") , "%d/%m/%Y %H:%M:%S")
+		fecha_destino = datetime.strptime(datetime.combine(f2,h2).strftime("%d/%m/%Y %H:%M:%S") , "%d/%m/%Y %H:%M:%S")
+		if(actual > fecha_origen or actual > fecha_destino):
+			raise forms.ValidationError("Las fechas indicadas no pueden ser menores a la actual")
+		elif (fecha_destino <= fecha_origen):
+			raise forms.ValidationError("Fecha y hora de término deben ser mayores a la fecha y hora de inicio.")
 class EditarViajeForm(forms.Form):
 	fecha = forms.DateField(label = "Fecha de inicio")
 	porta_maleta = forms.BooleanField(required = False)
 	silla_niños = forms.BooleanField(required = False)
 	mascotas = forms.BooleanField(required = False)
-	tarifapreferencias = forms.IntegerField(label = "tarifa")
+	tarifapreferencias = forms.IntegerField(label = "Tarifa")
 	max_personas_atras = forms.IntegerField(label = "Num personas atras")
 	origen = forms.CharField(label="origen")
 	hora_origen = forms.TimeField(label = "Hora Origen")
@@ -91,10 +99,10 @@ class BuscarForm(forms.Form):
 	#origen = forms.CharField(label = "Origen")
 	#destino = forms.CharField(label = "Destino")
 	fecha = forms.DateField(label = "Fecha (DD/MM/YY)")
-	#def clean(self):
-	#	cleaned_data = super().clean()
-	#	f1 = cleaned_data.get("fecha").strftime("%d/%m/%Y")
-		#now = datetime.datetime.now()
-	#	now = now.strftime("%d/%m/%Y")
-	#	if (f1 < now):
-	#		raise forms.ValidationError("Fecha no puede ser menor que la fecha actual.")
+	def clean(self):
+		cleaned_data = super().clean()
+		f1 = datetime.strptime(cleaned_data.get("fecha").strftime("%d/%m/%Y") , "%d/%m/%Y")
+		tz = pytz.timezone('Chile/Continental')
+		actual = datetime.strptime(datetime.now(tz=tz).strftime("%d/%m/%Y") , "%d/%m/%Y")
+		if(actual > f1):
+			raise forms.ValidationError("La fecha indicada no pueden ser menor a la actual")
