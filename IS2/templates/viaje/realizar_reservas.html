@@ -91,7 +91,7 @@ strong{
           </tbody>
         </table> 
          <br> <input type="hidden" id="idviaje" name="idviaje" value="{{ viaje.0 }}">
-              <input type="hidden" id="origen" name="origen" value="{{ tramos.0.origen.nombre }}">
+              <input type="hidden" id="origen" name="origen" value="{{ tramos.0.0.origen.nombre }}">
               <input type="hidden" id="destino" name="destino" value="{{ ultimo.destino.nombre }}">
               <input type="hidden" id="precio" name="precio" value="{{ viaje.1 }}">
               <button class="w3-button w3-dark-grey" type="submit" style="margin-left: 2%">Realizar Reserva</button></form>

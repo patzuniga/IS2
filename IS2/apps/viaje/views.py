@@ -621,7 +621,10 @@ def guardar_reservas(request):
 		precio=request.GET['precio']
 		pasajero=request.user
 		viaje=Viaje.objects.get(id=idviaje)
-		tramitos=viaje.tramos.all()
+		tramitos = viaje.tramos.all()
+		print(tramitos)
+		print(origen)
+		print(destino)
 		aux=False
 		reserva.precio=float(precio.replace(',','.'))
 		reserva.plazas_pedidas=asientos
@@ -633,10 +636,8 @@ def guardar_reservas(request):
 		v.conductor.save()
 		for tram in tramitos:
 			if aux:
-				#i(quiero que se )
 				tram.asientos_disponibles-=int(asientos)
 				tram.save()
-				print(tram.asientos_disponibles)
 				reserva.tramos.add(tram)	
 				aux=True
 
@@ -648,8 +649,7 @@ def guardar_reservas(request):
 			
 			if tram.destino.nombre == destino:
 				break
-
-	
+		reserva.save()
 	return render(request, 'usuario/index.html')
 
 @login_required()
