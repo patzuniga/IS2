@@ -649,7 +649,7 @@ def realizar_reservas(request):
 				tramos.append([tr,viaje.plazas_disponibles-tr.asientos_disponibles])
 				distancia+=tr.distancia
 				if tr.asientos_disponibles<asientos:
-					asientos=asientos_disponibles
+					asientos=tr.asientos_disponibles
 			if tr.origen.nombre == Origen and aux==False:
 				tramos.append([tr,viaje.plazas_disponibles-tr.asientos_disponibles])
 				distancia+=tr.distancia
