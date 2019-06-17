@@ -33,25 +33,37 @@ def cambio(request):
 					aceptarreserva = True
 					#comprovar conductor del viaje
 					viaje = Viaje.objects.get(pk=tram[0].viaje)
-					#print("Reserva",re.pk,"pide",re.plazas_pedidas,"plazas")
-					#print("Viaje",viaje.pk,"tiene",viaje.plazas_disponibles,"plazas disponibles")
+					print("Reserva",re.pk,"pide",re.plazas_pedidas,"plazas")
+					print("Viaje",viaje.pk,"tiene",viaje.plazas_disponibles,"plazas disponibles")
 					if viaje.conductor != conductor:
 						aceptarreserva = False # La reserva corresponde a otro conductor
 						print("Reserva", re.pk, "no es mia")
+						continue
 
 					#Se supone que al pedir la reserva se verifica si hay asientos disponibles y se descuentan del total, así que esta parte estaría de más
-					#if aceptarreserva:
-					#	for tr in tram:#revisar disponibilidad de cada tramo
-					#		print("Tramo",tr.pk,"tiene",tr.asientos_disponibles,"asientos disponibles")
-					#		if re.plazas_pedidas > tr.asientos_disponibles:
-					#			aceptarreserva = False # No debe aceptarse por falta de asientos
-					#			print("Reserva", re.pk, "no se acepta porque tramo",tr.pk,"no da")	
+					if aceptarreserva:
+						for tr in tram:#revisar disponibilidad de cada tramo
+							print("Tramo",tr.pk,"tiene",tr.asientos_disponibles,"asientos disponibles")
+							if re.plazas_pedidas > tr.asientos_disponibles:
+								aceptarreserva = False # No debe aceptarse por falta de asientos
+								print("Reserva", re.pk, "no se acepta porque tramo",tr.pk,"no da")
+								break
 					
 					if aceptarreserva:#Si todos los tramos tienen disponibilidad, se puede aceptar la reserva
-						print("Aprobar reserva", re.pk)
-						#re.estado = "Aprobada"
-						#re.save()
-						#for tr in tram:#se tiene que actualizar la disponibilidad de asientos de cada tramo?
+						print("Aceptar reserva", re.pk)
+						re.estado = "Aceptada"
+						re.save()
+						conductor.reservas_por_aprobar -=1
+						conductor.save()
+						for tr in tram:#se tiene que actualizar la disponibilidad de asientos de cada tramo?
+							tr.asientos_disponibles -= re.plazas_pedidas
+							tr.save()
+					else:#Rechazar las que no se puede aceptar?
+						print("Rechazar reserva", re.pk)
+						re.estado = "Rechazada"
+						re.save()
+						conductor.reservas_por_aprobar -=1
+						conductor.save()
 
 
 						
