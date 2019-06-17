@@ -14,6 +14,11 @@
         <div class="w3-half">
          <form method="post">
         {% csrf_token %}
+           Origen : <input type="text" id="origen"  name = "origen" required class="vTextField" maxlength="30" />
+           <br>
+           <br>
+           Destino : <input type="text" id="destino"  name = "destino" required class="vTextField" maxlength="30" />
+           <br>
            {{ form.as_p}}
       </div>
       </div>
@@ -22,5 +27,23 @@
     <a href="{% url 'index' %}" class="w3-button w3-dark-grey" >Cancelar </a>
     </div>
 </header>
+
+<script>
+function onLoaded() {
+
+ var options = {
+  types: ['(cities)'],
+  componentRestrictions: {country: "cl"}
+ };
+        var location_input = document.getElementById('origen');
+        var location_input2 = document.getElementById('destino');
+        var autocomplete = new google.maps.places.Autocomplete(location_input,options);
+        var autocomplete = new google.maps.places.Autocomplete(location_input2,options);
+
+    }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAD6Q31QwQK0pv7twtzD32efp6hLa0uFEs&libraries=places&callback=onLoaded"></script>
+            
+</script>
 
 {% endblock %}

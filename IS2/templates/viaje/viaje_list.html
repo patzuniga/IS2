@@ -22,11 +22,7 @@
         <th scope="col" >Origen</th>
         <th scope="col" >Destino</th>
         <th scope="col" >Fecha</th>
-<<<<<<< HEAD
-        <th scope="col">Hora</th>
-=======
         <th scope="col" width="6%">Hora</th>      
->>>>>>> 55f8644324bb36365d566dfbf41674b7a759a4cb
         <th scope="col">Estado </th>
         <th scope="col" width="6%">N° Paradas</th>
         <th scope="col" width="6%">Asientos Totales</th>
@@ -50,20 +46,12 @@
       <td> <a href="{% url 'viaje_details' viaje.0.id %}">{{ viaje.6 }}</a></td>      
      <td ><a href="{% url 'editarviaje' viaje.0.id %}"> <button type="submit" class="round-button" ><i class="fa fa-pencil"></i></button></a></td>
       
-<<<<<<< HEAD
-      <td ><a href="{% url 'confirmarCan' viaje.0.id %}"><button class="round-button" onclick=""><i class="fa fa-times" style="text-align: center;"></i></button></td>
-      </tr>
-		{% endfor %}
-		</tbody>
-		</table> 
-=======
       <td ><a href="{% url 'confirmarCan' viaje.0.id %}"><button class="round-button" onclick=""><i class="fa fa-times " style="text-align: center;"></i></button></a></td>
       </tr>
 		{% endfor %}
 		</tbody>
 		</table>
    
->>>>>>> 55f8644324bb36365d566dfbf41674b7a759a4cb
       {% else %}
     <h1>No hay registros de viajes</h1>
     {% endif %}

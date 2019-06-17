@@ -41,13 +41,9 @@ h5 {
 h4{
   text-align:center;
 }
-<<<<<<< HEAD
-
-=======
 strong{
   margin-left: 2%;
 }
->>>>>>> 55f8644324bb36365d566dfbf41674b7a759a4cb
 </style>
 <header class="w3-display-container w3-content w3-hide-small" style="max-width:1500px">
   <img class="w3-image" src="https://www.gapyear.com/wp-content/uploads/2017/11/RoadTipsMain.jpg" alt="London" width="1500" height="500">
@@ -61,28 +57,16 @@ strong{
       <div class="w3-row-padding" style="margin:0 -16px;">
         <br><br>
         <form method="get" action="/viaje/guardar_reservas">
-<<<<<<< HEAD
-        <strong>Numero de reservas :</strong><input type="number" name="asientos" min="0" max="{{viaje.3}}" required><br>
-        <strong>Distancia  : </strong> {{viaje.2}}<br>
-        <strong>Precio :</strong> {{viaje.1}}<br>
-=======
         <strong>Numero de reservas :</strong><input type="number" name="asientos" min="1" max="{{viaje.3}}" required><br>
         <strong>Distancia  : </strong> {{viaje.2}}<br>
         <strong>Precio :</strong> {{viaje.1}}<br>
         <strong>Fecha  :</strong> {{tramos.0.0.fecha}}<br>
         <strong>Hora Salida :</strong> {{tramos.0.0.hora_salida}}<br>
->>>>>>> 55f8644324bb36365d566dfbf41674b7a759a4cb
         <h4>Itinerario</h4>
         <table class="tablita" style = "overflow: scroll;" width="100%" >
           <thead>
             <tr>
               <tr id="head">
-<<<<<<< HEAD
-              <th scope="col" >Ciudad</th>
-              <th scope="col" >Hora</th>
-              <th scope="col" >Fecha</th>
-              <th scope="col">Asientos Disponibles</th>
-=======
               <th scope="col" width="21%" >Origen</th>
               <th scope="col" width="21%" >Destino</th>
               <th scope="col" width="12%">Hora</th>
@@ -90,37 +74,12 @@ strong{
               <th scope="col">Asientos Disponibles</th>
               <th scope="col">Plazas Pedidas</th>
             
->>>>>>> 55f8644324bb36365d566dfbf41674b7a759a4cb
             </tr> 
           </thead>
           <tbody>
           <tr class="clickable-row" >
             <tr>
             {% for tramitos in tramos %}
-<<<<<<< HEAD
-              <td>{{ tramitos.origen.nombre }}</td>
-              <td>{{ tramitos.hora_llegada }}</td>
-              <td>{{ tramitos.fecha }}</td>
-              <td>{{ tramitos.asientos_disponibles }}</td>
-            </tr>
-            {% endfor %}
-            <tr>
-              <td>{{ ultimo.destino.nombre }}</td>
-              <td>{{ ultimo.hora_llegada }}</td>
-              <td>{{ ultimo.fecha }}</td>
-              <td>{{ ultimo.asientos_disponibles }}</td>
-            </tr>
-          </tr>
-          </tbody>
-        </table> 
-         <br> <input type="hidden" id="idviaje" name="idviaje" value="{{ viaje.0 }}">
-              <input type="hidden" id="origen" name="origen" value="{{ tramos.0.origen.nombre }}">
-              <input type="hidden" id="destino" name="destino" value="{{ ultimo.destino.nombre }}">
-              <input type="hidden" id="precio" name="precio" value="{{ viaje.1 }}">
-              <button class="w3-button w3-dark-grey" type="submit">Realizar Reserva</button></form>
-               <br>
-         <input type=button value="Atras" onClick="javascript:history.go(-1);" class="w3-button w3-dark-grey">
-=======
               <td>{{ tramitos.0.origen.nombre }}</td>
               <td>{{ tramitos.0.destino.nombre }}</td>
               <td>{{ tramitos.0.hora_llegada }}</td>
@@ -137,7 +96,6 @@ strong{
               <input type="hidden" id="precio" name="precio" value="{{ viaje.1 }}">
               <button class="w3-button w3-dark-grey" type="submit" style="margin-left: 2%">Realizar Reserva</button></form>
          <input type=button value="Atras" onClick="javascript:history.go(-1);" style="margin-left: 2%" class="w3-button w3-dark-grey">
->>>>>>> 55f8644324bb36365d566dfbf41674b7a759a4cb
     </div>     
   </div>
 </header>

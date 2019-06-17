@@ -70,28 +70,33 @@ class ViajeForm(forms.Form):
 			raise forms.ValidationError("Las fechas indicadas no pueden ser menores a la actual")
 		elif (fecha_destino <= fecha_origen):
 			raise forms.ValidationError("Fecha y hora de término deben ser mayores a la fecha y hora de inicio.")
+
 class EditarViajeForm(forms.Form):
-	fecha = forms.DateField(label = "Fecha de inicio")
+	fecha = forms.DateField(label = "Fecha de inicio (DD/MM/YY)")
 	porta_maleta = forms.BooleanField(required = False)
 	silla_niños = forms.BooleanField(required = False)
 	mascotas = forms.BooleanField(required = False)
-	tarifapreferencias = forms.IntegerField(label = "tarifa")
+	tarifapreferencias = forms.IntegerField(label = "Tarifa")
 	max_personas_atras = forms.IntegerField(label = "Num personas atras")
-	origen = forms.CharField(label="origen")
+	#origen = forms.CharField(label="origen")
 	hora_origen = forms.TimeField(label = "Hora Origen")
-	destino = forms.CharField(label="destino")
-	fecha_destino = forms.DateField(label = "Fecha de Termino")
+	#destino = forms.CharField(label="destino")
+	fecha_destino = forms.DateField(label = "Fecha de Termino (DD/MM/YY)")
 	hora_destino = forms.TimeField(label = "Hora Destino")
+
 	def clean(self):
 		cleaned_data = super().clean()
 		f1 = cleaned_data.get("fecha")
 		h1 = cleaned_data.get("hora_origen")
 		f2 = cleaned_data.get("fecha_destino")
 		h2 = cleaned_data.get("hora_destino")
+		tz = pytz.timezone('Chile/Continental')
 		actual = datetime.strptime(datetime.now(tz=tz).strftime("%d/%m/%Y %H:%M:%S") , "%d/%m/%Y %H:%M:%S")
-		if(actual > f1 or actual > f2):
+		fecha_origen = datetime.strptime(datetime.combine(f1,h1).strftime("%d/%m/%Y %H:%M:%S") , "%d/%m/%Y %H:%M:%S")
+		fecha_destino = datetime.strptime(datetime.combine(f2,h2).strftime("%d/%m/%Y %H:%M:%S") , "%d/%m/%Y %H:%M:%S")
+		if(actual > fecha_origen or actual > fecha_destino):
 			raise forms.ValidationError("Las fechas indicadas no pueden ser menores a la actual")
-		if (f2 < f1 or (f1 == f2 and h2 <= h1)):
+		if (fecha_destino <= fecha_origen):
 			raise forms.ValidationError("Fecha y hora de termino deben ser mayores a la fecha y hora de inicio.")
 
 class ParadasForm(forms.Form):

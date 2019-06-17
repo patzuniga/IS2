@@ -17,5 +17,8 @@ urlpatterns = [
 	url(r'^realizar_reservas$', realizar_reservas, name='realizar_reservas'),
 	url(r'^guardar_reservas$', guardar_reservas, name='guardar_reservas'),
 	url(r'^error1$', error1 , name='cancelar_editar_error'),
-
+	url(r'^confirmarCanReservaConductor/(?P<pk>\d+)/$', confirmarCanReservaConductor, name='confirmarCanReservaConductor'),
+    url(r'^cancelarReservaConductor/(?P<pk>\d+)/$', cancelarReservaConductor, name='cancelarReservaConductor'),
+    url(r'^confirmarAceptarReservaConductor/(?P<pk>\d+)/$', confirmarAceptarReservaConductor, name='confirmarAceptarReservaConductor'),
+    url(r'^aceptarReservaConductor/(?P<pk>\d+)/$', aceptarReservaConductor, name='aceptarReservaConductor'),
 ]
