@@ -55,7 +55,6 @@ class ViajeForm(forms.Form):
 	#destino = forms.CharField(label="destino")
 	fecha_destino = forms.DateField(label = "Fecha (DD/MM/YY)")
 	hora_destino = forms.TimeField(label = "Hora Destino")
-	
 	def clean(self):
 		cleaned_data = super().clean()
 		f1 = cleaned_data.get("fecha")
