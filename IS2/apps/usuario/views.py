@@ -65,9 +65,10 @@ def cancelar_reserva(request, pk):
 				v = Viaje.objects.get(id=tramitos[0].viaje)
 				v.conductor.reservas_por_aprobar -= 1
 				v.conductor.save()
-			elif(reserva.estado == "Aprobada"):
+			elif(reserva.estado == "Aceptada"):
 				tramitos = reservas.tramos.all()
 				for t in tramitos:
+					print("ayuda")
 					t.asientos_disponibles -= reserva.plazas_pedidas
 					t.save()
 			reserva.delete()
