@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from apps.conductor.models import Conductor
 from apps.usuario.models import Usuario, Perfil
 from apps.viaje.models import Tramo, Reserva, Viaje
-from apps.conductor.form import Conductor_Form
+from apps.conductor.forms import Conductor_Form
 
 @login_required()
 def configuracion(request):
@@ -75,9 +75,13 @@ def registro_conductor(request):
 		if(request.POST.get("conductor")):
 			form = Conductor_Form()
 			return render(request, 'conductor/conductor.html', {'form': form})
-		form = Conductor_Form(request.POST)
+		form = Conductor_Form(request.POST, request.FILES)
+		print("WUat")
 		if form.is_valid():
+			print("valido")
+			print(form.cleaned_data['consumo'])
 			if(request.POST.get("registrarme")):
+				print("registrarme")
 				u = Usuario()
 				u.username = request.session['usuario']['username'] 
 				u.usuario = request.session['usuario']['username']
@@ -103,6 +107,7 @@ def registro_conductor(request):
 				v.color = form.cleaned_data['color']
 				v.Numeroasientos = form.cleaned_data['asientos']
 				v.consumo = form.cleaned_data['consumo']
+				print(form.cleaned_data['consumo'])
 				v.foto = form.cleaned_data['foto']
 				v.save()
 				c = Conductor()

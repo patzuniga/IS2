@@ -217,6 +217,8 @@ def success(request, pk):
 def viaje_paradas(request):
 	print("hola que tal como estas todo bien ", request.session['viaje'])
 	try:
+		if(request.POST.get("cancelar") is not None):
+			return redirect('cancelar_crear_viaje')
 		hola = request.session['viaje']
 		hola2 = request.session['viaje']['paradas']
 	except:

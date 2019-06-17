@@ -121,7 +121,7 @@ def registro(request):
 				aux['profesion'] = form.cleaned_data['profesion']
 				aux['fumador'] = form.cleaned_data['fumador']
 				request.session['usuario'] = aux
-				return registro_conductor(request)
+				return redirect('registro_conductor')
 		else:
 			return render(request, 'usuario/registrarme.html', {'form': form})
 	else:
