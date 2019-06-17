@@ -496,7 +496,30 @@ def editarviaje(request,idviaje):
 		i +=1
 	print(len(tramitos)-1)
 	if request.method == 'GET':
-		form = EditarViajeForm()
+		fecha=viaje.fecha
+		porta_maleta=viaje.porta_maleta
+		silla_niños=viaje.silla_niños
+		mascotas=viaje.mascotas
+		tarifapreferencias=viaje.tarifaPreferencias
+		max_personas_atras=viaje.plazas_disponibles
+		hora_salida = tramitos[0].hora_salida
+		fecha2=tramitos[len(tramitos)-1].fecha
+		hora_llegada = tramitos[len(tramitos)-1].hora_llegada
+		origen = tramitos[0].origen.nombre
+		destino = tramitos[len(tramitos)-1].destino.nombre 
+		data= {'fecha':fecha, 
+				'porta_maleta':porta_maleta,
+				'silla_niños':silla_niños,
+				'mascotas':mascotas ,
+				'tarifapreferencias':tarifapreferencias,
+				'max_personas_atras':max_personas_atras,
+				'hora_origen':hora_salida, 
+				'fecha_destino':fecha2, 
+				'hora_destino':hora_llegada,
+				'destino':destino,
+				'origen':origen}
+		form = EditarViajeForm(initial=data)
+
 	else:
 		form = EditarViajeForm(request.POST)
 		if form.is_valid():
@@ -536,7 +559,7 @@ def editarviaje(request,idviaje):
 				viaje.silla_niños=form.cleaned_data['silla_niños']
 				viaje.mascotas=form.cleaned_data['mascotas']
 				viaje.tarifaPreferencias=form.cleaned_data['tarifapreferencias']
-				viaje.max_personas_atras=form.cleaned_data['max_personas_atras']
+				viaje.plazas_disponibles=form.cleaned_data['max_personas_atras']
 				viaje.fecha = form.cleaned_data['fecha']
 				viaje.tramos.clear()
 				viaje.tramos.add(tramo1)
@@ -628,7 +651,7 @@ def realizar_reservas(request):
 				tramos.append([tr,viaje.plazas_disponibles-tr.asientos_disponibles])
 				distancia+=tr.distancia
 				if tr.asientos_disponibles<asientos:
-					asientos=asientos_disponibles
+					asientos=tr.asientos_disponibles
 			if tr.origen.nombre == Origen and aux==False:
 				tramos.append([tr,viaje.plazas_disponibles-tr.asientos_disponibles])
 				distancia+=tr.distancia
