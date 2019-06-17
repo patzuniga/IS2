@@ -69,6 +69,7 @@ def cancelar_reserva(request, pk):
 				tramitos = reservas.tramos.all()
 				for t in tramitos:
 					t.asientos_disponibles -= reserva.plazas_pedidas
+					t.save()
 			reserva.delete()
 			success = True
 		else:
