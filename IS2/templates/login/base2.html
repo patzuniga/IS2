@@ -33,15 +33,15 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", Arial, Helvetica, sans-serif}
 <body class="w3-light-grey" style="width: 100%; max-width: 1500px; height: auto;">
     <div class="w3-bar w3-white w3-border-bottom w3-xlarge" style="width: 100%; max-width: 1500px; height: auto;">
       <a href="#" class="w3-bar-item w3-button w3-text-red w3-hover-red" style = "width: 15%;height: auto;font-size:1.5vw"><b><i class="fa fa-map-marker w3-margin-right"></i>NohJuimoh</b></a>
-      <a href="logout" class="w3-bar-item w3-button w3-right w3-hover-white" style = "width: 10% ;height: auto;font-size:1.7vw"> Log out</a>
+      <a href="logout" class="w3-bar-item w3-button w3-right w3-hover-white" style = "width: 10% ;height: auto;font-size:1.6vw"> Log out</a>
       <a href= "{% url 'configuracion' %}"  class="w3-bar-item w3-button w3-right w3-hover-white" style = "width: 5%; height: auto;"><i class="fa fa-cog"></i></a>
       {% if user.conductor_set.all.0.reservas_por_aprobar == 0 %}
-      <a href="{% url 'viaje_list' %}" class="w3-bar-item w3-button w3-right w3-hover-white" style = "width: 12% ;height: auto; font-size:1.7vw">Ver Viajes </a>
+      <a href="{% url 'viaje_list' %}" class="w3-bar-item w3-button w3-right w3-hover-white" style = "width: 11% ;height: auto; font-size:1.7vw">Ver Viajes </a>
       {% else %}
-      <a href="{% url 'viaje_list' %}" class="notification w3-bar-item w3-button w3-right w3-hover-white" style = "width: 15% ;height: auto;font-size:1.7vw">Ver Viajes<span class="badge" style="font-size: 1.2vw">{{user.conductor_set.all.0.reservas_por_aprobar}}</span></a>
+      <a href="{% url 'viaje_list' %}" class="notification w3-bar-item w3-button w3-right w3-hover-white" style = "width: 11% ;height: auto;font-size:1.6vw">Ver Viajes<span class="badge" style="font-size: 1.2vw">{{user.conductor_set.all.0.reservas_por_aprobar}}</span></a>
       {% endif %}
-      <a href= "{% url 'viaje_crear' %}"  class="w3-bar-item w3-button w3-right w3-hover-white" style = "width: 15% ;height: auto;font-size:1.7vw">Publicar Viaje</a>
-      <a href="#" class="w3-bar-item w3-button w3-right w3-hover-white" style = "width: 10% ;height: auto;font-size:1.7vw">{{user.username}}</a>
+      <a href= "{% url 'viaje_crear' %}"  class="w3-bar-item w3-button w3-right w3-hover-white" style = "width: 14% ;height: auto;font-size:1.6vw">Publicar Viaje</a>
+      <a href="#" class="w3-bar-item w3-button w3-right w3-hover-white" style = "width: 10% ;height: auto;font-size:1.6vw">{{user.username}}</a>
   </div>
 </body>
 <!-- Page content -->

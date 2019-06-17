@@ -77,6 +77,8 @@ def viaje_view(request):
 				return viaje_ver(request)
 
 		else:
+			print("Invalido")
+			print(form)
 			return render(request,'viaje/crear2.html',{'form':form})
 	else:
 		form = ViajeForm()
@@ -665,3 +667,50 @@ def guardar_reservas(request):
 def cancelar_crear_viaje(request):
 	request.session['viaje'] = ''
 	return redirect('home')
+@login_required()
+def confirmarCanReservaConductor(request, pk):
+	return render(request, 'viaje/confirmarCanReservaConductor.html', {'id' : pk})
+
+@login_required()
+def cancelarReservaConductor(request, pk):
+	reservas = Reserva.objects.filter(id=pk)
+	reserva = reservas[0]
+	if(reserva.estado == "Por Aprobar"):
+		reserva.estado = "Rechazada"
+		print(reserva.estado)
+		reserva.save()
+		exitocancelarreservaconductor = True
+		return render(request, 'viaje/cancelarReservaConductor.html', {'exitocancelarreservaconductor' : exitocancelarreservaconductor})
+	else:
+		exitocancelarreservaconductor = False
+		return render(request, 'viaje/cancelarReservaConductor.html', {'exitocancelarreservaconductor' : exitocancelarreservaconductor})
+
+@login_required()
+def confirmarAceptarReservaConductor(request, pk):
+	return render(request, 'viaje/confirmarAceptarReservaConductor.html', {'id' : pk})
+
+@login_required()
+def aceptarReservaConductor(request, pk):
+	reservas = Reserva.objects.filter(id=pk)
+	reserva = reservas[0]
+	tramosreserva = reserva.tramos.all()
+	for t in tramosreserva:
+		if (reserva.plazas_pedidas < t.asientos_disponibles):
+			print(t.asientos_disponibles)
+			checked = True
+			print(checked)
+		else:
+			exitoaceptarreservaconductor = False
+			return render(request, 'viaje/aceptarReservaConductor.html', {'exitoaceptarreservaconductor' : exitoaceptarreservaconductor})
+	if (checked == True):
+		for i in tramosreserva:
+			print("Pre resta", i.asientos_disponibles)
+			i.asientos_disponibles -= reserva.plazas_pedidas
+			print("Post resta", i.asientos_disponibles)
+		reserva.estado = "Aceptada"
+		print(reserva.estado)
+		exitoaceptarreservaconductor = True
+		return render(request, 'viaje/aceptarReservaConductor.html', {'exitoaceptarreservaconductor' : exitoaceptarreservaconductor})
+	else:
+		exitoaceptarreservaconductor = False
+		return render(request, 'viaje/aceptarReservaConductor.html', {'exitoaceptarreservaconductor' : exitoaceptarreservaconductor})

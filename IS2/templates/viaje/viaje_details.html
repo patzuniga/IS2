@@ -52,7 +52,7 @@
     {% endif %}
     </tbody> 
     </table>
-    </div>
+     </div>
     <div>
       {% csrf_token %}
         <input type="hidden" name="holiwi"  id="holiwi">
@@ -63,36 +63,38 @@
           {% if reservas %}
         <table class="tablita" style = "overflow: scroll;" width="200%" >
       <thead>
-      <tr id="head">
-        <th scope="col" >Reserva id</th>
-        <th scope="col" >Plazas</th>
-        <th scope="col" >Origen</th>
-        <th scope="col" >Destino</th>
-        <th scope="col" >Precio</th>
-        <th scope="col">Estado</th>
-        <th scope="col">Aceptar o rechazar</th>
-      </tr> 
-      </thead>
-    <tbody>
-    <tr class="clickable-row" >
-      <tr>
-    {% for reserva in reservas %}
-      <td>{{ reserva.0}}</a></td>
-      <td>{{ reserva.1}}</a></td>
-      <td>{{ reserva.2}}</a></td>
-      <td>{{ reserva.3}}</a></td>
-      <td>{{ reserva.4}}</a></td>
-      <td>{{ reserva.5}}</a></td>
-      <td >Aqui falta 2 botones</td></a>
-      </tr>
-    {% endfor %}
-    
+        <tr id="head">
+          <th scope="col" >Reserva id</th>
+          <th scope="col" >Plazas</th>
+          <th scope="col" >Origen</th>
+          <th scope="col" >Destino</th>
+          <th scope="col" >Precio</th>
+          <th scope="col">Estado</th>
+          <th scope="col">Aceptar</th>
+          <th scope="col">Rechazar</th>
+        </tr>
+        </thead>
+      <tbody>
+      <tr class="clickable-row" >
+        <tr>
+      {% for reserva in reservas %}
+        <td>{{ reserva.0}}</a></td>
+        <td>{{ reserva.1}}</a></td>
+        <td>{{ reserva.2}}</a></td>
+        <td>{{ reserva.3}}</a></td>
+        <td>{{ reserva.4}}</a></td>
+        <td>{{ reserva.5}}</a></td>
+        <td ><a href="{% url 'confirmarAceptarReservaConductor' reserva.0 %}"><button class="round-button" onclick=""><i class="fa fa-check" style="text-align: center;"></i></button></td>
+        <td ><a href="{% url 'confirmarCanReservaConductor' reserva.0 %}"><button class="round-button" onclick=""><i class="fa fa-times" style="text-align: center;"></i></button></td>
+        </tr>
+      {% endfor %}
+
     {% else %}
     <h3>No han realizado ninguna reserva para este viaje</h3>
     {% endif %}
     </tbody>
     </table><br>
-     <input type=button value="Atras" onClick="javascript:history.go(-1);" style="margin-left: 2%" class="w3-button w3-dark-grey"> 
+     <input type=button value="Atras" onClick="javascript:history.go(-1);" style="margin-left: 2%" class="w3-button w3-dark-grey">
     </div>
   </div>
 </header>
