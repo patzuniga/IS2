@@ -1,0 +1,32 @@
+{% extends 'login/base2.html' %}
+
+{% block content %}
+
+<!-- Header -->
+
+<style type="text/css">
+  h3{text-align: center;}
+  h4{text-align: center;}
+</style>
+<header class="w3-display-container w3-content w3-hide-small" style="max-width:1500px">
+  <img class="w3-image" src="https://www.gapyear.com/wp-content/uploads/2017/11/RoadTipsMain.jpg" alt="London" width="1500" height="500">
+  <div class="w3-display-middle" style="width:65%">
+    <div class="w3-bar w3-black">
+      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Ver Viajes</button>
+    </div>
+    <!-- Tabs -->
+    <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
+      <h3>Confirmar Aceptar Reserva</h3>
+        <div class="w3-container" style="margin:0 -16px;">
+            <h4>¿Estas seguro que quieres Aceptar esta reserva?</h4>
+        </div>
+        <div style="text-align: center;">
+          <a href="{% url 'aceptarReservaConductor' id %}"><button class="w3-button w3-dark-grey">SI</button>
+          <a href="{% url 'viaje_list' %}"><button class="w3-button w3-dark-grey">NO</button>
+        </div>
+    </div>
+</header>
+
+<!-- Page content -->
+  <!-- Contact -->
+{% endblock %}
