@@ -409,7 +409,7 @@ def tiene_reservas(pk):
 		try:
 			reservas = i.reservas.all()
 			for r in reservas:
-				if(r.estado == "Por Aprobar" or r.estado == "Aprobada"):
+				if(r.estado == "Por Aprobar" or r.estado == "Aceptada"):
 					return True
 		except:
 			continue
@@ -654,12 +654,12 @@ def realizar_reservas(request):
 				tramos.append([tr,viaje.plazas_disponibles-tr.asientos_disponibles])
 				distancia+=tr.distancia
 				if tr.asientos_disponibles<asientos:
-					asientos=asientos_disponibles
+					asientos=tr.asientos_disponibles
 				aux=True		
 			if tr.destino.nombre == Destino:
 				ultimo=tr
 				if tr.asientos_disponibles<asientos:
-					asientos=asientos_disponibles
+					asientos=tr.asientos_disponibles
 				break
 		precio=distancia*viaje.tarifaPreferencias
 		v=[idviaje,precio,distancia,asientos]
@@ -708,16 +708,17 @@ def guardar_reservas(request):
 				break
 		reserva.save()
 
+		tremos = reserva.tramos.all()
 		if v.conductor.autoaceptar_reservas:#Aceptar automaticamente
 			print("Autoaceptando")
 			aceptarreserva = True
-			for tram in tramitos:#revisar disponibilidad de cada tramo
+			for tram in tremos:#revisar disponibilidad de cada tramo
 				if int(asientos) > tram.asientos_disponibles:
 					aceptarreserva = False
 					print("No autoaceptado")
 					break
 			if aceptarreserva:
-				for tram in tramitos:
+				for tram in tremos:
 					tram.asientos_disponibles -= int(asientos)
 					tram.save()
 				reserva.estado="Aceptada"
