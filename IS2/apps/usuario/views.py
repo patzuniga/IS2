@@ -72,7 +72,7 @@ def cancelar_reserva(request, pk):
 				tramitos = reserva.tramos.all()
 				for t in tramitos:
 					print("ayuda")
-					t.asientos_disponibles -= reserva.plazas_pedidas
+					t.asientos_disponibles += reserva.plazas_pedidas
 					t.save()
 			reserva.delete()
 			success = True
