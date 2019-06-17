@@ -456,18 +456,19 @@ def viaje_details(request, pk):
 		r=Reserva.objects.all()
 		reservas = []
 		for reserva in r:
-			tramosreserva = reserva.tramos.all()
-			aux = []
-			print(reserva.tramos.all()[0].viaje == int(pk))
-			if reserva.tramos.all()[0].viaje == int(pk):
-				aux.append(reserva.id)
-				aux.append(reserva.plazas_pedidas)
-				aux.append(tramosreserva[0].origen.nombre)
-				aux.append(tramosreserva[len(tramosreserva)-1].destino.nombre)
-				aux.append(reserva.precio)
-				aux.append(reserva.estado)
-				reservas.append(aux)
-				print("despues de todo.id")
+			if (reserva.estado == "Por Aprobar"):
+				tramosreserva = reserva.tramos.all()
+				aux = []
+				print(reserva.tramos.all()[0].viaje == int(pk))
+				if reserva.tramos.all()[0].viaje == int(pk):
+					aux.append(reserva.id)
+					aux.append(reserva.plazas_pedidas)
+					aux.append(tramosreserva[0].origen.nombre)
+					aux.append(tramosreserva[len(tramosreserva)-1].destino.nombre)
+					aux.append(reserva.precio)
+					aux.append(reserva.estado)
+					reservas.append(aux)
+					print("despues de todo.id")
 		return render(request, 'viaje/viaje_details.html', {'viajes':viajes, 'paradas':json_cities, 'ultimo':ultimo,'reservas':reservas})
 		#Caso en que un pasajero quiera ver detalles de un viaje buscado
 	except:
@@ -695,7 +696,7 @@ def aceptarReservaConductor(request, pk):
 	reserva = reservas[0]
 	tramosreserva = reserva.tramos.all()
 	for t in tramosreserva:
-		if (reserva.plazas_pedidas < t.asientos_disponibles):
+		if (reserva.plazas_pedidas <= t.asientos_disponibles):
 			print(t.asientos_disponibles)
 			checked = True
 			print(checked)
@@ -707,8 +708,9 @@ def aceptarReservaConductor(request, pk):
 			print("Pre resta", i.asientos_disponibles)
 			i.asientos_disponibles -= reserva.plazas_pedidas
 			print("Post resta", i.asientos_disponibles)
+			i.save()
 		reserva.estado = "Aceptada"
-		print(reserva.estado)
+		reserva.save()
 		exitoaceptarreservaconductor = True
 		return render(request, 'viaje/aceptarReservaConductor.html', {'exitoaceptarreservaconductor' : exitoaceptarreservaconductor})
 	else:

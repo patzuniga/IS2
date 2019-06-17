@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from apps.conductor.models import Conductor
 from apps.usuario.models import Usuario, Perfil
 from apps.viaje.models import Tramo, Reserva, Viaje
+from apps.conductor.form import Conductor_Form
 
 @login_required()
 def configuracion(request):
@@ -56,3 +57,53 @@ def cambio(request):
 
 						
 	return HttpResponseRedirect('/conductor/configuracion/')
+
+def registro_conductor(request):
+	if request.method == 'POST':
+		if(request.POST.get("conductor")):
+			form = Conductor_Form()
+			return render(request, 'conductor/conductor.html', {'form': form})
+		form = Conductor_Form(request.POST)
+		if form.is_valid():
+			if(request.POST.get("registrarme")):
+				u = Usuario()
+				u.username = request.session['usuario']['username'] 
+				u.usuario = request.session['usuario']['username']
+				u.first_name = request.session['usuario']['firstname']
+				u.last_name  = request.session['usuario']['lastname']
+				u.email = request.session['usuario']['email']
+				u.set_password(request.session['usuario']['password'])
+				u.save()
+				p = u.perfil
+				p.nombre = u.first_name + u.last_name
+				p.usuario = u
+				p.rut = request.session['usuario']['rut']
+				p.numero_telefono = request.session['usuario']['numero_telefono']
+				p.direccion = request.session['usuario']['direccion']
+				p.profesion = request.session['usuario']['profesion']
+				p.fumador = request.session['usuario']['fumador']
+				p.save()
+				v = Vehiculo()
+				v.patente = form.cleaned_data['patente']
+				v.marca = form.cleaned_data['marca']
+				v.modelo = form.cleaned_data['modelo']
+				v.maleta = form.cleaned_data['maleta']
+				v.color = form.cleaned_data['color']
+				v.Numeroasientos = form.cleaned_data['asientos']
+				v.consumo = form.cleaned_data['consumo']
+				v.foto = form.cleaned_data['foto']
+				v.save()
+				c = Conductor()
+				c.clasedelicencia = form.cleaned_data['clasedelicencia']
+				c.fecha_obtencion = form.cleaned_data['fecha_obtencion']
+				c.usuario = u
+				c.car = v
+				c.save()
+				return render(request, 'usuario/registrado.html', {})
+			else:
+				return redirect('index')
+		else:
+			return render(request, 'conductor/conductor.html', {'form': form})
+	else:
+		form = Conductor_Form()
+		return render(request, 'conductor/conductor.html', {'form': form})

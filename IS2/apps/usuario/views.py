@@ -5,8 +5,10 @@ from django.shortcuts import render, redirect, HttpResponse
 # Create your views here.
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
-from apps.usuario.models import Usuario
+from apps.usuario.models import Usuario, Perfil
 from apps.viaje.models import Reserva,Viaje
+from apps.usuario.forms import Registrationform
+from apps.conductor.views import registro_conductor
 from datetime import datetime 
 from datetime import timedelta
 import pytz
@@ -70,3 +72,49 @@ def cancelar_reserva(request, pk):
 	except:
 		success = False
 	return render(request, 'usuario/cancelar_reserva.html', {'exito': success})
+
+def registro(request):
+	if request.method == 'GET':
+		form = Registrationform()
+		return render(request, 'usuario/registrarme.html', {'form': form})
+	elif request.method == 'POST':
+		form = Registrationform(request.POST)
+		if form.is_valid():
+			if(request.POST.get("pasajero")):
+				u = Usuario()
+				u.username = form.cleaned_data['username']
+				u.usuario = form.cleaned_data['username']
+				u.first_name = form.cleaned_data['firstname']
+				u.last_name  = form.cleaned_data['lastname']
+				u.email = form.cleaned_data['email']
+				u.set_password(form.cleaned_data['password'])
+				u.save()
+				p = u.perfil
+				p.nombre = u.first_name + u.last_name
+				p.usuario = u
+				p.rut = form.cleaned_data['rut']
+				p.numero_telefono = form.cleaned_data['numero_telefono']
+				p.direccion = form.cleaned_data['direccion']
+				p.profesion = form.cleaned_data['profesion']
+				p.fumador = form.cleaned_data['fumador']
+				p.save()
+				return render(request, 'usuario/registrado.html', {})
+			else:
+				aux = dict()
+				aux['username']= form.cleaned_data['username']
+				aux['first_name'] = form.cleaned_data['firstname']
+				aux['last_name']  = form.cleaned_data['lastname']
+				aux['email'] = form.cleaned_data['email']
+				aux['password'] = form.cleaned_data['password']
+				aux['rut'] = form.cleaned_data['rut']
+				aux['numero_telefono'] = form.cleaned_data['numero_telefono']
+				aux['direccion'] = form.cleaned_data['direccion']
+				aux['profesion'] = form.cleaned_data['profesion']
+				aux['fumador'] = form.cleaned_data['fumador']
+				request.session['usuario'] = aux
+				return registro_conductor(request)
+		else:
+			return render(request, 'usuario/registrarme.html', {'form': form})
+	else:
+		form = Registrationform()
+		return render(request, 'usuario/registrarme.html', {'form': form})

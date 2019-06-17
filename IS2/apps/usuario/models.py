@@ -10,13 +10,13 @@ class Usuario(AbstractUser):
 	usuario = models.CharField(max_length=30, null = False)
  
 class Perfil(models.Model):
-	usuario = models.OneToOneField(Usuario, on_delete = models.CASCADE, null = True, blank=True)
+	usuario = models.OneToOneField(Usuario, on_delete = models.CASCADE, null = True, blank=True, related_name = "perfil")
 	rut = models.CharField(max_length=10, null = True, blank = True)
 	nombre = models.CharField(max_length=30, null = True, blank = True)
-	numero_teléfono = models.CharField(max_length=30, null = True, blank = True)
-	dirección = models.CharField(max_length=40,null = True, blank = True)
-	valoración = models.FloatField(null = True, blank = True)
-	profesión = models.CharField(max_length=20, null = True, blank = True)
+	numero_telefono = models.CharField(max_length=30, null = True, blank = True)
+	direccion = models.CharField(max_length=40,null = True, blank = True)
+	valoracion = models.FloatField(default = 5.0)
+	profesion = models.CharField(max_length=20, null = True, blank = True)
 	fumador = models.NullBooleanField( blank = True)
 	class Meta:
 		verbose_name = "Perfil"
