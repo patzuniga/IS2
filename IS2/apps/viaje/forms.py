@@ -77,9 +77,9 @@ class EditarViajeForm(forms.Form):
 	mascotas = forms.BooleanField(required = False)
 	tarifapreferencias = forms.IntegerField(label = "Tarifa")
 	max_personas_atras = forms.IntegerField(label = "Num personas atras")
-	#origen = forms.CharField(label="origen")
+	origen = forms.CharField(label="origen")
 	hora_origen = forms.TimeField(label = "Hora Origen")
-	#destino = forms.CharField(label="destino")
+	destino = forms.CharField(label="destino")
 	fecha_destino = forms.DateField(label = "Fecha de Termino (DD/MM/YY)")
 	hora_destino = forms.TimeField(label = "Hora Destino")
 

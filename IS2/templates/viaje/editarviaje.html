@@ -14,11 +14,6 @@
         <div class="w3-half">
          <form method="post">
         {% csrf_token %}
-           Origen : <input type="text" id="origen"  name = "origen" required class="vTextField" maxlength="30" />
-           <br>
-           <br>
-           Destino : <input type="text" id="destino"  name = "destino" required class="vTextField" maxlength="30" />
-           <br>
            {{ form.as_p}}
       </div>
       </div>
