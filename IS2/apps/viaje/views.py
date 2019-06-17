@@ -662,6 +662,25 @@ def guardar_reservas(request):
 			if tram.destino.nombre == destino:
 				break
 		reserva.save()
+
+		if v.conductor.autoaceptar_reservas:#Aceptar automaticamente
+			print("Autoaceptando")
+			aceptarreserva = True
+			for tram in tramitos:#revisar disponibilidad de cada tramo
+				if int(asientos) > tram.asientos_disponibles:
+					aceptarreserva = False
+					print("No autoaceptado")
+					break
+			if aceptarreserva:
+				for tram in tramitos:
+					tram.asientos_disponibles -= int(asientos)
+					tram.save()
+				reserva.estado="Aceptada"
+				reserva.save()
+				v.conductor.reservas_por_aprobar -= 1
+				v.conductor.save()
+				print("Autoaceptado")
+
 	return render(request, 'usuario/index.html')
 
 @login_required()
