@@ -28,12 +28,41 @@
 <div id="Viajes" class="w3-container w3-white w3-padding-16" style="height:30vw">
       <h3>Publica tu viaje con nosotros</h3>
       <div id="map" class="w3-display-middle" ></div>
-      <form action="#" method="post" id="myform">
+      <form method="post" id="myform">
         {% csrf_token %}
-   <input type="hidden" name="holiwi"  id="holiwi">
-   <p><button name ="listo" value = "1" class="w3-button w3-dark-grey" style="margin-top:20vw" >Publicar Viaje </button></p>
-</form>
+   <input type= "hidden" name="holiwi"  id="holiwi">
+<!--
+   <div class="w3-row-padding">
+    <h3>Paradas </h3>
+      <table class="tablita" style = "overflow: scroll;" width="100%">
+        <thead>
+      <tr id="head">
+        <th scope="col" >Origen</th>
+        <th scope="col" >Destino</th>
+        <th scope="col"> Fecha origen </th>
+        <th scope="col" >Fecha destino</th>
+            </tr>
+          </thead>
+      <tbody>
+      <tr >
+      {% for i in range.max %}
+
+      <td>{{ paradas.i.2 }}</td>
+      <td>{{ paradas.i.2 }}</td>
+      <td>{{ paradas.i.0 }} a las {{paradas.i.1}}</td>
+      <td>{{ paradas.i.0 }} a las {{paradas.i.1}}</a></td>
+            </tr>
+    {% endfor %}
+    </tbody> 
+    </table>
     </div>
+    <div>-->
+   <div class="w3-clear w3-center nextprev">
+          <a href="{% url 'cancelar_crear_viaje' %}"><button class="w3-button w3-dark-grey"  name="cancelar" value="1" style="margin-top:20vw" >Cancelar </button></a>
+          <button class="w3-button w3-dark-grey" name="listo" value="1" style="margin-top:20vw" >Publicar Viaje </button>
+</div>
+        </form>
+  </div>
   </div>
 </header>
     <script>

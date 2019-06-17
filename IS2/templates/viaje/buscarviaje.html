@@ -17,7 +17,7 @@
            <br>
            Destino : <input type="text" id="destino"  name = "destino" required class="vTextField" maxlength="30" />
            <br>
-           Fecha : <input type="date" name="fecha">
+          {{ form.as_p}}
 
       </div>
       </div>
@@ -36,7 +36,6 @@ function onLoaded() {
         var location_input2 = document.getElementById('destino');
         var autocomplete = new google.maps.places.Autocomplete(location_input,options);
         var autocomplete = new google.maps.places.Autocomplete(location_input2,options);
-
     }
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAD6Q31QwQK0pv7twtzD32efp6hLa0uFEs&libraries=places&callback=onLoaded"></script>

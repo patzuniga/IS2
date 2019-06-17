@@ -1,6 +1,47 @@
 {% extends 'login/base2.html' %}
 
 {% block content %}
+<style>
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 15vw;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 10px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 40%;
+  margin-left: -5.5vw;
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 11px;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -10px;
+  border-width: 10px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+</style>
+<body style="text-align:center;">
 <header class="w3-display-container w3-content w3-hide-small" style="max-width:1500px">
   <img class="w3-image" src="https://www.gapyear.com/wp-content/uploads/2017/11/RoadTipsMain.jpg" alt="London" width="1500" height="500">
   <div class="w3-display-middle" style="width:65%">
@@ -19,12 +60,26 @@
            <br>
            Destino : <input type="text" id="destino"  name = "destino" required class="vTextField" maxlength="30" />
            <br>
-          {{ form.as_p}}
+          {% for field in form.visible_fields %}
+          {% if field.name == "tarifapreferencias" %}
+          <div class="tooltip">
+           <p> <label>{{ field.label_tag }}</label>
+            <i class="fa fa-question-circle"></i>
+  <span class="tooltiptext">Tarifa por kilómetro: El monto total que verán los pasajeros será la multiplicación de los kilómetros totales de su viaje y la tarifa indicada</span>
+</p></div>
+              {% else %}
+              <p>  <label>{{ field.label_tag }}</label>
+              {% endif %}
+              {{ field.errors }}
+              {{ field }}
+              {{ field.help_text }}
+            </p>
+              {% endfor %}
        
       </div>
       </div>
       <div class="w3-clear w3-center nextprev">
-        <a href="{% url 'index' %}"class="w3-button w3-dark-grey">Cancelar </a>
+        <a href="{% url 'cancelar_crear_viaje' %}" class="w3-button w3-dark-grey" >Cancelar </a>
         <button class="w3-button w3-dark-grey" name="publicar" value="1" style="margin-left: 4%">Publicar Viaje</button>
         <button class="w3-button w3-dark-grey" type = "submit" name="agregar"  value="1" style="margin-left: 4%">Agregar Paradas</button>
         </div>
@@ -67,5 +122,10 @@ function openLink(evt, linkName) {
 }
 // Click on the first tablink on load
 document.getElementsByClassName("tablink")[0].click();
+</script>
+<script >
+$(document).ready(function(){
+    $('[data-toggle="popover"]').popover();   
+});
 </script>
 {% endblock %}

@@ -18,7 +18,7 @@
         	<p><strong>Tiene Silla de Niños: </strong>{% if viajes.0.silla_niños %} SI {% else %} NO {% endif %}</p>
         	<p><strong>Permite Mascostas: </strong>{% if viajes.0.mascotas %} SI {% else %} NO {% endif %}</p>
         	<p><strong>Tarifa Preferencias: </strong> {{viajes.0.tarifaPreferencias}}</p>
-        	<p><strong>Maximo Personas Asiento Trasero: </strong> {{viajes.0.max_personas_atras}}</p>
+        	<p><strong>Plazas: </strong> {{viajes.0.plazas_disponibles}}</p>
         	<p><strong>Estado Viaje: </strong>{{viajes.0.estado}}</p>
         	
 
@@ -30,7 +30,7 @@
 			<tr id="head">
 				<th scope="col" >Origen</th>
 				<th scope="col" >Destino</th>
-        <th scope="col"> Hora </th>
+        <th scope="col"> Hora llegada</th>
         <th scope="col" >Fecha</th>
 	        	</tr>
 	        </thead>

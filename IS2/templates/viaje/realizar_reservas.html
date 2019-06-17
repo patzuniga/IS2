@@ -4,7 +4,45 @@
 
 <!-- Header -->
 
+<style type="text/css">
+  .tablitaRes tr{
+  background: #fff; 
+  border-collapse: collapse;
+  }
+  .tablitaRes tr{
+  background: #fff; 
+  border-collapse: collapse;
+  }
+.tablitaRes tr head{
+  background: black;
+}
+.tablitaRes td{
+  text-align: center;
+}
+.tablitaRes a,
+.tablitaRes a:visited{
+  display: block;
+  padding: 7px;
+  text-decoration: none;
+  color: black;
+  background: #fff;
+}
+}
+.tablitaRes a:hover{
+  background: #D2D7D2;
+} 
+.Origen-Destino{
+  width: 250px;
+}
+h5 {
+  text-align: center;
+  font-size: 14px;
+}
+h4{
+  text-align:center;
+}
 
+</style>
 <header class="w3-display-container w3-content w3-hide-small" style="max-width:1500px">
   <img class="w3-image" src="https://www.gapyear.com/wp-content/uploads/2017/11/RoadTipsMain.jpg" alt="London" width="1500" height="500">
   <div class="w3-display-middle" style="width:65%">
@@ -15,10 +53,49 @@
     <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
       <h3>Realizar Reservas</h3>
       <div class="w3-row-padding" style="margin:0 -16px;">
-        <div class="w3-half">
-        
-        </div>
-      </div>     
+        <br><br>
+        <form method="get" action="/viaje/guardar_reservas">
+        <strong>Numero de reservas :</strong><input type="number" name="asientos" min="0" max="{{viaje.3}}" required><br>
+        <strong>Distancia  : </strong> {{viaje.2}}<br>
+        <strong>Precio :</strong> {{viaje.1}}<br>
+        <h4>Itinerario</h4>
+        <table class="tablita" style = "overflow: scroll;" width="100%" >
+          <thead>
+            <tr>
+              <tr id="head">
+              <th scope="col" >Ciudad</th>
+              <th scope="col" >Hora</th>
+              <th scope="col" >Fecha</th>
+              <th scope="col">Asientos Disponibles</th>
+            </tr> 
+          </thead>
+          <tbody>
+          <tr class="clickable-row" >
+            <tr>
+            {% for tramitos in tramos %}
+              <td>{{ tramitos.origen.nombre }}</td>
+              <td>{{ tramitos.hora_llegada }}</td>
+              <td>{{ tramitos.fecha }}</td>
+              <td>{{ tramitos.asientos_disponibles }}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+              <td>{{ ultimo.destino.nombre }}</td>
+              <td>{{ ultimo.hora_llegada }}</td>
+              <td>{{ ultimo.fecha }}</td>
+              <td>{{ ultimo.asientos_disponibles }}</td>
+            </tr>
+          </tr>
+          </tbody>
+        </table> 
+         <br> <input type="hidden" id="idviaje" name="idviaje" value="{{ viaje.0 }}">
+              <input type="hidden" id="origen" name="origen" value="{{ tramos.0.origen.nombre }}">
+              <input type="hidden" id="destino" name="destino" value="{{ ultimo.destino.nombre }}">
+              <input type="hidden" id="precio" name="precio" value="{{ viaje.1 }}">
+              <button class="w3-button w3-dark-grey" type="submit">Realizar Reserva</button></form>
+               <br>
+         <input type=button value="Atras" onClick="javascript:history.go(-1);" class="w3-button w3-dark-grey">
+    </div>     
   </div>
 </header>
 

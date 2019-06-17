@@ -7,6 +7,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from apps.usuario.models import Usuario
 from apps.viaje.models import Reserva,Viaje
+from datetime import datetime 
+from datetime import timedelta
+import pytz
 
 @login_required()
 def home(request):
@@ -19,6 +22,7 @@ def home(request):
 		except:
 			return render(request, 'usuario/index.html',{})
 
+@login_required()
 def ver_reservas(request):
 	r = Reserva.objects.filter(usuario=request.user)
 	reservas =[]
@@ -40,22 +44,29 @@ def ver_reservas(request):
 		reservas.append(aux)
 	return render(request, 'usuario/reservas.html',{'reservas' : reservas})
 
+@login_required()
 def confirmacion(request, pk):
 	return render(request, 'usuario/confirmacion.html',{'id':pk})
 
+@login_required()
 def cancelar_reserva(request, pk):
-	reserva = Reserva.objects.filter(id=pk)
+	reservas = Reserva.objects.filter(id=pk)
+	reserva = reservas[0] 
 	try:
 		tramitos = reserva.tramos.all()
-		now = datetime.now()
-		if(tramitos[0].fecha ==  now.date()):
-			if(tramitos[0].hora_salida > now.time + datetime.timedelta(hours = 2)):
-				reserva[0].delete()
-				success = True
-			else:
-				success = False
-		elif(tramitos[0].fecha < now.date()):
-			reserva[0].delete()
+		tz = pytz.timezone('Chile/Continental')
+		actual = datetime.strptime(datetime.now(tz=tz).strftime("%d/%m/%Y %H:%M:%S") , "%d/%m/%Y %H:%M:%S")
+		fecha_origen = datetime.strptime(datetime.combine(tramitos[0].fecha,tramitos[0].hora_salida).strftime("%d/%m/%Y %H:%M:%S") , "%d/%m/%Y %H:%M:%S")
+		actual_2 = (actual + timedelta(hours=2))
+		if(fecha_origen > actual_2):
+			for t in tramitos:
+				t.asientos_disponibles += reserva.plazas_pedidas
+				t.save()
+			if(reserva.estado == "Por aprobar"):
+				v = Viaje.objects.get(id=tramitos[0].viaje)
+				v.conductor.reservas_por_aprobar -= 1
+				v.conductor.save()
+			reserva.delete()
 			success = True
 		else:
 			success = False
