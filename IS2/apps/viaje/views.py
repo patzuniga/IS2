@@ -364,7 +364,7 @@ def buscar_viaje(request):
 				origen = False
 				destino = False
 				distancia = 0;
-				tramitos = v.tramos.all()
+				tramitos = v.tramos.all().order_by('orden_en_viaje')
 				asientos=v.plazas_disponibles
 				print(tramitos)
 				print(v.tarifaPreferencias)
@@ -644,21 +644,20 @@ def realizar_reservas(request):
 		resPedidas = []
 		distancia =0
 		aux=False
-		tramitos=viaje.tramos.all()
-		asientos=tramitos[0].asientos_disponibles
+		tramitos=viaje.tramos.all().order_by('orden_en_viaje')
+		#asientos=tramitos[0].asientos_disponibles
 		for tr in tramitos:
+			if tr.origen.nombre == Origen and aux==False:
+				tramos.append([tr,viaje.plazas_disponibles-tr.asientos_disponibles])
+				distancia+=tr.distancia
+				asientos=tr.asientos_disponibles
+				aux=True	
 			if aux:
 				tramos.append([tr,viaje.plazas_disponibles-tr.asientos_disponibles])
 				distancia+=tr.distancia
 				if tr.asientos_disponibles<asientos:
-					asientos=tr.asientos_disponibles
-			if tr.origen.nombre == Origen and aux==False:
-				tramos.append([tr,viaje.plazas_disponibles-tr.asientos_disponibles])
-				distancia+=tr.distancia
-				if tr.asientos_disponibles<asientos:
-					asientos=tr.asientos_disponibles
-				aux=True		
-			if tr.destino.nombre == Destino:
+					asientos=tr.asientos_disponibles	
+			if aux and tr.destino.nombre == Destino:
 				ultimo=tr
 				if tr.asientos_disponibles<asientos:
 					asientos=tr.asientos_disponibles
