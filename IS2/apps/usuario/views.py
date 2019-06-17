@@ -60,13 +60,16 @@ def cancelar_reserva(request, pk):
 		actual = datetime.strptime(datetime.now(tz=tz).strftime("%d/%m/%Y %H:%M:%S") , "%d/%m/%Y %H:%M:%S")
 		fecha_origen = datetime.strptime(datetime.combine(tramitos[0].fecha,tramitos[0].hora_salida).strftime("%d/%m/%Y %H:%M:%S") , "%d/%m/%Y %H:%M:%S")
 		actual_2 = (actual + timedelta(hours=2))
+		print(actual_2 < fecha_origen)
 		if(fecha_origen > actual_2):
+			print("wuat")
 			if(reserva.estado == "Por Aprobar"):
 				v = Viaje.objects.get(id=tramitos[0].viaje)
 				v.conductor.reservas_por_aprobar -= 1
 				v.conductor.save()
 			elif(reserva.estado == "Aceptada"):
-				tramitos = reservas.tramos.all()
+				print("sdhjkhdsjhjks")
+				tramitos = reserva.tramos.all()
 				for t in tramitos:
 					print("ayuda")
 					t.asientos_disponibles -= reserva.plazas_pedidas
