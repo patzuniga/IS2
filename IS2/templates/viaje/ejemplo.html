@@ -25,22 +25,30 @@
     <div class="w3-bar w3-black">
       <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Agregar Paradas</button>
     </div>
-<div id="Viajes" class="w3-container w3-white w3-padding-16" style="height:30vw">
+<div id="Viajes" class="w3-container w3-white">
       <h3>Publica tu viaje con nosotros</h3>
-      <div id="map" class="w3-display-middle" ></div>
-      <form method="post" id="myform">
-        {% csrf_token %}
-   <input type= "hidden" name="holiwi"  id="holiwi">
-<!--
+      <br>
+      <div class = "w3-container">
+      <div id="map" class="w3-display-middle">:</div>
+<!--    <div id="general" class="w3-container-left">
+      <h4> General: </h4>
+        <div class="w3-half table-light" >
+          <p><strong>Fecha Salida: </strong>{{viajes.2}} a las {{viajes.1.0.0.hora_salida}}</p>
+          <p><strong>Tiene Porta-Maleta: </strong>{% if viajes.0.porta_maleta %} SI {% else %} NO {% endif %}</p>
+          <p><strong>Tiene Silla de Niños: </strong>{% if viajes.0.silla_niños %} SI {% else %} NO {% endif %}</p>
+          <p><strong>Permite Mascostas: </strong>{% if viajes.0.mascotas %} SI {% else %} NO {% endif %}</p>
+          <p><strong>Tarifa : </strong> {{viajes.0.tarifaPreferencias}}</p>
+          <p><strong>Asientos Totales: </strong> {{viajes.0.plazas_disponibles}}</p>
+      </div>
    <div class="w3-row-padding">
     <h3>Paradas </h3>
-      <table class="tablita" style = "overflow: scroll;" width="100%">
+      <table class="tablita" style = "overflow: scroll;" style="width: 40%">
         <thead>
       <tr id="head">
         <th scope="col" >Origen</th>
         <th scope="col" >Destino</th>
         <th scope="col"> Fecha origen </th>
-        <th scope="col" >Fecha destino</th>
+        <th scope="col">Fecha destino</th>
             </tr>
           </thead>
       <tbody>
@@ -57,6 +65,9 @@
     </table>
     </div>
     <div>-->
+      <form method="post" id="myform">
+        {% csrf_token %}
+       <input type= "hidden" name="holiwi"  id="holiwi">
    <div class="w3-clear w3-center nextprev">
           <a href="{% url 'cancelar_crear_viaje' %}"><button class="w3-button w3-dark-grey" name="cancelar" value="1" style="margin-top:20vw" >Cancelar </button></a>
           <button class="w3-button w3-dark-grey" name="listo" value="1" style="margin-top:20vw" >Publicar Viaje </button>
