@@ -409,7 +409,7 @@ def tiene_reservas(pk):
 		try:
 			reservas = i.reservas.all()
 			for r in reservas:
-				if(r.estado == "Por Aprobar" or r.estado == "Aprobada"):
+				if(r.estado == "Por Aprobar" or r.estado == "Aceptada"):
 					return True
 		except:
 			continue
