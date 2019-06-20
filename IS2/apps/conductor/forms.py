@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from django import forms
 from apps.conductor.models import Conductor
 
@@ -19,7 +18,6 @@ class Conductor_Form(forms.Form):
  	Numeroasientos = forms.IntegerField( label = "Número de Asientos")
  	consumo = forms.IntegerField( label = "Consumo Vehiculo")
  	foto = forms.ImageField( label = "Foto Vehiculo")
-=======
 from django import forms
 from apps.conductor.models import Conductor
 
@@ -40,4 +38,3 @@ class Conductor_Form(forms.Form):
  	Numeroasientos = forms.IntegerField( label = "Número de Asientos")
  	consumo = forms.IntegerField( label = "Consumo Vehiculo")
  	foto = forms.ImageField( label = "Foto Vehiculo")
->>>>>>> 7248506b365810ec9a3307dc83421e603e6d7a85

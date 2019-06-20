@@ -501,7 +501,7 @@ def editarviaje(request,idviaje):
 		silla_niños=viaje.silla_niños
 		mascotas=viaje.mascotas
 		tarifapreferencias=viaje.tarifaPreferencias
-		max_personas_atras=viaje.plazas_disponibles
+		asientos_disponibles=viaje.plazas_disponibles
 		hora_salida = tramitos[0].hora_salida
 		fecha2=tramitos[len(tramitos)-1].fecha
 		hora_llegada = tramitos[len(tramitos)-1].hora_llegada
@@ -512,7 +512,7 @@ def editarviaje(request,idviaje):
 				'silla_niños':silla_niños,
 				'mascotas':mascotas ,
 				'tarifapreferencias':tarifapreferencias,
-				'max_personas_atras':max_personas_atras,
+				'asientos_disponibles':asientos_disponibles,
 				'hora_origen':hora_salida, 
 				'fecha_destino':fecha2, 
 				'hora_destino':hora_llegada,
@@ -523,13 +523,6 @@ def editarviaje(request,idviaje):
 	else:
 		form = EditarViajeForm(request.POST)
 		if form.is_valid():
-			#viaje.fecha = form.cleaned_data['fecha']
-			#viaje.estado = "Registrado"
-			#viaje.porta_maleta = form.cleaned_data['porta_maleta']
-			#viaje.mascotas = form.cleaned_data['mascotas']
-			#viaje.tarifaPreferencias = form.cleaned_data['tarifapreferencias']
-			#viaje.plazas_disponibles = form.cleaned_data['plazas_disponibles']
-			#tramitos[0].origen.direccion = form.cleaned_data['origen']
 			pks = []
 			for t in tramitos:
 				pks.append(t.id)
@@ -549,7 +542,7 @@ def editarviaje(request,idviaje):
 				tramo1.hora_salida = form.cleaned_data['hora_origen']
 				tramo1.hora_llegada = form.cleaned_data['hora_destino']
 				tramo1.fecha = form.cleaned_data['fecha_destino']
-				tramo1.asientos_disponibles = 4
+				tramo1.asientos_disponibles = form.cleaned_data['asientos_disponibles'] 
 				tramo1.origen = par1
 				tramo1.destino = par2
 				tramo1.distancia = 0
@@ -559,7 +552,7 @@ def editarviaje(request,idviaje):
 				viaje.silla_niños=form.cleaned_data['silla_niños']
 				viaje.mascotas=form.cleaned_data['mascotas']
 				viaje.tarifaPreferencias=form.cleaned_data['tarifapreferencias']
-				viaje.plazas_disponibles=form.cleaned_data['max_personas_atras']
+				viaje.plazas_disponibles=form.cleaned_data['asientos_disponibles']
 				viaje.fecha = form.cleaned_data['fecha']
 				viaje.tramos.clear()
 				viaje.tramos.add(tramo1)
@@ -570,7 +563,7 @@ def editarviaje(request,idviaje):
 				tramo1.hora_salida = form.cleaned_data['hora_origen']
 				tramo1.hora_llegada = tramitos[0].hora_llegada
 				tramo1.fecha = form.cleaned_data['fecha']
-				tramo1.asientos_disponibles = 4
+				tramo1.asientos_disponibles = form.cleaned_data['asientos_disponibles'] 
 				tramo1.origen = par1
 				tramo1.destino = tramitos[0].destino
 				tramo1.distancia = 0
@@ -583,16 +576,20 @@ def editarviaje(request,idviaje):
 				tramo2.hora_salida = tramitos[len(tramitos)-1].hora_salida
 				tramo2.hora_llegada = form.cleaned_data['hora_destino']
 				tramo2.fecha =  form.cleaned_data['fecha_destino']
-				#if(form.cleaned_data['fecha_destino']<tramitos[len(tramitos)-2].fecha):
-				#	messages.warning(request, 'La fecha de llegada es menor a la fecha de la parada anterior')
-				#	render(request, 'viaje/editarviaje.html', {'form':form})
-				tramo2.asientos_disponibles = 4
+				if(form.cleaned_data['fecha_destino']<tramitos[len(tramitos)-2].fecha):
+					messages.warning(request, 'La fecha de llegada es menor a la fecha de la parada anterior')
+					render(request, 'viaje/editarviaje.html', {'form':form})
+				tramo2.asientos_disponibles = form.cleaned_data['asientos_disponibles'] 
 				tramo2.origen = tramitos[len(tramitos)-1].origen
 				tramo2.destino = par2
 				tramo2.distancia = 0
 				tramo2.viaje = viaje.id
 				tramo2.save()
 				pks[len(tramitos)-1] = tramo2.id
+				i=1
+				while(i<len(tramitos)-1):
+					tramitos[i].asientos_disponibles = form.cleaned_data['asientos_disponibles'] 
+					tramitos[i].save()
 				viaje.tramos.clear()
 				i = 0
 				for pk in pks:
@@ -605,7 +602,7 @@ def editarviaje(request,idviaje):
 				viaje.silla_niños=form.cleaned_data['silla_niños']
 				viaje.mascotas=form.cleaned_data['mascotas']
 				viaje.tarifaPreferencias=form.cleaned_data['tarifapreferencias']
-				viaje.max_personas_atras=form.cleaned_data['max_personas_atras']
+				viaje.plazas_disponibles=form.cleaned_data['asientos_disponibles'] 
 				viaje.fecha = form.cleaned_data['fecha']
 				viaje.save()
 			return redirect('viaje_list')
