@@ -20,7 +20,7 @@
           <p><strong>Tarifa : </strong> {{viajes.0.tarifaPreferencias}}</p>
           <p><strong>Asientos Totales: </strong> {{viajes.0.plazas_disponibles}}</p>
           <p><strong>Estado Viaje: </strong>{{viajes.0.estado}}</p>
-          
+
         </div>
     </div>
     <div class="w3-row-padding">
@@ -43,14 +43,14 @@
       <td>{{ viaje.0.destino.nombre }}</td>
       <td>{{ viaje.0.hora_llegada }}</td>
       <td>{{ viaje.0.fecha }}</a></td>
-      <td>{{ viaje.0.asientos_disponibles }}</a></td>      
+      <td>{{ viaje.0.asientos_disponibles }}</a></td>
       </tr>
     {% endfor %}
-    
+
     {% else %}
     <h1>No hay registros de viajes</h1>
     {% endif %}
-    </tbody> 
+    </tbody>
     </table>
      </div>
     <div>
@@ -65,6 +65,7 @@
       <thead>
         <tr id="head">
           <th scope="col" >Reserva id</th>
+          <th scope="col" >Pasajero</th>
           <th scope="col" >Plazas</th>
           <th scope="col" >Origen</th>
           <th scope="col" >Destino</th>
@@ -79,6 +80,7 @@
         <tr>
       {% for reserva in reservas %}
         <td>{{ reserva.0}}</a></td>
+        <td>{{ reserva.6}}</a></td>
         <td>{{ reserva.1}}</a></td>
         <td>{{ reserva.2}}</a></td>
         <td>{{ reserva.3}}</a></td>
@@ -94,6 +96,80 @@
     {% endif %}
     </tbody>
     </table><br>
+
+        {% if reservasdecididasaceptadas %}
+        <h3 style="text-align: center;">Reservas aceptadas</h3>
+        <div class="w3-row-padding">
+            <div class="w3-half">
+            <table class="tablita" style = "overflow: scroll;" width="100%" >
+          <thead>
+            <tr id="head">
+              <th scope="col" >Reserva id</th>
+              <th scope="col" >Pasajero</th>
+              <th scope="col" >Plazas</th>
+              <th scope="col" >Origen</th>
+              <th scope="col" >Destino</th>
+              <th scope="col" >Precio</th>
+              <th scope="col">Estado</th>
+              <th scope="col">Rechazar</th>
+            </tr>
+            </thead>
+          <tbody>
+          <tr class="clickable-row" >
+            <tr>
+          {% for reservasdecididas in reservasdecididasaceptadas %}
+            <td>{{ reservasdecididas.0}}</td>
+            <td>{{ reservasdecididas.6}}</td>
+            <td>{{ reservasdecididas.1}}</td>
+            <td>{{ reservasdecididas.2}}</td>
+            <td>{{ reservasdecididas.3}}</td>
+            <td>{{ reservasdecididas.4}}</td>
+            <td>{{ reservasdecididas.5}}</td>
+            <td ><a href="{% url 'confirmarCanReservaAceptadaConductor' reservasdecididas.0 %}"><button class="round-button" onclick=""><i class="fa fa-times" style="text-align: center;"></i></button></td>
+          </tr>
+          {% endfor %}
+          {% else %}
+          <h4>Aun no hay reservas aceptadas</h4>
+        {% endif %}
+      </tbody>
+      </table><br>
+        {% if reservasdecididasrechazadas %}
+        <h3 style="text-align: center;">Reservas Rechazadas</h3>
+        <div class="w3-row-padding">
+            <div class="w3-half">
+            <table class="tablita" style = "overflow: scroll;" width="100%" >
+          <thead>
+            <tr id="head">
+              <th scope="col" >Reserva id</th>
+              <th scope="col" >Pasajero</th>
+              <th scope="col" >Plazas</th>
+              <th scope="col" >Origen</th>
+              <th scope="col" >Destino</th>
+              <th scope="col" >Precio</th>
+              <th scope="col">Estado</th>
+            </tr>
+            </thead>
+          <tbody>
+          <tr class="clickable-row" >
+            <tr>
+          {% for reservasdecididas in reservasdecididasrechazadas %}
+            <td>{{ reservasdecididas.0}}</td>
+            <td>{{ reservasdecididas.6}}</td>
+            <td>{{ reservasdecididas.1}}</td>
+            <td>{{ reservasdecididas.2}}</td>
+            <td>{{ reservasdecididas.3}}</td>
+            <td>{{ reservasdecididas.4}}</td>
+            <td>{{ reservasdecididas.5}}</td>
+          </tr>
+          {% endfor %}
+          {% else %}
+          <h4>Aun no hay reservas rechazadas</h4>
+        {% endif %}
+      </tbody>
+      </table><br>
+
+
+
      <input type=button value="Atras" onClick="javascript:history.go(-1);" style="margin-left: 2%" class="w3-button w3-dark-grey">
     </div>
   </div>

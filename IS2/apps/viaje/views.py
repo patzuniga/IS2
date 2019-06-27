@@ -460,6 +460,8 @@ def viaje_details(request, pk):
 		u.conductor_set.all()[0]
 		r=Reserva.objects.all()
 		reservas = []
+		reservasdecididasaceptadas = []
+		reservasdecididasrechazadas = []
 		for reserva in r:
 			if (reserva.estado == "Por Aprobar"):
 				tramosreserva = reserva.tramos.all()
@@ -472,13 +474,41 @@ def viaje_details(request, pk):
 					aux.append(tramosreserva[len(tramosreserva)-1].destino.nombre)
 					aux.append(reserva.precio)
 					aux.append(reserva.estado)
+					aux.append(reserva.usuario)
 					reservas.append(aux)
 					print("despues de todo.id")
-		return render(request, 'viaje/viaje_details.html', {'viajes':viajes, 'paradas':json_cities, 'ultimo':ultimo,'reservas':reservas})
+			if (reserva.estado == "Aceptada"):
+				tramosreserva = reserva.tramos.all()
+				aux = []
+				print(reserva.tramos.all()[0].viaje == int(pk))
+				if reserva.tramos.all()[0].viaje == int(pk):
+					aux.append(reserva.id)
+					aux.append(reserva.plazas_pedidas)
+					aux.append(tramosreserva[0].origen.nombre)
+					aux.append(tramosreserva[len(tramosreserva)-1].destino.nombre)
+					aux.append(reserva.precio)
+					aux.append(reserva.estado)
+					aux.append(reserva.usuario)
+					reservasdecididasaceptadas.append(aux)
+					print("Testeando lo nuevo ")
+			if (reserva.estado == "Rechazada"):
+				tramosreserva = reserva.tramos.all()
+				aux = []
+				print(reserva.tramos.all()[0].viaje == int(pk))
+				if reserva.tramos.all()[0].viaje == int(pk):
+					aux.append(reserva.id)
+					aux.append(reserva.plazas_pedidas)
+					aux.append(tramosreserva[0].origen.nombre)
+					aux.append(tramosreserva[len(tramosreserva)-1].destino.nombre)
+					aux.append(reserva.precio)
+					aux.append(reserva.estado)
+					aux.append(reserva.usuario)
+					reservasdecididasrechazadas.append(aux)		
+		return render(request, 'viaje/viaje_details.html', {'viajes':viajes, 'paradas':json_cities, 'ultimo':ultimo,'reservas':reservas, 'reservasdecididasaceptadas':reservasdecididasaceptadas, 'reservasdecididasrechazadas': reservasdecididasrechazadas})
 		#Caso en que un pasajero quiera ver detalles de un viaje buscado
 	except:
 		return render(request, 'viaje/viaje_details_buscar.html',{'viajes':viajes, 'paradas':json_cities, 'ultimo':ultimo})
-	
+
 
 
 
@@ -871,6 +901,33 @@ def cancelarReservaConductor(request, pk):
 	else:
 		exitocancelarreservaconductor = False
 		return render(request, 'viaje/cancelarReservaConductor.html', {'exitocancelarreservaconductor' : exitocancelarreservaconductor})
+
+@login_required()
+def confirmarCanReservaAceptadaConductor(request, pk):
+	return render(request, 'viaje/confirmarCanReservaAceptadaConductor.html', {'id' : pk})
+
+@login_required()
+def cancelarReservaAceptadaConductor(request, pk):
+	reservas = Reserva.objects.filter(id=pk)
+	reserva = reservas[0]
+	u = Usuario.objects.get(id=request.user.pk)
+	conductor = u.conductor_set.all()[0]
+	tramosreserva = reserva.tramos.all()
+	for t in tramosreserva:
+		for i in tramosreserva:
+			print("Pre suma", i.asientos_disponibles)
+			i.asientos_disponibles += reserva.plazas_pedidas
+			print("Post suma", i.asientos_disponibles)
+			i.save()
+		reserva.estado = "Por Aprobar"
+		conductor.reservas_por_aprobar += 1
+		conductor.save()
+		reserva.save()
+		exitocancelarreservaaceptadaconductor = True
+		return render(request, 'viaje/cancelarReservaAceptadaConductor.html', {'exitocancelarreservaaceptadaconductor' : exitocancelarreservaaceptadaconductor})
+	else:
+		exitocancelarreservaaceptadaconductor = False
+		return render(request, 'viaje/cancelarReservaAceptadaConductor.html', {'exitocancelarreservaaceptadaconductor' : exitocancelarreservaaceptadaconductor})
 
 @login_required()
 def confirmarAceptarReservaConductor(request, pk):
