@@ -199,6 +199,7 @@ def Viajelist(request):
 			aux.append(tramito[0])
 			aux.append(tramito[len(tramito)-1])
 			print(v.fecha)
+			print(v.plazas_disponibles)
 			aux.append(str(v.fecha).split()[0])
 			aux.append(len(tramito))
 			aux.append(v.plazas_disponibles)
@@ -645,18 +646,19 @@ def realizar_reservas(request):
 		distancia =0
 		aux=False
 		tramitos=viaje.tramos.all().order_by('orden_en_viaje')
-		#asientos=tramitos[0].asientos_disponibles
+		asientos=viaje.plazas_disponibles
 		for tr in tramitos:
-			if tr.origen.nombre == Origen and aux==False:
-				tramos.append([tr,viaje.plazas_disponibles-tr.asientos_disponibles])
-				distancia+=tr.distancia
-				asientos=tr.asientos_disponibles
-				aux=True	
+				
 			if aux:
 				tramos.append([tr,viaje.plazas_disponibles-tr.asientos_disponibles])
 				distancia+=tr.distancia
 				if tr.asientos_disponibles<asientos:
 					asientos=tr.asientos_disponibles	
+			if tr.origen.nombre == Origen and aux==False:
+				tramos.append([tr,viaje.plazas_disponibles-tr.asientos_disponibles])
+				distancia+=tr.distancia
+				asientos=tr.asientos_disponibles
+				aux=True
 			if aux and tr.destino.nombre == Destino:
 				ultimo=tr
 				if tr.asientos_disponibles<asientos:
@@ -742,8 +744,12 @@ def confirmarCanReservaConductor(request, pk):
 def cancelarReservaConductor(request, pk):
 	reservas = Reserva.objects.filter(id=pk)
 	reserva = reservas[0]
+	u = Usuario.objects.get(id=request.user.pk)
+	conductor = u.conductor_set.all()[0]
 	if(reserva.estado == "Por Aprobar"):
 		reserva.estado = "Rechazada"
+		conductor.reservas_por_aprobar -= 1
+		conductor.save()
 		print(reserva.estado)
 		reserva.save()
 		exitocancelarreservaconductor = True
@@ -760,6 +766,8 @@ def confirmarAceptarReservaConductor(request, pk):
 def aceptarReservaConductor(request, pk):
 	reservas = Reserva.objects.filter(id=pk)
 	reserva = reservas[0]
+	u = Usuario.objects.get(id=request.user.pk)
+	conductor = u.conductor_set.all()[0]
 	tramosreserva = reserva.tramos.all()
 	for t in tramosreserva:
 		if (reserva.plazas_pedidas <= t.asientos_disponibles):
@@ -776,6 +784,8 @@ def aceptarReservaConductor(request, pk):
 			print("Post resta", i.asientos_disponibles)
 			i.save()
 		reserva.estado = "Aceptada"
+		conductor.reservas_por_aprobar -= 1
+		conductor.save()
 		reserva.save()
 		exitoaceptarreservaconductor = True
 		return render(request, 'viaje/aceptarReservaConductor.html', {'exitoaceptarreservaconductor' : exitoaceptarreservaconductor})
