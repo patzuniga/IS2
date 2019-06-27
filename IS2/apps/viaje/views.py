@@ -11,6 +11,8 @@ import time
 import json
 from datetime import datetime
 from django.http import Http404  
+from datetime import datetime
+import pytz
 
 def index(request):
 	return render(request, 'usuario/index2.html')
@@ -482,6 +484,7 @@ def viaje_details(request, pk):
 
 @login_required()
 def editarviaje(request,idviaje):
+	lista=[]
 	if(tiene_reservas(idviaje)):
 		return redirect('cancelar_editar_error')
 	viaje = Viaje.objects.get(id=idviaje)
@@ -497,40 +500,24 @@ def editarviaje(request,idviaje):
 		i +=1
 	print(len(tramitos)-1)
 	if request.method == 'GET':
-		fecha=viaje.fecha
-		porta_maleta=viaje.porta_maleta
-		silla_niños=viaje.silla_niños
-		mascotas=viaje.mascotas
-		tarifapreferencias=viaje.tarifaPreferencias
-		max_personas_atras=viaje.plazas_disponibles
-		hora_salida = tramitos[0].hora_salida
-		fecha2=tramitos[len(tramitos)-1].fecha
-		hora_llegada = tramitos[len(tramitos)-1].hora_llegada
-		origen = tramitos[0].origen.nombre
-		destino = tramitos[len(tramitos)-1].destino.nombre 
-		data= {'fecha':fecha, 
-				'porta_maleta':porta_maleta,
-				'silla_niños':silla_niños,
-				'mascotas':mascotas ,
-				'tarifapreferencias':tarifapreferencias,
-				'max_personas_atras':max_personas_atras,
-				'hora_origen':hora_salida, 
-				'fecha_destino':fecha2, 
-				'hora_destino':hora_llegada,
-				'destino':destino,
-				'origen':origen}
+		data= {'fecha':viaje.fecha, 
+				'porta_maleta':viaje.porta_maleta,
+				'silla_niños':viaje.silla_niños,
+				'mascotas':viaje.mascotas ,
+				'tarifapreferencias':viaje.tarifaPreferencias,
+				'asientos_disponibles':viaje.plazas_disponibles,
+				'hora_origen':tramitos[0].hora_salida, 
+				'fecha_destino':tramitos[len(tramitos)-1].fecha, 
+				'hora_destino':tramitos[len(tramitos)-1].hora_llegada,
+				'destino':tramitos[len(tramitos)-1].destino.nombre,
+				'origen':tramitos[0].origen.nombre}
 		form = EditarViajeForm(initial=data)
-
+		return render(request, 'viaje/editarviaje.html', {'form':form})
 	else:
 		form = EditarViajeForm(request.POST)
+		if request.POST.get("listo"):
+			return Editarlisto(request,idviaje)
 		if form.is_valid():
-			#viaje.fecha = form.cleaned_data['fecha']
-			#viaje.estado = "Registrado"
-			#viaje.porta_maleta = form.cleaned_data['porta_maleta']
-			#viaje.mascotas = form.cleaned_data['mascotas']
-			#viaje.tarifaPreferencias = form.cleaned_data['tarifapreferencias']
-			#viaje.plazas_disponibles = form.cleaned_data['plazas_disponibles']
-			#tramitos[0].origen.direccion = form.cleaned_data['origen']
 			pks = []
 			for t in tramitos:
 				pks.append(t.id)
@@ -544,13 +531,31 @@ def editarviaje(request,idviaje):
 			par2.nombre = request.POST['destino'].split(',')[0].replace(',','')
 			par2.direccion = request.POST['destino']
 			par2.save()
+
+			f1 = form.cleaned_data['fecha']
+			h1 = form.cleaned_data['hora_origen']
+			f2 = form.cleaned_data['fecha_destino']
+			h2 = form.cleaned_data['hora_destino']
+			tz = pytz.timezone('Chile/Continental')
+			actual = datetime.strptime(datetime.now(tz=tz).strftime("%d/%m/%Y %H:%M:%S") , "%d/%m/%Y %H:%M:%S")
+			fecha_origen = datetime.strptime(datetime.combine(f1,h1).strftime("%d/%m/%Y %H:%M:%S") , "%d/%m/%Y %H:%M:%S")
+			fecha_destino = datetime.strptime(datetime.combine(f2,h2).strftime("%d/%m/%Y %H:%M:%S") , "%d/%m/%Y %H:%M:%S")
+			if(actual > fecha_origen or actual > fecha_destino):
+				error = "Fecha de origen y destino no pueden ser menores a la fecha actual."
+				form = EditarViajeForm()
+				return render(request,'viaje/editarviaje.html',{'form':form, 'error': error})	
+			if (fecha_destino < fecha_origen):
+				error = "Fecha y hora de termino deben ser mayores a la fecha y hora de inicio."
+				form = EditarViajeForm()
+				return render(request,'viaje/editarviaje.html',{'form':form, 'error': error})	
+
 			if len(tramitos)==1:
 				tramo1 = Tramo()
 				tramo1.orden_en_viaje  = 0
 				tramo1.hora_salida = form.cleaned_data['hora_origen']
 				tramo1.hora_llegada = form.cleaned_data['hora_destino']
 				tramo1.fecha = form.cleaned_data['fecha_destino']
-				tramo1.asientos_disponibles = 4
+				tramo1.asientos_disponibles = form.cleaned_data['asientos_disponibles'] 
 				tramo1.origen = par1
 				tramo1.destino = par2
 				tramo1.distancia = 0
@@ -560,18 +565,22 @@ def editarviaje(request,idviaje):
 				viaje.silla_niños=form.cleaned_data['silla_niños']
 				viaje.mascotas=form.cleaned_data['mascotas']
 				viaje.tarifaPreferencias=form.cleaned_data['tarifapreferencias']
-				viaje.plazas_disponibles=form.cleaned_data['max_personas_atras']
+				viaje.plazas_disponibles=form.cleaned_data['asientos_disponibles']
 				viaje.fecha = form.cleaned_data['fecha']
 				viaje.tramos.clear()
 				viaje.tramos.add(tramo1)
 				viaje.save()
 			else:	
+				if(form.cleaned_data['fecha_destino']<tramitos[len(tramitos)-2].fecha):
+					error = "La fecha de llegada es menor a la fecha de la parada anterior."
+					form = EditarViajeForm()
+					return render(request,'viaje/editarviaje.html',{'form':form, 'error': error})	
 				tramo1 = Tramo()
 				tramo1.orden_en_viaje  = 0
 				tramo1.hora_salida = form.cleaned_data['hora_origen']
 				tramo1.hora_llegada = tramitos[0].hora_llegada
 				tramo1.fecha = form.cleaned_data['fecha']
-				tramo1.asientos_disponibles = 4
+				tramo1.asientos_disponibles = form.cleaned_data['asientos_disponibles'] 
 				tramo1.origen = par1
 				tramo1.destino = tramitos[0].destino
 				tramo1.distancia = 0
@@ -584,34 +593,139 @@ def editarviaje(request,idviaje):
 				tramo2.hora_salida = tramitos[len(tramitos)-1].hora_salida
 				tramo2.hora_llegada = form.cleaned_data['hora_destino']
 				tramo2.fecha =  form.cleaned_data['fecha_destino']
-				#if(form.cleaned_data['fecha_destino']<tramitos[len(tramitos)-2].fecha):
-				#	messages.warning(request, 'La fecha de llegada es menor a la fecha de la parada anterior')
-				#	render(request, 'viaje/editarviaje.html', {'form':form})
-				tramo2.asientos_disponibles = 4
+				
+				
+
+				tramo2.asientos_disponibles = form.cleaned_data['asientos_disponibles'] 
 				tramo2.origen = tramitos[len(tramitos)-1].origen
 				tramo2.destino = par2
 				tramo2.distancia = 0
 				tramo2.viaje = viaje.id
 				tramo2.save()
 				pks[len(tramitos)-1] = tramo2.id
+				i=1
+				while(i<len(tramitos)-1):
+					tramitos[i].asientos_disponibles = form.cleaned_data['asientos_disponibles'] 
+					tramitos[i].save()
+					i=i+1
 				viaje.tramos.clear()
 				i = 0
 				for pk in pks:
 					tramon = Tramo.objects.get(id = pk)
+					tramon.asientos_disponibles = form.cleaned_data['asientos_disponibles'] 
 					print("tramo ", i)
 					print("origen : ", tramon.origen.nombre , " destino : ", tramon.destino.nombre)
+					print("asientos disponibles tramo : ", tramon.asientos_disponibles)
 					viaje.tramos.add(tramon)
 					i +=1
 				viaje.porta_maleta=form.cleaned_data['porta_maleta']
 				viaje.silla_niños=form.cleaned_data['silla_niños']
 				viaje.mascotas=form.cleaned_data['mascotas']
 				viaje.tarifaPreferencias=form.cleaned_data['tarifapreferencias']
-				viaje.max_personas_atras=form.cleaned_data['max_personas_atras']
+				viaje.plazas_disponibles=form.cleaned_data['asientos_disponibles'] 
 				viaje.fecha = form.cleaned_data['fecha']
+				print(form.cleaned_data['fecha'])
 				viaje.save()
-			return redirect('viaje_list')
-		return render(request,'viaje/editarviaje.html',{'form':form})
-	return render(request, 'viaje/editarviaje.html', {'form':form})
+			
+			if request.POST.get("publicar4"):
+				#request.session['viaje']['paradas'] = aux
+				return Editarlisto(request,idviaje)
+			
+			#tramito = viaje.tramos.all().order_by('orden_en_viaje')
+			#aux = []
+			#i=0
+			#while(i < len(tramito)):
+			#	if(i== len(tramito)-1):
+			#		aux.append(tramito[i].destino)	
+			#	else:	
+			#		aux.append(tramito[i].origen)
+			#	i=i+1			
+			#json_cities = json.dumps(aux)
+			#return render(request, 'viaje/editarlisto.html', {'city_array':json.dumps,'max':len(tramito)})
+		else:
+			data= {'fecha':viaje.fecha, 
+				'porta_maleta':viaje.porta_maleta,
+				'silla_niños':viaje.silla_niños,
+				'mascotas':viaje.mascotas ,
+				'tarifapreferencias':viaje.tarifaPreferencias,
+				'asientos_disponibles':viaje.plazas_disponibles,
+				'hora_origen':tramitos[0].hora_salida, 
+				'fecha_destino':tramitos[len(tramitos)-1].fecha, 
+				'hora_destino':tramitos[len(tramitos)-1].hora_llegada,
+				'destino':tramitos[len(tramitos)-1].destino.nombre,
+				'origen':tramitos[0].origen.nombre}
+			form = EditarViajeForm(initial=data)
+			return render(request, 'viaje/editarviaje.html', {'form':form})
+	#return render(request, 'viaje/editarviaje.html', {'form':form})		
+
+@login_required()
+def Editarlisto(request,idviaje):
+	viaje = Viaje.objects.get(id=idviaje)
+	tramitos = viaje.tramos.all()
+	paradas = []
+	pks = []
+	for t in tramitos:
+		pks.append(t.id)
+	i=0
+	while(i < len(tramitos)):
+		if(i== len(tramitos)-1):
+			paradas.append(tramitos[i].origen.direccion)	
+			paradas.append(tramitos[i].destino.direccion)	
+		else:	
+			paradas.append(tramitos[i].origen.direccion)
+		i=i+1	
+	if request.method == "POST":
+		if request.POST.get("listo"):
+			print("listo")
+			distancias = request.POST['holiwi'].split()
+			print(distancias)
+			aux = []
+			for i in range(len(distancias)//2):
+				aux.append(float(distancias[2*i].replace(',','')))
+			print("tiene guardado aux:",aux[0])
+
+
+			tramo1 = Tramo()
+			tramo1.orden_en_viaje  = 0
+			tramo1.hora_salida = tramitos[0].hora_salida
+			tramo1.hora_llegada = tramitos[0].hora_llegada
+			tramo1.fecha = tramitos[0].fecha
+			tramo1.asientos_disponibles = tramitos[0].asientos_disponibles
+			tramo1.origen = tramitos[0].origen
+			tramo1.destino = tramitos[0].destino
+			tramo1.distancia = aux[0]
+			tramo1.viaje = viaje.id
+			tramo1.save()
+			pks[0] = tramo1.id
+
+			tramo2 = Tramo()
+			tramo2.orden_en_viaje  = len(tramitos)-1
+			tramo2.hora_salida = tramitos[len(tramitos)-1].hora_salida
+			tramo2.hora_llegada = tramitos[len(tramitos)-1].hora_llegada
+			tramo2.fecha =  tramitos[len(tramitos)-1].fecha
+			tramo2.asientos_disponibles = tramitos[len(tramitos)-1].asientos_disponibles
+			tramo2.origen = tramitos[len(tramitos)-1].origen
+			tramo2.destino = tramitos[len(tramitos)-1].destino
+			tramo2.distancia = aux[len(tramitos)-1]
+			tramo2.viaje = viaje.id
+			tramo2.save()
+			pks[len(tramitos)-1] = tramo2.id
+			viaje.tramos.clear()
+			i = 0
+			for pk in pks:
+				tramon = Tramo.objects.get(id = pk)
+				print("distancia tramito 0:",tramon.distancia)
+				viaje.tramos.add(tramon)
+				i +=1
+			viaje.save()	
+			return redirect('index')
+		elif request.POST.get("publicar4"):
+			print("publicar")
+			json_cities = json.dumps(paradas)
+			print("paradas", paradas)
+			return render (request, 'viaje/editarlisto.html', {"city_array" : json_cities, "paradas": paradas, "max": len(paradas)-1})
+	else:
+		raise Http404  
 
 @login_required()
 def confirmarCan(request, pk):

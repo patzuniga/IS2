@@ -12,14 +12,21 @@
       <h3><strong>Editar viaje </strong></h3>
            <div class="w3-row-padding" style="margin:0 -16px;">
         <div class="w3-half">
+            {% if error %}
+           <a style = "width: 15% ;height: auto;font-size:1vw">{{error}}</a>
+           {% endif %}
          <form method="post">
         {% csrf_token %}
            {{ form.as_p}}
       </div>
       </div>
-       <p><button class="w3-button w3-dark-grey" type = "submit" >Guardar</button></p>
+   <div class="w3-clear nextprev">
+    <a href="{% url 'viaje_list' %}" class="w3-button w3-dark-grey" >Cancelar </a>
+   <button class="w3-button w3-dark-grey" name="publicar4"  value = 1 >Guardar</button>
+    
+  </div>
    </form>
-    <a href="{% url 'index' %}" class="w3-button w3-dark-grey" >Cancelar </a>
+
     </div>
 </header>
 
