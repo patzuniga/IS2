@@ -8,7 +8,7 @@ from django.contrib.auth import authenticate, login
 from apps.usuario.models import Usuario, Perfil
 from apps.viaje.models import Reserva,Viaje
 from apps.usuario.forms import Registrationform
-from apps.conductor.views import registro_conductor
+from apps.conductor.views import Conductor, registro_conductor
 from datetime import datetime 
 from datetime import timedelta
 import pytz
@@ -127,3 +127,26 @@ def registro(request):
 	else:
 		form = Registrationform()
 		return render(request, 'usuario/registrarme.html', {'form': form})
+
+
+@login_required()
+def ver_perfil(request):
+	info_perfil = []
+	us = Usuario.objects.get(id=request.user.id)
+	yo = Perfil.objects.get(usuario=us)
+	info_perfil.append(us.first_name if us.first_name != None else 'No ingresado')
+	info_perfil.append(us.last_name if us.last_name != None else 'No ingresado')
+	info_perfil.append(us.email if us.email != None else 'No ingresado')
+	info_perfil.append(yo.numero_telefono if yo.numero_telefono != None else 'No ingresado')
+	info_perfil.append(yo.direccion if yo.direccion != None else 'No ingresado')
+	info_perfil.append(yo.profesion if yo.profesion != None else 'No ingresado')
+	info_perfil.append('Sí' if yo.fumador else 'No')
+
+
+	#cond = us.conductor_set.all()[0] ##Conductor.objects.get(usuario_id=request.user.id)
+	#tiene que haber una mejor forma de hacer esto, pero estoy sin internet ("<
+	cond = us.conductor_set.all()
+	for xor in cond:
+		return render(request, 'usuario/mi_perfil_conductor.html', {'perfil': info_perfil})
+
+	return render(request, 'usuario/mi_perfil.html', {'perfil': info_perfil})

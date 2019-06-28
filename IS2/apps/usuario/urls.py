@@ -17,4 +17,5 @@ urlpatterns = [
 	url(r'^ver_reservas/',ver_reservas, name= 'ver_reservas'),
 	url(r'^cancelar/(?P<pk>\d+)/$',confirmacion, name = 'confirmacion'),
 	url(r'^cancelar/done/(?P<pk>\d+)/$',cancelar_reserva, name= 'cancelar_reserva'),    
+	url(r'^perfil/',ver_perfil, name= 'ver_perfil'),
 	]
