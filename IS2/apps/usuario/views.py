@@ -129,24 +129,42 @@ def registro(request):
 		return render(request, 'usuario/registrarme.html', {'form': form})
 
 
+#para no desplegar Nones
+def ingresado(algo):
+	return (algo if algo != None else 'No ingresado')
+#para no poner true o false
+def sino(que):
+	return ('Sí' if que else 'No')
+
 @login_required()
 def ver_perfil(request):
 	info_perfil = []
 	us = Usuario.objects.get(id=request.user.id)
 	yo = Perfil.objects.get(usuario=us)
-	info_perfil.append(us.first_name if us.first_name != None else 'No ingresado')
-	info_perfil.append(us.last_name if us.last_name != None else 'No ingresado')
-	info_perfil.append(us.email if us.email != None else 'No ingresado')
-	info_perfil.append(yo.numero_telefono if yo.numero_telefono != None else 'No ingresado')
-	info_perfil.append(yo.direccion if yo.direccion != None else 'No ingresado')
-	info_perfil.append(yo.profesion if yo.profesion != None else 'No ingresado')
-	info_perfil.append('Sí' if yo.fumador else 'No')
+	info_perfil.append(ingresado(us.first_name))
+	info_perfil.append(ingresado(us.last_name))
+	info_perfil.append(ingresado(us.email))
+	info_perfil.append(ingresado(yo.numero_telefono))
+	info_perfil.append(ingresado(yo.direccion))
+	info_perfil.append(ingresado(yo.profesion))
+	info_perfil.append(sino(yo.fumador))#('Sí' if yo.fumador else 'No')
 
 
 	#cond = us.conductor_set.all()[0] ##Conductor.objects.get(usuario_id=request.user.id)
 	#tiene que haber una mejor forma de hacer esto, pero estoy sin internet ("<
 	cond = us.conductor_set.all()
 	for xor in cond:
-		return render(request, 'usuario/mi_perfil_conductor.html', {'perfil': info_perfil})
+		info_condu = []
+		info_condu.append(ingresado(xor.clasedelicencia))
+		info_condu.append(ingresado(xor.fecha_obtencion))
+		#auto
+		info_condu.append(ingresado(xor.car.patente))
+		info_condu.append(ingresado(xor.car.marca))
+		info_condu.append(ingresado(xor.car.modelo))
+		info_condu.append(ingresado(xor.car.color))
+		info_condu.append(ingresado(xor.car.Numeroasientos))
+		info_condu.append(ingresado(xor.car.consumo))
+		info_condu.append(sino(xor.car.maleta))
+		return render(request, 'usuario/mi_perfil_conductor.html', {'perfil': info_perfil, 'perfil_conductor': info_condu})
 
 	return render(request, 'usuario/mi_perfil.html', {'perfil': info_perfil})
