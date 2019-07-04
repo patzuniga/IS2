@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from apps.usuario.models import Usuario, Perfil
 from apps.viaje.models import Reserva,Viaje
-from apps.usuario.forms import Registrationform
+from apps.usuario.forms import *
 from apps.conductor.views import registro_conductor
 from datetime import datetime 
 from datetime import timedelta
@@ -127,3 +127,28 @@ def registro(request):
 	else:
 		form = Registrationform()
 		return render(request, 'usuario/registrarme.html', {'form': form})
+
+def editarperfil(request,idusuario):
+	user = Usuario.objects.get(id=idusuario)
+	if request.method == 'GET':    	
+		data={'username': user.usuario,
+			'email':user.email,
+			'numero_telefono':user.numero_telefono,
+			'direccion':user.direccion,
+			'fumador':user.fumador,
+			'profesion':user.profesion,
+		}
+		form = EditarPerfil(initial= data)
+		form1 = Cambiarcontraseña(request.user)
+		return render(request, 'usuario/editarperfil.html', {'form': form},{'form1':form1})
+	else:
+		form = EditarPerfil(request.user, request.POST)
+		form1 = Cambiarcontraseña(request.POST)
+		if form.is_valid() and form1.is_valid():
+			form.save()
+			user = form1.save()
+			update_session_auth_hash(request, user)  # Important!
+			messages.success(request, 'Your password was successfully updated!')
+			return redirect('change_password')
+		else:
+			messages.error(request, 'Please correct the error below.')
