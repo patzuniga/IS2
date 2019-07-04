@@ -9,6 +9,7 @@ from apps.usuario.models import Usuario, Perfil
 from apps.viaje.models import Reserva,Viaje
 from apps.usuario.forms import *
 from apps.conductor.views import registro_conductor
+from apps.conductor.views import Conductor, registro_conductor
 from datetime import datetime 
 from datetime import timedelta
 import pytz
@@ -128,8 +129,8 @@ def registro(request):
 		form = Registrationform()
 		return render(request, 'usuario/registrarme.html', {'form': form})
 
-def editarperfil(request,idusuario):
-	user = Usuario.objects.get(id=idusuario)
+def editarperfil(request):
+	user = Usuario.objects.get(id=request.user.id)
 	if request.method == 'GET':    	
 		data={'username': user.usuario,
 			'email':user.email,
@@ -152,3 +153,45 @@ def editarperfil(request,idusuario):
 			return redirect('change_password')
 		else:
 			messages.error(request, 'Please correct the error below.')
+
+
+#para no desplegar Nones
+def ingresado(algo):
+	return (algo if algo != None else 'No ingresado')
+#para no poner true o false
+def sino(que):
+	return ('Sí' if que else 'No')
+
+@login_required()
+def ver_perfil(request):
+	info_perfil = []
+	us = Usuario.objects.get(id=request.user.id)
+	yo = Perfil.objects.get(usuario=us)
+	info_perfil.append(ingresado(us.first_name))
+	info_perfil.append(ingresado(us.last_name))
+	info_perfil.append(ingresado(us.email))
+	info_perfil.append(ingresado(yo.numero_telefono))
+	info_perfil.append(ingresado(yo.direccion))
+	info_perfil.append(ingresado(yo.profesion))
+	info_perfil.append(sino(yo.fumador))#('Sí' if yo.fumador else 'No')
+
+
+	#cond = us.conductor_set.all()[0] ##Conductor.objects.get(usuario_id=request.user.id)
+	#tiene que haber una mejor forma de hacer esto, pero estoy sin internet ("<
+	cond = us.conductor_set.all()
+	for xor in cond:
+		info_condu = []
+		info_condu.append(ingresado(xor.clasedelicencia))
+		info_condu.append(ingresado(xor.fecha_obtencion))
+		#auto
+		info_condu.append(ingresado(xor.car.patente))
+		info_condu.append(ingresado(xor.car.marca))
+		info_condu.append(ingresado(xor.car.modelo))
+		info_condu.append(ingresado(xor.car.color))
+		info_condu.append(ingresado(xor.car.Numeroasientos))
+		info_condu.append(ingresado(xor.car.consumo))
+		info_condu.append(sino(xor.car.maleta))
+		return render(request, 'usuario/mi_perfil_conductor.html', {'perfil': info_perfil, 'perfil_conductor': info_condu})
+
+	return render(request, 'usuario/mi_perfil.html', {'perfil': info_perfil})
+
