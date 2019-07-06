@@ -1,7 +1,9 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import render, redirect, HttpResponse
-
+from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
 # Create your views here.
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
@@ -131,29 +133,90 @@ def registro(request):
 
 def editarperfil(request):
 	user = Usuario.objects.get(id=request.user.id)
-	if request.method == 'GET':    	
-		data={'username': user.usuario,
+	#user = us.perfil
+	if request.method == 'POST':
+		form = EditarPerfil(request.POST)
+		print("POST")
+		if form.is_valid():
+			print("formulario valido")
+			if(user.username != form.cleaned_data['username']):
+				username = form.cleaned_data['username']
+				username_qs = Usuario.objects.filter(username=username)
+				if username_qs.exists():
+					error = "El nombre de usuario ya está en uso."
+					formu = EditarPerfil()
+					return render(request,'usuario/editarperfil.html',{'form':form, 'error': error})	
+			user.username = form.cleaned_data['username']
+			user.email = form.cleaned_data['email']
+			user.perfil.numero_telefono = form.cleaned_data['numero_telefono']
+			user.perfil.direccion = form.cleaned_data['direccion']
+			user.perfil.fumador = form.cleaned_data['fumador']
+			user.perfil.profesion = form.cleaned_data['profesion']
+			user.save()
+			print("guardado")
+			#us.save()
+			return redirect('ver_perfil')
+	else:    	
+		data={'username': user.username,
 			'email':user.email,
-			'numero_telefono':user.numero_telefono,
-			'direccion':user.direccion,
-			'fumador':user.fumador,
-			'profesion':user.profesion,
+			'numero_telefono':user.perfil.numero_telefono,
+			'direccion':user.perfil.direccion,
+			'fumador':user.perfil.fumador,
+			'profesion':user.perfil.profesion,
 		}
 		form = EditarPerfil(initial= data)
-		form1 = Cambiarcontraseña(request.user)
-		return render(request, 'usuario/editarperfil.html', {'form': form},{'form1':form1})
-	else:
-		form = EditarPerfil(request.user, request.POST)
-		form1 = Cambiarcontraseña(request.POST)
-		if form.is_valid() and form1.is_valid():
-			form.save()
-			user = form1.save()
-			update_session_auth_hash(request, user)  # Important!
-			messages.success(request, 'Your password was successfully updated!')
-			return redirect('change_password')
-		else:
-			messages.error(request, 'Please correct the error below.')
+	return render(request, 'usuario/editarperfil.html', {'form': form})
 
+def editarperfilconduct(request):
+	user = Usuario.objects.get(id=request.user.id)
+	#user = us.perfil
+	if request.method == 'POST':
+		form = EditarPerfil(request.POST)
+		print("POST")
+		if form.is_valid():
+			print("formulario valido")
+			if(user.username != form.cleaned_data['username']):
+				username = form.cleaned_data['username']
+				username_qs = Usuario.objects.filter(username=username)
+				if username_qs.exists():
+					error = "El nombre de usuario ya está en uso."
+					formu = EditarPerfil()
+					return render(request,'usuario/editarperfil.html',{'form':form, 'error': error})	
+			user.username = form.cleaned_data['username']
+			user.email = form.cleaned_data['email']
+			user.perfil.numero_telefono = form.cleaned_data['numero_telefono']
+			user.perfil.direccion = form.cleaned_data['direccion']
+			user.perfil.fumador = form.cleaned_data['fumador']
+			user.perfil.profesion = form.cleaned_data['profesion']
+			user.save()
+			print("guardado")
+			#us.save()
+			return redirect('ver_perfil')
+	else:    	
+		data={'username': user.username,
+			'email':user.email,
+			'numero_telefono':user.perfil.numero_telefono,
+			'direccion':user.perfil.direccion,
+			'fumador':user.perfil.fumador,
+			'profesion':user.perfil.profesion,
+		}
+		form = EditarPerfil(initial= data)
+	return render(request, 'usuario/editarperfilconduct.html', {'form': form})
+
+def CambiarContraseña(request):
+	if request.method == 'POST':
+		form = PasswordChangeForm(user =request.user, data = request.POST)
+		if form.is_valid():
+			form.save()
+			request.user.save()
+			update_session_auth_hash(request, form.user)  # Important!
+			messages.success(request, 'Tu contraseña ha sido actualizada con éxito!')
+			return redirect('ver_perfil')
+		else:
+			messages.error(request, 'Por favor corregir error.')
+	else:
+		form = PasswordChangeForm(request.user)
+	return render(request, 'usuario/cambiarcontrasena.html', {'form': form})
 
 #para no desplegar Nones
 def ingresado(algo):

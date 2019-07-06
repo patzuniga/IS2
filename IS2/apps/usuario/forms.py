@@ -49,12 +49,7 @@ class EditarPerfil(forms.Form):
     direccion = forms.CharField(max_length=40, label = "Dirección")
     profesion = forms.CharField(max_length=20, label = "Profesión")
     fumador = forms.BooleanField(required = False, label = "Fumador")
-    def clean_username(self):
-        username = self.cleaned_data.get('username')
-        username_qs = Usuario.objects.filter(username=username)
-        if username_qs.exists():
-            raise forms.ValidationError("El nombre de usuario ya está en uso")
-        return username
+
   
 class Cambiarcontraseña(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput,label="Contraseña")

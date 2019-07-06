@@ -41,7 +41,7 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", Arial, Helvetica, sans-serif}
       <a href="{% url 'viaje_list' %}" class="notification w3-bar-item w3-button w3-right w3-hover-white" style = "width: 11% ;height: auto;font-size:1.6vw">Ver Viajes<span class="badge" style="font-size: 1.2vw">{{user.conductor_set.all.0.reservas_por_aprobar}}</span></a>
       {% endif %}
       <a href= "{% url 'viaje_crear' %}"  class="w3-bar-item w3-button w3-right w3-hover-white" style = "width: 14% ;height: auto;font-size:1.6vw">Publicar Viaje</a>
-      <a href="#" class="w3-bar-item w3-button w3-right w3-hover-white" style = "width: 10% ;height: auto;font-size:1.6vw">{{user.username}}</a>
+      <a href="{% url 'ver_perfil' %}" class="w3-bar-item w3-button w3-right w3-hover-white" style = "width: 10% ;height: auto;font-size:1.6vw">{{user.username}}</a>
   </div>
 </body>
 <!-- Page content -->
