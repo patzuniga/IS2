@@ -200,6 +200,7 @@ def editarperfilconduct(request):
 			cond.car.color = form.cleaned_data['color']
 			cond.car.Numeroasientos = form.cleaned_data['Numeroasientos']
 			cond.car.consumo = form.cleaned_data['consumo']
+			cond.car.save()
 			cond.save()
 			user.save()
 			print("guardado")
