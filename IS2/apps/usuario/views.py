@@ -8,6 +8,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from apps.usuario.models import Usuario, Perfil
+from apps.conductor.models import Vehiculo, Conductor
 from apps.viaje.models import Reserva,Viaje
 from apps.usuario.forms import *
 from apps.conductor.views import registro_conductor
@@ -169,9 +170,11 @@ def editarperfil(request):
 
 def editarperfilconduct(request):
 	user = Usuario.objects.get(id=request.user.id)
+	cond = Conductor.objects.get(usuario=user)
+	#cond = user.conductor_set.all()
 	#user = us.perfil
 	if request.method == 'POST':
-		form = EditarPerfil(request.POST)
+		form = EditarPerfilConduct(request.POST)
 		print("POST")
 		if form.is_valid():
 			print("formulario valido")
@@ -188,6 +191,16 @@ def editarperfilconduct(request):
 			user.perfil.direccion = form.cleaned_data['direccion']
 			user.perfil.fumador = form.cleaned_data['fumador']
 			user.perfil.profesion = form.cleaned_data['profesion']
+			cond.clasedelicencia = form.cleaned_data['clasedelicencia']
+			cond.fecha_obtencion = form.cleaned_data['fecha_obtencion']
+			cond.car.patente = form.cleaned_data['patente']
+			cond.car.marca = form.cleaned_data['marca']
+			cond.car.modelo = form.cleaned_data['modelo']
+			cond.car.maleta = form.cleaned_data['maleta']
+			cond.car.color = form.cleaned_data['color']
+			cond.car.Numeroasientos = form.cleaned_data['Numeroasientos']
+			cond.car.consumo = form.cleaned_data['consumo']
+			cond.save()
 			user.save()
 			print("guardado")
 			#us.save()
@@ -199,8 +212,17 @@ def editarperfilconduct(request):
 			'direccion':user.perfil.direccion,
 			'fumador':user.perfil.fumador,
 			'profesion':user.perfil.profesion,
+			'clasedelicencia':cond.clasedelicencia,
+			'fecha_obtencion':cond.fecha_obtencion,
+			'patente':cond.car.patente,
+    		'marca':cond.car.marca,
+    		'modelo':cond.car.modelo,
+    		'maleta':cond.car.maleta,
+    		'color':cond.car.color,
+    		'Numeroasientos':cond.car.Numeroasientos,
+    		'consumo':cond.car.consumo,
 		}
-		form = EditarPerfil(initial= data)
+		form = EditarPerfilConduct(initial= data)
 	return render(request, 'usuario/editarperfilconduct.html', {'form': form})
 
 def CambiarContraseña(request):

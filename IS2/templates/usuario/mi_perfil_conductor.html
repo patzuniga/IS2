@@ -1,27 +1,7 @@
 {% extends 'login/base2.html' %}
 
 {% block content %}
-<header class="w3-display-container w3-content w3-hide-small" style="max-width:1500px" >
-  <img class="w3-image" src="https://www.gapyear.com/wp-content/uploads/2017/11/RoadTipsMain.jpg" alt="London" width="1500" height="500">
-  <div class="w3-display-middle" style="width:60%; vertical-align: text-top;"  >
-    <div class="w3-bar w3-black">
-      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Perfil');"><i class="fa fa-car w3-margin-right"></i>Perfil</button>
-    </div>
-    <!-- Tabs -->
-    <div id="Perfil" class="w3-container w3-white w3-padding-16 myLink"  >
-      <h3 style="text-align: center;">Información de Perfil</h3>
-      <div class="w3-row-padding"  style="margin:0 -16px;">
-        <div class="w3-half table-light" >
-          <p><strong>Nombre: </strong>{{perfil.0}} {{perfil.1}}</p>
-          <p><strong>E-mail: </strong>{{perfil.2}}</p>
-          <p><strong>Teléfono: </strong>{{perfil.3}}</p>
-          <p><strong>Dirección: </strong>{{perfil.4}}</p>
-          <p><strong>Profesión: </strong>{{perfil.5}}</p>
-          <p><strong>Fumador: </strong>{{perfil.6}}</p>
-          <p><strong>Calificación Promedio: </strong> poner algo aquí (raknar)</p>
-        </div>
-    </div>
-  <a href="{% url 'editarperfilconduct' %}"><button class="w3-button w3-dark-grey" style="text-align: center;">Editar Perfil</button>
-</header>
+
+{% include 'usuario/info_perfil.html' %}
 
 {% endblock %}
