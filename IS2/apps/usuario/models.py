@@ -8,7 +8,7 @@ from django.dispatch import receiver
 
 class Usuario(AbstractUser):
 	usuario = models.CharField(max_length=30, null = False)
- 
+
 class Perfil(models.Model):
 	usuario = models.OneToOneField(Usuario, on_delete = models.CASCADE, null = True, blank=True, related_name = "perfil")
 	rut = models.CharField(max_length=10, null = True, blank = True)
@@ -18,6 +18,8 @@ class Perfil(models.Model):
 	valoracion = models.FloatField(default = 5.0)
 	profesion = models.CharField(max_length=20, null = True, blank = True)
 	fumador = models.NullBooleanField( blank = True)
+	viajes_en_curso = models.IntegerField(default = 0)
+	mensajes = models.CharField(max_length=30, default="")
 	class Meta:
 		verbose_name = "Perfil"
 		verbose_name_plural = "Perfiles"

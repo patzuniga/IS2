@@ -31,6 +31,7 @@ class Tramo(models.Model):
 
 	def __unicode__(self):
 		return str(self.id)
+
 class Viaje(models.Model):
 	fecha = models.DateField()
 	estado = models.CharField(max_length=20,null=False)
@@ -41,6 +42,7 @@ class Viaje(models.Model):
 	plazas_disponibles = models.IntegerField(null=True,blank=True)
 	tramos = models.ManyToManyField(Tramo, null = False, related_name = "Tramos")
 	conductor = models.ForeignKey(Conductor, null= True, blank=True, on_delete = models.CASCADE,)
+	parada_actual = models.IntegerField(default=1)
 
 	class Meta:
 		verbose_name = "Viaje"

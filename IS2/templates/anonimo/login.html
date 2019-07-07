@@ -1,0 +1,31 @@
+{% extends 'anonimo/index.html' %}
+{% block content %}
+	<!--login-->
+	<div class="banner">
+	<div style = "margin-top: 1em" class="login-page">
+		<div class="title-info wow fadeInUp animated" data-wow-delay=".5s">
+			<h3 class="title">Log in</h3>
+		</div>
+		<div class="widget-shadow">
+			<div class="login-top wow fadeInUp animated" data-wow-delay=".7s">
+				<h4>¡Bienvenido de vuelta! <br> ¿No tienes cuenta? <a href="register.html">  Registrate »</a> </h4>
+			</div>
+			<div class="login-body wow fadeInUp animated" data-wow-delay=".7s">
+				<form>
+					<input type="text" class="user" name="email" placeholder="Enter your email" required="">
+					<input type="password" name="password" class="lock" placeholder="Password">
+					<input type="submit" name="Sign In" value="Sign In">
+					<div class="forgot-grid">
+						<label class="checkbox"><input type="checkbox" name="checkbox"><i></i>Remember me</label>
+						<div class="forgot">
+							<a href="#">Forgot Password?</a>
+						</div>
+						<div class="clearfix"> </div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+	<!--//login-->
+	{% endblock %}

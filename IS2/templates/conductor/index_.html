@@ -1,0 +1,194 @@
+<!--
+Author: W3layouts
+Author URL: http://w3layouts.com
+License: Creative Commons Attribution 3.0 Unported
+License URL: http://creativecommons.org/licenses/by/3.0/
+-->
+{% load static %}
+<html>
+<head>
+<title>Modern Shoppe a Ecommerce Online Shopping Category Flat Bootstrap Responsive Website Template | Home :: w3layouts</title>
+<!-- for-mobile-apps -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="Modern Shoppe Responsive web template, Bootstrap Web Templates, Flat Web Templates, Android Compatible web template, 
+Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyEricsson, Motorola web design" />
+<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false);
+		function hideURLbar(){ window.scrollTo(0,1); } </script>
+<!--//for-mobile-apps -->
+<!--Custom Theme files -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link href="{% static '/css/bootstrap.css' %}" rel="stylesheet" type="text/css" media="all" />
+<link href="{% static '/css/style.css' %}" rel="stylesheet" type="text/css" media="all" />
+<link rel="stylesheet" href="{% static '/css/flexslider.css' %}" type="text/css" media="screen" />
+<!--//Custom Theme files -->
+<!--js-->
+<script src="{% static '/js/jquery-1.11.1.min.js' %}"></script>
+<script src="{% static 'js/modernizr.custom.js' %}"></script>
+<!--//js-->
+<!--cart-->
+<script src="{% static '/js/simpleCart.min.js' %}"></script>
+<!--cart-->
+<!--web-fonts-->
+<link href='//fonts.googleapis.com/css?family=Raleway:400,100,100italic,200,200italic,300,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic' rel='stylesheet' type='text/css'><link href='//fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic' rel='stylesheet' type='text/css'>
+<link href='//fonts.googleapis.com/css?family=Pompiere' rel='stylesheet' type='text/css'>
+<link href='//fonts.googleapis.com/css?family=Fascinate' rel='stylesheet' type='text/css'>
+<!--web-fonts-->
+<!--animation-effect-->
+<link href="{% static 'css/animate.min.css' %}" rel="stylesheet"> 
+<script src="{% static 'js/wow.min.js' %}"></script>
+	<script>
+	 new WOW().init();
+	</script>
+<!--//animation-effect-->
+<!--start-smooth-scrolling-->
+<script type="text/javascript" src="{% static '/js/move-top.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/easing.js' %}"></script>	
+<script type="text/javascript">
+		jQuery(document).ready(function($) {
+			$(".scroll").click(function(event){		
+				event.preventDefault();
+				$('html,body').animate({scrollTop:$(this.hash).offset().top},1000);
+			});
+		});
+</script>
+<!--//end-smooth-scrolling-->
+</head>
+<body>
+	<!--header-->
+	<div class="header">
+		<div class="header-two navbar navbar-default"><!--header-two-->
+			<div class="container">
+				<div class="nav navbar-nav header-two-left">
+					<ul>
+						<li><i class="glyphicon glyphicon-user" aria-hidden="true"></i><a href="templates/#">{{user.username}}</a></li>			
+					</ul>
+				</div>
+				<div class="nav navbar-nav logo wow zoomIn animated" data-wow-delay=".7s">
+					<h1><a href="templates/index.html"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"><b>NohJuimoh</b></span><span class="tag">Sistema de búsqueda de viajes</span> </a></h1>
+				<div class="clearfix"> </div>
+				</div>
+				<div class="clearfix"> </div>
+			</div>
+		</div>
+		<div class="top-nav navbar navbar-default"><!--header-three-->
+			<div class="container">
+				<nav class="navbar" role="navigation">
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+							<span class="sr-only">Toggle navigation</span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+						</button>
+					</div>
+					<!--navbar-header-->
+					<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+						<ul class="nav navbar-nav top-nav-info">
+							<li><a href= "{% url 'viaje_crear' %}">Publicar Viaje</a></li>
+      						{% if user.conductor_set.all.0.reservas_por_aprobar == 0 %}
+      						<li><a href="{% url 'viaje_list' %}">Ver Viajes </a></li>
+      						{% else %}
+      						<li><a href="{% url 'viaje_list' %}">Ver Viajes<span class="badge" style="font-size: 1.2vw">{{user.conductor_set.all.0.reservas_por_aprobar}}</span></a></li>
+      						{% endif %}
+							<li><a href= "{% url 'configuracion' %}">Configuración</a></li>
+							<li><a href= "{% url 'viaje_crear' %}">Log out</a></li>
+						</ul> 
+						<div class="clearfix"> </div>
+						<!--//navbar-collapse-->
+					</div>
+					<!--//navbar-header-->
+				</nav>
+			</div>
+		</div>
+		<div class="banner">
+			{% block content %}
+		<div class="container">
+			<div class="banner-text">			
+				<div class="banner-left wow fadeInLeft animated" data-wow-delay=".5s">			
+      <div class="w3-display-middle">
+                  <h1>Bienvenido, {{user.nombres}} {{user.last_name}}</h1>
+                  <p>Estas en NohJuimoh, sistema de busqueda de viajes. Elige una de las opciones para iniciar.</p>
+    </div>
+  </div>
+				</div>
+				<div class="clearfix"> </div>
+			</div>
+			{% endblock %}
+		</div>
+	</div>			
+	<!--//banner-->
+	<div class="footer">
+		<div class="container">
+			<div class="footer-info">
+				<div class="col-md-4 footer-grids wow fadeInUp animated" data-wow-delay=".5s">
+					<h4 class="footer-logo"><a href="templates/index.html"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"><b>NohJuimoh</b></span><span class="tag">Sistema de búsqueda de viajes</span> </a></h4>
+					<p>© 2016 Modern Shoppe . All rights reserved | Design by <a href="templates/http://w3layouts.com" target="_blank">W3layouts</a></p>
+				</div>
+				<div class="col-md-4 footer-grids wow fadeInUp animated" data-wow-delay=".7s">
+					<h3>Popular</h3>
+					<ul>
+						<li><a href="templates/about.html">About Us</a></li>
+						<li><a href="templates/contact.html">Contact Us</a></li>
+						<li><a href="templates/faq.html">FAQ</a></li>
+					</ul>
+				</div>
+				<div class="col-md-4 footer-grids wow fadeInUp animated" data-wow-delay=".9s">
+					<h3>Siguenos</h3>	
+				<div class="nav navbar-nav navbar-right social-icons wow fadeInRight animated" data-wow-delay=".5s">
+					<li><a href="templates/#"> </a></li>
+					<ul>
+						<li><a href="templates/#" class="pin"> </a></li>
+						<li><a href="templates/#" class="in"> </a></li>
+						<li><a href="templates/#" class="be"> </a></li>
+						<li><a href="templates/#" class="you"> </a></li>
+						<li><a href="templates/#" class="vimeo"> </a></li>
+					</ul>
+				</div>
+			</div>
+				<div class="clearfix"></div>
+			</div>
+		</div>
+	</div>
+	<!--//footer-->		
+	<!--search jQuery-->
+	<script src="{% static '/js/main.js' %}"></script>
+	<!--//search jQuery-->
+	<!--smooth-scrolling-of-move-up-->
+	<script type="text/javascript">
+		$(document).ready(function() {
+		
+			var defaults = {
+				containerID: 'toTop', // fading element id
+				containerHoverID: 'toTopHover', // fading element hover id
+				scrollSpeed: 1200,
+				easingType: 'linear' 
+			};
+			
+			$().UItoTop({ easingType: 'easeOutQuart' });
+			
+		});
+	</script>
+	<!--//smooth-scrolling-of-move-up-->
+	<!--Bootstrap core JavaScript
+    ================================================== -->
+    <!--Placed at the end of the document so the pages load faster -->
+    <script src="{% static '/js/bootstrap.js' %}"></script>
+     <script> 
+	var mensaje = "{{user.username}}"
+	if mensaje != "":
+  		var a = confirm(mensaje)
+  		if (a){
+  			document.body.innerHTML += '<form id="dynForm" action="/alerta" method="post"><input type="hidden" name="alerta" value="1"></form>';
+			document.getElementById("dynForm").submit();
+  		} else{
+  			document.body.innerHTML += '<form id="dynForm" action="/alerta" method="post"><input type="hidden" name="alerta" value="1"></form>';
+			document.getElementById("dynForm").submit();
+  		}
+</script>
+</body>
+</html>

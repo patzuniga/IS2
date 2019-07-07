@@ -1,18 +1,22 @@
 {% extends 'login/base2.html' %}
 
 {% block content %}
-<!-- Header -->
-<header class="w3-display-container w3-content w3-hide-small" style="max-width:1500px" >
-  <img class="w3-image" src="https://www.gapyear.com/wp-content/uploads/2017/11/RoadTipsMain.jpg" alt="London" width="1500" height="500">
-  <div class="w3-display-middle" style="width:60%; vertical-align: text-top;"  >
-    <div class="w3-bar w3-black">
-      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Detalles de Tu Viaje</button>
+ <style type="text/css">
+        td{
+          text-align: center;
+        }
+        th{
+          text-align: center;
+        }
+      </style>
+<div class="banner-info">
+  <div class="w3-bar w3-black">
+      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Confirmar</button>
     </div>
-    <!-- Tabs -->
-    <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink"  >
-      <h3 style="text-align: center;">Tu Viaje</h3>
-      <div class="w3-row-padding"  style="margin:0 -16px;">
-        <div class="w3-half table-light" >
+    <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
+      <div class="banner-left wow fadeInLeft animated" data-wow-delay=".5s"" >
+      <h1 style="text-align: center;">Tu Viaje</h1>
+        <div class="container">
           <p><strong>Fecha Salida: </strong>{{viajes.2}} a las {{viajes.1.0.0.hora_salida}}</p>
           <p><strong>Tiene Porta-Maleta: </strong>{% if viajes.0.porta_maleta %} SI {% else %} NO {% endif %}</p>
           <p><strong>Tiene Silla de Niños: </strong>{% if viajes.0.silla_niños %} SI {% else %} NO {% endif %}</p>
@@ -20,84 +24,167 @@
           <p><strong>Tarifa : </strong> {{viajes.0.tarifaPreferencias}}</p>
           <p><strong>Asientos Totales: </strong> {{viajes.0.plazas_disponibles}}</p>
           <p><strong>Estado Viaje: </strong>{{viajes.0.estado}}</p>
-          
+
         </div>
-    </div>
-    <div class="w3-row-padding">
-      <table class="tablita" style = "overflow: scroll;" width="100%">
-        <thead>
-      <tr id="head">
-        <th scope="col" >Origen</th>
-        <th scope="col" >Destino</th>
-        <th scope="col"> Hora Llegada</th>
-        <th scope="col" >Fecha</th>
-        <th scope="col" >Asientos Disp.</th>
+    </div><br><br>
+
+    {% if viajes.0 %}
+    <div class="banner-left wow fadeInLeft animated" data-wow-delay=".5s">      
+    <h1 style="text-align: center;  font-size: 200%;">Paradas viaje</h1>
+        <div class="panel panel-default table-responsive">
+          <table class="table  table-responsive table-striped">
+          <thead>
+          <tr>
+            <th>Origen</th>
+            <th>Destino</th>
+            <th> Hora Llegada</th>
+            <th>Fecha</th>
+            <th>Asientos Disp.</th>
             </tr>
           </thead>
-      <tbody>
-    {% if viajes.0 %}
-      <tr >
-      {% for viaje in viajes.1 %}
-
-      <td>{{ viaje.0.origen.nombre }}</td>
-      <td>{{ viaje.0.destino.nombre }}</td>
-      <td>{{ viaje.0.hora_llegada }}</td>
-      <td>{{ viaje.0.fecha }}</a></td>
-      <td>{{ viaje.0.asientos_disponibles }}</a></td>      
-      </tr>
-    {% endfor %}
-    
+          <tbody>
+            {% for viaje in viajes.1 %}
+              <tr>
+              <td>{{ viaje.0.origen.nombre }}</td>
+              <td>{{ viaje.0.destino.nombre }}</td>
+              <td>{{ viaje.0.hora_llegada }}</td>
+              <td>{{ viaje.0.fecha }}</a></td>
+              <td>{{ viaje.0.asientos_disponibles }}</a></td>
+              </tr>
+              {% endfor %}
+          </tbody>
+          </table>
+        </div>
+    </div>
     {% else %}
-    <h1>No hay registros de viajes</h1>
+    <h1 style="text-align: center;  font-size: 200%;">No hay registros de viajes</h1>
     {% endif %}
-    </tbody> 
-    </table>
-     </div>
+
     <div>
       {% csrf_token %}
         <input type="hidden" name="holiwi"  id="holiwi">
     </div>
-    <h3 style="text-align: center;">Reservas pendientes para este viaje</h3>
-    <div class="w3-row-padding" style="margin:0 -16px;">
-        <div class="w3-half">
-          {% if reservas %}
-        <table class="tablita" style = "overflow: scroll;" width="200%" >
-      <thead>
-        <tr id="head">
-          <th scope="col" >Reserva id</th>
-          <th scope="col" >Plazas</th>
-          <th scope="col" >Origen</th>
-          <th scope="col" >Destino</th>
-          <th scope="col" >Precio</th>
-          <th scope="col">Estado</th>
-          <th scope="col">Aceptar</th>
-          <th scope="col">Rechazar</th>
-        </tr>
-        </thead>
-      <tbody>
-      <tr class="clickable-row" >
-        <tr>
-      {% for reserva in reservas %}
-        <td>{{ reserva.0}}</a></td>
-        <td>{{ reserva.1}}</a></td>
-        <td>{{ reserva.2}}</a></td>
-        <td>{{ reserva.3}}</a></td>
-        <td>{{ reserva.4}}</a></td>
-        <td>{{ reserva.5}}</a></td>
-        <td ><a href="{% url 'confirmarAceptarReservaConductor' reserva.0 %}"><button class="round-button" onclick=""><i class="fa fa-check" style="text-align: center;"></i></button></td>
-        <td ><a href="{% url 'confirmarCanReservaConductor' reserva.0 %}"><button class="round-button" onclick=""><i class="fa fa-times" style="text-align: center;"></i></button></td>
-        </tr>
-      {% endfor %}
-
-    {% else %}
-    <h3>No han realizado ninguna reserva para este viaje</h3>
-    {% endif %}
-    </tbody>
-    </table><br>
-     <input type=button value="Atras" onClick="javascript:history.go(-1);" style="margin-left: 2%" class="w3-button w3-dark-grey">
+    {% if reservas %}
+    <h1 style="text-align: center;  font-size: 200%;">Reservas pendientes para este viaje</h1>
+     <div class="banner-left wow fadeInLeft animated" data-wow-delay=".5s">      
+        <div class="panel panel-default table-responsive">
+          <table class="table  table-responsive table-striped">
+          <thead>
+            <tr>
+              <th >Reserva id</th>
+              <th >Pasajero</th>
+              <th >Plazas</th>
+              <th >Origen</th>
+              <th >Destino</th>
+              <th >Precio</th>
+              <th >Estado</th>
+              <th >Aceptar</th>
+              <th >Rechazar</th>
+            </tr>
+            </thead>
+          <tbody>
+          {% for reserva in reservas %}
+            <tr>
+            <td>{{ reserva.0}}</a></td>
+            <td>{{ reserva.6}}</a></td>
+            <td>{{ reserva.1}}</a></td>
+            <td>{{ reserva.2}}</a></td>
+            <td>{{ reserva.3}}</a></td>
+            <td>{{ reserva.4}}</a></td>
+            <td>{{ reserva.5}}</a></td>
+            <td ><a href="{% url 'confirmarAceptarReservaConductor' reserva.0 %}"><button class="round-button" onclick=""><i class="fa fa-check" style="text-align: center;"></i></button></a></td>
+            <td ><a href="{% url 'confirmarCanReservaConductor' reserva.0 %}"><button class="round-button" onclick=""><i class="fa fa-times" style="text-align: center;"></i></button></a></td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
     </div>
-  </div>
-</header>
+        {% else %}
+        <br><br>
+        <div class="banner-left wow fadeInLeft animated" data-wow-delay=".5s">
+        <h1 style="text-align: center;  font-size: 200%;"> No han realizado ninguna reserva para este viaje</h1>
+        </div>
+        {% endif %}
+        <br><br>
+
+        {% if reservasdecididasaceptadas %}
+        <div class="banner-left wow fadeInLeft animated" data-wow-delay=".5s">      
+          <h1 style="text-align: center;  font-size: 200%;">Reservas aceptadas</h1  >
+          <div class="panel panel-default table-responsive">
+            <table class="table  table-responsive table-striped">
+            <thead>
+              <tr>
+                <th>Reserva id</th>
+                <th>Pasajero</th>
+                <th>Plazas</th>
+                <th>Origen</th>
+                <th>Destino</th>
+                <th>Precio</th>
+                <th>Estado</th>
+                <th>Rechazar</th>
+              </tr>
+              </thead>
+            <tbody>
+            {% for reservasdecididas in reservasdecididasaceptadas %}
+              <tr>
+              <td>{{ reservasdecididas.0}}</td>
+              <td>{{ reservasdecididas.6}}</td>
+              <td>{{ reservasdecididas.1}}</td>
+              <td>{{ reservasdecididas.2}}</td>
+              <td>{{ reservasdecididas.3}}</td>
+              <td>{{ reservasdecididas.4}}</td>
+              <td>{{ reservasdecididas.5}}</td>
+              <td ><a href="{% url 'confirmarCanReservaAceptadaConductor' reservasdecididas.0 %}"><button class="round-button" onclick=""><i class="fa fa-times" style="text-align: center;"></i></button></a></td>
+             </tr>
+              </tbody>
+              </table>
+            </div>
+        </div>
+          {% endfor %}
+          {% else %}
+         <h1 style="text-align: center;  font-size: 200%;>Aun no hay reservas aceptadas</h1>
+          {% endif %}
+          <br><br>
+         {% if reservasdecididasrechazadas %}
+          <h1 style="text-align: center;  font-size: 200%; >Reservas Rechazadas</h1>
+        <div class="banner-left wow fadeInLeft animated" data-wow-delay=".5s">      
+          <div class="panel panel-default table-responsive">
+            <table class="table  table-responsive table-striped">
+              <thead>
+                <tr id="head">
+                  <th scope="col" >Reserva id</th>
+                  <th scope="col" >Pasajero</th>
+                  <th scope="col" >Plazas</th>
+                  <th scope="col" >Origen</th>
+                  <th scope="col" >Destino</th>
+                  <th scope="col" >Precio</th>
+                  <th scope="col">Estado</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for reservasdecididas in reservasdecididasrechazadas %}
+                  <tr>
+                  <td>{{ reservasdecididas.0}}</td>
+                  <td>{{ reservasdecididas.6}}</td>
+                  <td>{{ reservasdecididas.1}}</td>
+                  <td>{{ reservasdecididas.2}}</td>
+                  <td>{{ reservasdecididas.3}}</td>
+                  <td>{{ reservasdecididas.4}}</td>
+                  <td>{{ reservasdecididas.5}}</td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <h1 style="text-align: center;  font-size: 200%;">Aun no hay reservas rechazadas</h1>
+              {% endif %}
+            </tbody>
+            </table><br>
+             <input type=button value="Atras" onClick="javascript:history.go(-1);" style="margin-left: 2%" class="w3-button w3-dark-grey">
+          </div><br>
+    </div>
+ </div>
+</div>
+
 <script>
       function initMap() {
         var directionsService = new google.maps.DirectionsService;

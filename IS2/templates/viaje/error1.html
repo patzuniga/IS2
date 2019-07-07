@@ -7,24 +7,23 @@
   h3{text-align: center;}
   h4{text-align: center;}
 </style>
-<header class="w3-display-container w3-content w3-hide-small" style="max-width:1500px">
-  <img class="w3-image" src="https://www.gapyear.com/wp-content/uploads/2017/11/RoadTipsMain.jpg" alt="London" width="1500" height="500">
-  <div class="w3-display-middle" style="width:65%">
-    <div class="w3-bar w3-black">
-      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Ver Viajes</button>
-    </div>
-    <!-- Tabs -->
-    <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
-      <h3>No se puede realizar esta operación</h3>
-        <div class="w3-container" style="margin:0 -16px;">
-            <h4>El viaje seleccionado tiene reservas pendientes o aprobadas, por lo que no se puede editar ni cancelar</h4>
-        </div>
-        <div style="text-align: center;">
-          <a href="{% url 'viaje_list' %}"><button class="w3-button w3-dark-grey">Volver a mis viajes</button>
-        </div>
-    </div>
-</header>
+    <div id="Viajes" class="banner-left">
 
-<!-- Page content -->
-  <!-- Contact -->
+     <div class="w3-bar w3-black">
+      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Error</button>
+    </div>
+        <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink" >
+
+      <br><br><h3 style="color: black;">No se puede realizar esta operación</h3>
+        <div class="w3-container" style="margin:0 -16px;" >
+            <h4 style="color: black;">El viaje seleccionado tiene reservas pendientes o aprobadas, por lo que no se puede editar ni cancelar</h4>
+        </div><br><br>
+        <div style="text-align: center;">
+          <a href="{% url 'viaje_list' %}"><button class="w3-button w3-dark-grey">Volver a mis viajes</button></a>
+        </div>
+    </div>
+</div>
+<br><br>
+
+
 {% endblock %}

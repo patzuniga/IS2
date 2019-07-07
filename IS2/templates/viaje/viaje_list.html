@@ -4,59 +4,72 @@
 
 <!-- Header -->
 
-
-<header class="w3-display-container w3-content w3-hide-small" style="max-width:1500px">
-  <img class="w3-image" src="https://www.gapyear.com/wp-content/uploads/2017/11/RoadTipsMain.jpg" alt="London" width="1500" height="500">
-  <div class="w3-display-middle" style="width:75%">
-    <div class="w3-bar w3-black">
-      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Ver Viajes</button>
-    </div>
+      <style type="text/css">
+        td{
+          text-align: center;
+        }
+        h3{
+          font-size: 250%; text-align: center;
+        }
+                th{
+          text-align: center;
+        }
+      </style>
+    <div class="banner-info">
+      <div class="w3-bar w3-black">
+        <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Lista Viajes</button>
+         </div>
+    <!-- Tabs -->
     <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
-      <h3>Tus Viajes</h3>
-      <div class="w3-row-padding" style="margin:0 -16px;">
-        <div class="w3-container">
-        {% if viajes %}
-        <table class="tablita" style = "overflow: scroll;" width="100%" >
-			<thead>
-			<tr id="head">
-        <th scope="col" >Origen</th>
-        <th scope="col" >Destino</th>
-        <th scope="col" >Fecha</th>
-        <th scope="col" width="6%">Hora</th>      
-        <th scope="col">Estado </th>
-        <th scope="col" width="6%">N° Paradas</th>
-        <th scope="col" width="6%">Asientos Totales</th>
-        <th scope="col">Reservas</th>
-        <th scope="col">Editar </th>
-        <th scope="col">Cancelar</th>
-			</tr>	
-			</thead>
-		<tbody>
-	 
-    <tr class="clickable-row" >
-			<tr>
-			{% for viaje in viajes %}
-			<td><a href="{% url 'viaje_details' viaje.0.id %}">{{ viaje.1.origen.nombre }}</a></td>
-      <td><a href="{% url 'viaje_details' viaje.0.id %}">{{ viaje.2.destino.nombre }}</a></td>
-      <td><a href="{% url 'viaje_details' viaje.0.id %}">{{ viaje.3 }}</a></td>
-      <td> <a href="{% url 'viaje_details' viaje.0.id %}">{{ viaje.1.hora_salida }}</a></td>
-      <td> <a href="{% url 'viaje_details' viaje.0.id %}">{{ viaje.0.estado }}</a></td>
-      <td> <a href="{% url 'viaje_details'  viaje.0.id %}">{{ viaje.4 }}</a></td>
-      <td> <a href="{% url 'viaje_details'  viaje.0.id %}">{{ viaje.5 }}</a></td>
-      <td> <a href="{% url 'viaje_details' viaje.0.id %}">{{ viaje.6 }}</a></td>      
-     <td ><a href="{% url 'editarviaje' viaje.0.id %}"> <button type="submit" class="round-button" ><i class="fa fa-pencil"></i></button></a></td>
-      
-      <td ><a href="{% url 'confirmarCan' viaje.0.id %}"><button class="round-button" onclick=""><i class="fa fa-times " style="text-align: center;"></i></button></a></td>
-      </tr>
-		{% endfor %}
-		</tbody>
-		</table>
-   
-      {% else %}
-    <h1>No hay registros de viajes</h1>
-    {% endif %}
-    </div>
-</header>
+      <div class="banner-left wow fadeInLeft animated" data-wow-delay=".5s" >      
+        <h3>Tus Viajes</h3><br><br>
+         {% if viajes %}
+        <div class="panel panel-default table-responsive" style="background-color: white;">
+            <table class="table  table-responsive table-striped">
+        			<thead>
+          			<tr>
+                  <th >Origen</th>
+                  <th >Destino</th>
+                  <th >Fecha</th>
+                  <th >Hora</th>      
+                  <th >Estado </th>
+                  <th >N° Paradas</th>
+                  <th >Asientos Totales</th>
+                  <th >Reservas</th>
+                  <th >Editar </th>
+                  <th >Cancelar</th>
+          			</tr>	
+          		</thead>
+        		   <tbody>
+        			{% for viaje in viajes %}
+          			<tr data-href="{% url 'viaje_details' viaje.0.id %}" style="cursor: pointer">
+                  <td>{{ viaje.1.origen.nombre }}</td>
+                  <td>{{ viaje.2.destino.nombre }}</td>
+                  <td>{{ viaje.3 }}</td>
+                  <td>{{ viaje.1.hora_salida }}</td>
+                  <td>{{ viaje.0.estado }}</td>
+                  <td>{{ viaje.4 }}</td>
+                  <td>{{ viaje.5 }}</td>
+                  <td>{{ viaje.6 }}</td>      
+                  <td><a href="{% url 'editarviaje' viaje.0.id %}" style="background-color: #e6e6e6;"><button><span class="glyphicon glyphicon-pencil "></span></button></a></td>
+                  <td><a href="{% url 'confirmarCan' viaje.0.id %}"><button><i class="glyphicon glyphicon-remove" style="text-align: center;"></i></button></a></td>
+                </tr>
+        		{% endfor %}
+        		</tbody>
+    		    </table>
+         </div>
+        {% else %}
+        <h1 style="text-align: center;  font-size: 200%;">No hay registros de viajes</h1>
+        {% endif %}
+        </div><br>
+      </div><br><br><br><br>
+  </div>
+<script type="text/javascript">
+  $('tr[data-href]').on("click", function() {
+
+    document.location = $(this).data('href');
+});
+</script>
 
 <!-- Page content -->
   <!-- Contact -->

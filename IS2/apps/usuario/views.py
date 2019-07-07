@@ -43,6 +43,7 @@ def ver_reservas(request):
 		aux.append(reserva.precio)
 		aux.append(reserva.estado)
 		aux.append(reserva.id)
+		aux.append(Viaje.objects.get(id=tramos[0].viaje).estado)
 		reservas.append(aux)
 	return render(request, 'usuario/reservas.html',{'reservas' : reservas})
 
@@ -127,3 +128,10 @@ def registro(request):
 	else:
 		form = Registrationform()
 		return render(request, 'usuario/registrarme.html', {'form': form})
+
+def alerta(request):
+	request.user.perfil.mensajes=""
+	request.user.perfil.save()
+	return redirect('login')
+
+

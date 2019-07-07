@@ -1,67 +1,70 @@
 {% extends 'login/base.html' %}
 
 {% block content %}
-<!-- Header -->
-<header class="w3-display-container w3-content w3-hide-small" style="max-width:1500px" >
-  <img class="w3-image" src="https://www.gapyear.com/wp-content/uploads/2017/11/RoadTipsMain.jpg" alt="London" width="1500" height="500">
-  <div class="w3-display-topmiddle" style="width:75%; vertical-align: text-top; padding-top:5%"  >
+ <style type="text/css">
+        td{
+          text-align: center;
+        }
+        th{
+          text-align: center;
+        }
+      </style>  
+<div class="banner-info">
     <div class="w3-bar w3-black">
-      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Ver Reservas</button>
+      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Reservas</button>
     </div>
     <!-- Tabs -->
-    <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink"  >
-      <h3 style="text-align: center;">Mis reservas</h3>
-      <div class="w3-row-padding" style="margin:0 -16px;">
-        <div class="w3-half">
-        	{% if reservas %}
-        <table class="tablita" style = "overflow: scroll;" width="200%" >
-			<thead>
-			<tr id="head">
-        <th scope="col" >Reserva</th>
-        <th scope="col" >Viaje</th>
-        <th scope="col" >Conductor</th>
-        <th scope="col" >Plazas</th>
-        <th scope="col" >Origen</th>
-        <th scope="col">Destino</th>
-        <th scope="col">Fecha inicio</th>
-        <th scope="col">Hora inicio</th>
-        <th scope="col">Fecha fin</th>
-        <th scope="col">Hora fin</th>
-        <th scope="col" >Precio</th>
-        <th scope="col">Estado</th>
-        <th scope="col">Eliminar</th>
-			</tr>	
-			</thead>
-		<tbody>
-    <tr class="clickable-row" >
-			<tr>
-		{% for reserva in reservas %}
-      <td>{{ reserva.11}}</a></td>
-	    <td>{{ reserva.0}}</a></td>
-      <td>{{ reserva.1}}</a></td>
-      <td>{{ reserva.2}}</a></td>
-      <td>{{ reserva.3}}</a></td>
-      <td>{{ reserva.4}}</a></td>
-      <td>{{ reserva.5}}</a></td>
-      <td>{{ reserva.6}}</a></td>
-      <td>{{ reserva.7}}</a></td>
-      <td>{{ reserva.8}}</a></td>
-      <td>{{ reserva.9}}</a></td>
-      <td>{{ reserva.10}}</a></td>
-      <td ><a href = "{% url 'confirmacion' reserva.11 %}"><button class="round-button" onclick=""><i class="fa fa-times " style="text-align: center;"></i></button></td></a>
-      </tr>
-		{% endfor %}
-		
-		{% else %}
-		<h3>No has realizado ninguna reserva</h3>
-		{% endif %}
-		</tbody>
-		</table> 
-    </div>	<div>
+    <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
+      <div class="banner-left wow fadeInLeft animated" data-wow-delay=".5s" >      
+        <h3>Mi Reservas</h3><br><br>
+         {% if reservas %}
+        <div class="panel panel-default table-responsive">
+            <table class="table  table-responsive table-striped">
+              <thead>
+        			<tr>  
+                 <th></th>
+                 <th>Conductor</th>
+                <th>Plazas Pedidas</th>
+                <th>Origen</th>
+                <th>Destino</th>
+                <th>Fecha inicio</th>
+                <th>Hora inicio</th>
+                <th>Fecha fin</th>
+                <th>Hora fin</th>
+                <th>Precio</th>
+                <th>Estado</th>
+                <th>Eliminar</th>
+        			</tr>	
+        			</thead>
+          		<tbody>
+              {% for reserva in reservas %}
+          			<tr>
+                  {% if reserva.12 == "Iniciado" and reserva.10 == "Aprobada" or reserva.10 == "Transito" and reserva.12 == "Iniciado" %}
+                 <td><a href="/viaje/viaje_reserva/{{reserva.11}}"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
+                  {% else %}
+                  <td></td>
+                  {% endif %}
+                <td>{{ reserva.1}}</a></td>
+                <td>{{ reserva.2}}</a></td>
+                <td>{{ reserva.3}}</a></td>
+                <td>{{ reserva.4}}</a></td>
+                <td>{{ reserva.5}}</a></td>
+                <td>{{ reserva.6}}</a></td>
+                <td>{{ reserva.7}}</a></td>
+                <td>{{ reserva.8}}</a></td>
+                <td>{{ reserva.9}}</a></td>
+                <td>{{ reserva.10}}</a></td>
+                <td ><a href = "{% url 'confirmacion' reserva.11 %}"><button class="round-button" onclick=""><i class="fa fa-times " style="text-align: center;"></i></button></a></td>
+                </tr>
+          		{% endfor %}
+              </tbody>
+		        </table>
+          </div>   
+            {% else %}
+              <h3>No has realizado ninguna reserva</h3>
+            {% endif %}
+        </div>	
+      <div>
 		</div>
-	</div>
-</header>
-
-<!-- Page content -->
-  <!-- Contact -->
-{% endblock %}
+  </div>
+	{% endblock %}
