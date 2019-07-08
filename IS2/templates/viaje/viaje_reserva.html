@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends 'login/base.html' %}
 
 {% block content %}
@@ -151,4 +152,159 @@
   <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAD6Q31QwQK0pv7twtzD32efp6hLa0uFEs&callback=initMap">
     </script>
+=======
+{% extends 'login/base.html' %}
+
+{% block content %}
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        height: 55%;
+        float: left;
+        width: 55%;
+      }
+      #directions-panel {
+        margin-top: 10px;
+        background-color: #FFEE77;
+        padding: 10px;
+        overflow: scroll;
+        height: 174px;
+    </style>
+<div class="banner-info">
+    <div class="w3-bar w3-black">
+      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Tu Ruta</button>
+    </div>
+    <!-- Tabs -->
+    <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
+      <h3>Publica tu viaje con nosotros</h3>
+      <br>
+      <div class = "w3-container">
+      <div id="map" class="banner-info">:</div>
+<!--    <div id="general" class="w3-container-left">
+      <h4> General: </h4>
+        <div class="w3-half table-light" >
+          <p><strong>Fecha Salida: </strong>{{viajes.2}} a las {{viajes.1.0.0.hora_salida}}</p>
+          <p><strong>Tiene Porta-Maleta: </strong>{% if viajes.0.porta_maleta %} SI {% else %} NO {% endif %}</p>
+          <p><strong>Tiene Silla de Niños: </strong>{% if viajes.0.silla_niños %} SI {% else %} NO {% endif %}</p>
+          <p><strong>Permite Mascostas: </strong>{% if viajes.0.mascotas %} SI {% else %} NO {% endif %}</p>
+          <p><strong>Tarifa : </strong> {{viajes.0.tarifaPreferencias}}</p>
+          <p><strong>Asientos Totales: </strong> {{viajes.0.plazas_disponibles}}</p>
+      </div>
+   <div class="w3-row-padding">
+    <h3>Paradas </h3>
+      <table class="tablita" style = "overflow: scroll;" style="width: 40%">
+        <thead>
+      <tr id="head">
+        <th scope="col" >Origen</th>
+        <th scope="col" >Destino</th>
+        <th scope="col"> Fecha origen </th>
+        <th scope="col">Fecha destino</th>
+            </tr>
+          </thead>
+      <tbody>
+      <tr >
+      {% for i in range.max %}
+
+      <td>{{ paradas.i.2 }}</td>
+      <td>{{ paradas.i.2 }}</td>
+      <td>{{ paradas.i.0 }} a las {{paradas.i.1}}</td>
+      <td>{{ paradas.i.0 }} a las {{paradas.i.1}}</a></td>
+            </tr>
+    {% endfor %}
+    </tbody> 
+    </table>
+    </div>
+    <div>-->
+      <form method="post" id="myform">
+        {% csrf_token %}
+       <input type= "hidden" name="holiwi"  id="holiwi">
+   <div class="w3-clear w3-center nextprev">
+          <a href="{% url 'cancelar_crear_viaje' %}"><button class="w3-button w3-dark-grey" name="cancelar" value="1" style="margin-top:20vw" >Cancelar </button></a>
+          <button class="w3-button w3-dark-grey" name="listo" value="1" style="margin-top:20vw" >Publicar Viaje </button>
+
+</div>
+        </form>
+  </div>
+  </div>
+
+    <script>
+      function initMap() {
+        var directionsService = new google.maps.DirectionsService;
+        var directionsDisplay = new google.maps.DirectionsRenderer;
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 6,
+          center: {lat: 41.85, lng: -87.65}
+        });
+        directionsDisplay.setMap(map);
+
+          calculateAndDisplayRoute(directionsService, directionsDisplay);
+          setMarkers(map);
+
+      }
+
+      function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+         var checkboxArray = {{ city_array|safe }};
+         var waypts = []
+        for (var i = 1; i < checkboxArray.length -1; i++) {
+            waypts.push({
+              location: checkboxArray[i],
+              stopover: true
+            });
+        }
+        directionsService.route({
+          origin: checkboxArray[0],
+          destination: checkboxArray[checkboxArray.length-1],
+          waypoints: waypts,
+          optimizeWaypoints: true,
+          travelMode: 'DRIVING'
+        }, function(response, status) {
+          if (status === 'OK') {
+            directionsDisplay.setDirections(response);
+            var route = response.routes[0];
+            var aux = '';
+            for (var i = 0; i < route.legs.length; i++) {
+             aux += ' ' + route.legs[i].distance.text
+            }
+            document.getElementById("holiwi").value = aux;
+          } else {
+            window.alert('Directions request failed due to ' + status);
+          }
+        });
+      }
+
+      function setMarkers(map) {
+        var parada = "Parada Actual: " + "{{ nombre|safe }}";
+        var image = {
+          url: 'https://img.icons8.com/dusk/64/000000/user-location.png',
+          size: new google.maps.Size(40, 60),
+          origin: new google.maps.Point(12, 0),
+          anchor: new google.maps.Point(12, 56)
+        };
+        var shape = {
+          type: 'poly'
+        };
+          var pos = "{{ actual}}";
+          var geocoder = new google.maps.Geocoder();
+          geocoder.geocode( { 'address': pos}, function(results, status) {
+          if (status == 'OK'){
+            var marker = new google.maps.Marker({
+            position: results[0].geometry.location,
+            map: map,
+            icon: image,
+            shape: shape,
+            title: parada,
+            zIndex: 1
+            });
+          }
+          });
+        }
+    </script>
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAD6Q31QwQK0pv7twtzD32efp6hLa0uFEs&callback=initMap">
+    </script>
+>>>>>>> d761e8db204a74b2e5b15a8def6db6855828ff12
 {% endblock %}

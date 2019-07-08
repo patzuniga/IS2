@@ -15,18 +15,17 @@
 
         {% if reservasaceptadas %}
         <h3 style="text-align: center;">Pasajeros proximos a subir</h3>
-        <div class="w3-row-padding">
-            <div class="w3-half">
-            <table class="tablita" style = "overflow: scroll;" width="100%" >
+        <div class="panel panel-default table-responsive" style="background-color: white;">
+             <table class="table  table-responsive table-striped">
           <thead>
-            <tr id="head">
-              <th scope="col" >Reserva id</th>
-              <th scope="col" >Pasajero</th>
-              <th scope="col" >Plazas</th>
-              <th scope="col" >Origen</th>
-              <th scope="col">Estado</th>
-              <th scope="col">Sube</th>
-              <th scope="col">No sube</th>
+            <tr>
+              <th  >Reserva id</th>
+              <th  >Pasajero</th>
+              <th  >Plazas</th>
+              <th  >Origen</th>
+              <th >Estado</th>
+              <th >Sube</th>
+              <th >No sube</th>
             </tr>
             </thead>
           <tbody>
@@ -38,9 +37,9 @@
             <td>{{ reservasdecididas.1}}</td>
             <td>{{ reservasdecididas.2}}</td>
             <td>{{ reservasdecididas.5}}</td>
-            <form method="post">
+            <form method="POST">
             {% csrf_token %}
-            <td ><button class="round-button"><i class="fa fa-sign-in" value="1" name="subee" style="text-align: center;"></i></button></td>
+            <td ><button class="round-button"><i class="fa fa-sign-in" value="1" name="sube" style="text-align: center;"></i></button></td>
             <td ><button class="round-button" onclick=""><i class="fa fa-sign-out"  value="{{reservasdecididas.0}}" name="nosube" style="text-align: center;"></i></button></td>
         </form>
           
@@ -51,17 +50,16 @@
       </tbody>
       </table><br> {% if reservastransito %}
         <h3 style="text-align: center;">Pasajeros en el vehiculo</h3>
-        <div class="w3-row-padding">
-            <div class="w3-half">
-            <table class="tablita" style = "overflow: scroll;" width="100%" >
+       <div class="panel panel-default table-responsive" style="background-color: white;">
+             <table class="table  table-responsive table-striped">
           <thead>
-            <tr id="head">
-              <th scope="col" >Reserva id</th>
-              <th scope="col" >Pasajero</th>
-              <th scope="col" >Plazas</th>
-              <th scope="col" >Origen</th>
-              <th scope="col">Estado</th>
-              <th scope="col">Baja</th>
+            <tr >
+              <th >Reserva id</th>
+              <th  >Pasajero</th>
+              <th  >Plazas</th>
+              <th  >Destino</th>
+              <th >Estado</th>
+              <th >Baja</th>
             </tr>
             </thead>
           <tbody>
@@ -71,9 +69,11 @@
             <td>{{ reservasdecididas.0}}</td>
             <td>{{ reservasdecididas.6}}</td>
             <td>{{ reservasdecididas.1}}</td>
-            <td>{{ reservasdecididas.2}}</td>
+            <td>{{ reservasdecididas.3}}</td>
             <td>{{ reservasdecididas.5}}</td>
-            <td ><button class="round-button" onclick=""><i class="fa fa-sign-out" value="{{reservasdecididas.0}}" name="baja" style="text-align: center;"></i></button></td>
+            
+            <td ><a href="{% url 'baja' viaje.0 reservasdecididas.0 %}"formmethod='post' class="round-button" onclick=""><i class="fa fa-sign-out" name="baja" style="text-align: center;"></i></button></td>
+       
           </tr>
           {% endfor %}
           {% else %}

@@ -118,6 +118,7 @@ def viaje_listo(request):
 			par1.nombre = paradas[i][2]
 			par1.direccion = paradas[i][3]
 			par1.save()
+			viaje.parada_actual = par1
 
 			par2 = Parada()
 			par2.nombre = paradas[i+1][2]
@@ -759,12 +760,12 @@ def Editarlisto(request,idviaje):
 
 @login_required()
 def confirmarCan(request, pk):
+	if(tiene_reservas(pk)):
+		return redirect('cancelar_editar_error')
 	return render(request, 'viaje/confirmarCanc.html', {'id' : pk})
 
 @login_required()
 def cancelar(request, pk):
-	if(tiene_reservas(pk)):
-		return redirect('cancelar_editar_error')
 	viaje = Viaje.objects.get(id=pk)
 	tramitos = viaje.tramos.all()
 	i = len(tramitos)-1
@@ -792,12 +793,11 @@ def realizar_reservas(request):
 		tramitos=viaje.tramos.all().order_by('orden_en_viaje')
 		asientos=viaje.plazas_disponibles
 		for tr in tramitos:
-				
 			if aux:
 				tramos.append([tr,viaje.plazas_disponibles-tr.asientos_disponibles])
 				distancia+=tr.distancia
 				if tr.asientos_disponibles<asientos:
-					asientos=tr.asientos_disponibles	
+					asientos=tr.asientos_disponibles
 			if tr.origen.nombre == Origen and aux==False:
 				tramos.append([tr,viaje.plazas_disponibles-tr.asientos_disponibles])
 				distancia+=tr.distancia
@@ -964,6 +964,7 @@ def aceptarReservaConductor(request, pk):
 		exitoaceptarreservaconductor = False
 		return render(request, 'viaje/aceptarReservaConductor.html', {'exitoaceptarreservaconductor' : exitoaceptarreservaconductor})
 
+
 @login_required()
 def Proximareserva(request, pk):
 	viajes=[]
@@ -974,51 +975,9 @@ def Proximareserva(request, pk):
 	tramitos = viaje.tramos.all()
 	ultimo = len(tramitos)
 	if request.method == 'POST' or request.method == 'GET':
+		print("toy en get o post")
 		aux = Viaje.objects.get(id = pk)
 		tramitos = aux.tramos.all().order_by('orden_en_viaje')
-		if request.POST.get("subee"):
-			print("boton subee")
-			print(request.POST.get("subee"))
-			pk = request.POST.get("sube")
-			reservas = Reserva.objects.filter(id=pk)
-			reserva = reservas[0]
-			u = Usuario.objects.get(id=request.user.pk)	
-			if(reserva.estado == "Aprobada"):
-				reserva.estado = "Transito"
-				print(reserva.estado)
-				reserva.save()
-				return	render(request, 'viaje/viajecito.html', {'viajes':viajes, 'reservasaceptadas':reservasaceptadas,'ultimo':ultimo,'reservastransito':reservastransito})
-			else:
-				return	render(request, 'viaje/viajecito.html', {'viajes':viajes, 'reservasaceptadas':reservasaceptadas,'ultimo':ultimo,'reservastransito':reservastransito})
-		elif request.POST.get("nosube"):
-			pk = request.POST.get("nosube")
-			reservas = Reserva.objects.filter(id=pk)
-			reserva = reservas[0]
-			u = Usuario.objects.get(id=request.user.pk)
-			conductor = u.conductor_set.all()[0]
-			tramosreserva = reserva.tramos.all()
-			for t in tramosreserva:
-				for i in tramosreserva:
-					i.asientos_disponibles += reserva.plazas_pedidas
-					i.save()
-				reserva.estado = "Abortada"
-				reserva.save()
-				return	render(request, 'viaje/viajecito.html', {'viajes':viajes, 'reservasaceptadas':reservasaceptadas,'ultimo':ultimo,'reservastransito':reservastransito})
-			else:
-				return	render(request, 'viaje/viajecito.html', {'viajes':viajes, 'reservasaceptadas':reservasaceptadas,'ultimo':ultimo,'reservastransito':reservastransito})
-		elif request.POST.get("baja"):
-			pk = request.POST.get("baja")
-			reservas = Reserva.objects.filter(id=pk)
-			reserva = reservas[0]
-			u = Usuario.objects.get(id=request.user.pk)
-			conductor = u.conductor_set.all()[0]
-			if(reserva.estado == "Transito"):
-				reserva.estado = "Terminada"
-				print(reserva.estado)
-				reserva.save()
-				return	render(request, 'viaje/viajecito.html', {'viajes':viajes, 'reservasaceptadas':reservasaceptadas,'ultimo':ultimo,'reservastransito':reservastransito})
-			else:
-				return	render(request, 'viaje/viajecito.html', {'viajes':viajes, 'reservasaceptadas':reservasaceptadas,'ultimo':ultimo,'reservastransito':reservastransito})
 		
 		try:
 			current_user = request.user
@@ -1045,7 +1004,6 @@ def Proximareserva(request, pk):
 				if (reserva.estado == "Transito"):
 					tramosreserva = reserva.tramos.all()
 					aux = []
-					print(reserva.tramos.all()[0].viaje == int(pk))
 					if reserva.tramos.all()[0].viaje == int(pk):
 						aux.append(reserva.id)
 						aux.append(reserva.plazas_pedidas)
@@ -1057,5 +1015,145 @@ def Proximareserva(request, pk):
 						reservastransito.append(aux)
 			return render(request, 'viaje/viajecito.html', {'viajes':viajes, 'reservasaceptadas':reservasaceptadas,'ultimo':ultimo,'reservastransito':reservastransito})
 		except:
+			print("entro al except")
 			return render(request, 'viaje/viajecito.html', {'viajes':viajes, 'reservasaceptadas':reservasaceptadas,'ultimo':ultimo,'reservastransito':reservastransito})
-		
+		print(request.POST.get("baja"))
+
+def sube(request,id,pk):
+	print("boton subee")
+	print(request.POST.get("sube"))
+	pk = request.POST.get("sube")
+	reservas = Reserva.objects.filter(id=pk)
+	reserva = reservas[0]
+	u = Usuario.objects.get(id=request.user.pk)	
+	if(reserva.estado == "Aprobada"):
+		reserva.estado = "Transito"
+		print(reserva.estado)
+		reserva.save()
+		return	render(request, 'viaje/viajecito.html', {'viajes':viajes, 'reservasaceptadas':reservasaceptadas,'ultimo':ultimo,'reservastransito':reservastransito})
+	else:
+		return	render(request, 'viaje/viajecito.html', {'viajes':viajes, 'reservasaceptadas':reservasaceptadas,'ultimo':ultimo,'reservastransito':reservastransito})
+def nosube(request,id,pk):
+	print("boton sube", request.POST.get("no sube"))
+	pk = request.POST.get("nosube")
+	reservas = Reserva.objects.filter(id=pk)
+	reserva = reservas[0]
+	u = Usuario.objects.get(id=request.user.pk)
+	conductor = u.conductor_set.all()[0]
+	tramosreserva = reserva.tramos.all()
+	viaje = Viaje.objects.get(id = tramos.viaje)
+	for t in tramosreserva:
+		for i in tramosreserva:
+			i.asientos_disponibles += reserva.plazas_pedidas
+			i.save()
+		viaje.asientos_disponibles +=reserva.plazas_pedidas
+		viaje.save() 
+		reserva.estado = "Abortada"
+		reserva.save()
+		return	redirect('Proximareserva', id)
+	else:
+		return	render(request, 'viaje/viajecito.html', {'viajes':viajes, 'reservasaceptadas':reservasaceptadas,'ultimo':ultimo,'reservastransito':reservastransito})
+def baja(request,idv,pk):
+	idviaje=idv
+	print("boton baja")
+	pk = request.POST.get("baja")
+	reservas = Reserva.objects.filter(id=pk)
+	reserva = reservas[0]
+	u = Usuario.objects.get(id=request.user.pk)
+	conductor = u.conductor_set.all()[0]
+	if(reserva.estado == "Transito"):
+		reserva.estado = "Terminada"
+		print(reserva.estado)
+		reserva.save()
+		return redirect('Proximareserva', idviaje)
+	else:
+		return	redirect('Proximareserva', idviaje)
+
+def administrar(request,pk):
+	try:
+		viaje = Viaje.objects.get(id=pk)
+	except:
+		raise Http404
+	if viaje.conductor.usuario == request.user and viaje.estado == "Iniciado":
+		if request.method == "POST":
+			if request.POST.get("parada"):
+				viaje.parada_actual+=1
+				viaje.save()
+				tramitos = viaje.tramos.all()
+				if viaje.parada_actual == len(tramitos)+1:
+					viaje.estado = "Terminado"
+					viaje.save()
+					request.session['valoraciones'] = viaje.id
+					return redirect('fin_viaje') 
+				paradas = []
+				for i in range(len(tramitos)):
+					paradas.append(tramitos[i].origen.direccion)
+				paradas.append(tramitos[len(tramitos)-1].destino.direccion)
+				json_cities = json.dumps(paradas[viaje.parada_actual-1::])
+				destino = False
+				if(viaje.parada_actual < len(tramitos)-1):
+					sig = tramitos[viaje.parada_actual]
+				else:
+					sig = tramitos[viaje.parada_actual-1]
+					destino = True
+				return render (request, 'conductor/administrar.html', {"city_array" : json_cities, "siguiente": sig, "destino": destino})
+
+		else:
+			tramitos = viaje.tramos.all()
+			if viaje.parada_actual == len(tramitos)+1:
+					viaje.estado = "Terminado"
+					viaje.save()
+					request.session['valoraciones'] = viaje.id
+					return redirect('fin_viaje') 
+			paradas = []
+			for i in range(len(tramitos)):
+				paradas.append(tramitos[i].origen.direccion)
+			paradas.append(tramitos[len(tramitos)-1].destino.direccion)
+			json_cities = json.dumps(paradas[viaje.parada_actual-1::])
+			destino = False
+			if(viaje.parada_actual < len(tramitos)-1):
+				sig = tramitos[viaje.parada_actual]
+			else:
+				sig = tramitos[viaje.parada_actual-1]
+				destino = True
+			return render (request, 'conductor/administrar.html', {"city_array" : json_cities, "siguiente": sig, "destino": destino})
+	else:
+		raise Http404
+
+
+def detail_viaje_en_curso(request,pk):
+	try:
+		r = Reserva.objects.get(id=pk)
+		v = Viaje.objects.get(id = r.tramos.all()[0].viaje)
+		if(r.usuario == request.user and v.estado == "Iniciado" and (r.estado == "Aprobada" or r.estado == "Transito")):
+			tramos = v.tramos.all().order_by('orden_en_viaje')
+			jotason = []
+			for i in range(len(tramos)):
+				jotason.append(tramos[i].origen.direccion)
+				if(i == len(tramos)-1):
+					jotason.append(tramos[i].destino.direccion)
+			json_cities = json.dumps(jotason)
+			if (v.parada_actual-1 == len(tramos)+1):
+				actual = tramos[len(tramos)-1].destino.direccion
+			else:
+				actual = tramos[v.parada_actual-1].origen.direccion
+			actual = json.dumps(actual)
+			return render (request, 'viaje/viaje_reserva.html', {"city_array" : json_cities, "paradas": jotason[v.parada_actual-1::], "nombre": jotason[v.parada_actual-1], "actual": actual})
+		else:
+			raise Http404
+	except:
+		raise Http404
+
+
+def mandar_alerta(id_viaje,parada):
+	v = Viaje.objects.filter(id=viaje_id)[0]
+	p = Parada.objects.filter(id=parada)[0]
+	tramos = v.tramos.all().order_by('orden_en_viaje')
+	for tramo in tramos:
+		if(tramo.direccion) == p.direccion and tramo.reservas.all()[0].estado != "Alertada":
+			for reserva in tramo.reservas.all():
+				reserva.estado = "Alertada"
+				reserva.usuario.mensaje = "El conductor esta cerca del punto de encuentro"
+			break
+	return 0
+
