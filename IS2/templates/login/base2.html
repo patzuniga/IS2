@@ -77,7 +77,6 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
   color: white;
 }
 </style>
-<!--//end-smooth-scrolling-->
 </head>
 <body>
   <!--header-->
@@ -111,7 +110,6 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
           <!--navbar-header-->
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav top-nav-info">
-              <li><a href="{% url 'home' %}">Home</a></li>
               <li><a href= "{% url 'viaje_crear' %}">Publicar Viaje</a></li>        
               <li><a href="{% url 'viaje_list' %}" class="notification" >Ver Viajes<span class="badge" style="font-size: 1.2vw">{{user.conductor_set.all.0.reservas_por_aprobar}}</span>  </a></li>
               <li><a href="{% url 'viaje_list' %}">Valoraciones</a></li>

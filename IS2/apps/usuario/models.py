@@ -13,6 +13,7 @@ class Perfil(models.Model):
 	usuario = models.OneToOneField(Usuario, on_delete = models.CASCADE, null = True, blank=True, related_name = "perfil")
 	rut = models.CharField(max_length=10, null = True, blank = True)
 	nombre = models.CharField(max_length=30, null = True, blank = True)
+	email = models.EmailField(max_length=70,blank=True)
 	numero_telefono = models.CharField(max_length=30, null = True, blank = True)
 	direccion = models.CharField(max_length=40,null = True, blank = True)
 	valoracion = models.FloatField(default = 5.0)
