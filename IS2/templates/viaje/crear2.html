@@ -4,13 +4,11 @@
 <style>
 .tooltip {
   position: relative;
-  display: inline-block;
 }
 
 .tooltip .tooltiptext {
   visibility: hidden;
   width: 15vw;
-  background-color: #555;
   color: #fff;
   text-align: center;
   border-radius: 10px;
@@ -21,7 +19,6 @@
   left: 40%;
   margin-left: -5.5vw;
   opacity: 0;
-  transition: opacity 0.3s;
   font-size: 11px;
 }
 
@@ -33,72 +30,66 @@
   margin-left: -10px;
   border-width: 10px;
   border-style: solid;
-  border-color: #555 transparent transparent transparent;
 }
 
 .tooltip:hover .tooltiptext {
   visibility: visible;
   opacity: 1;
 }
+h3{font-size: 250%; text-align: center;}
 </style>
-<body style="text-align:center;">
-<header class="w3-display-container w3-content w3-hide-small" style="max-width:1500px">
-  <img class="w3-image" src="https://www.gapyear.com/wp-content/uploads/2017/11/RoadTipsMain.jpg" alt="London" width="1500" height="500">
-  <div class="w3-display-middle" style="width:65%">
-    <div class="w3-bar w3-black">
-      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Publicar Viaje</button>
-    </div>
-    <!-- Tabs -->
-    <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
-      <h3>Publica tu viaje con nosotros</h3>
-      <div class="w3-row-padding" style="margin:0 -16px;">
-        {% if error %}
-          <h5>{{error}}</h5>
-          <br>
-          {% endif %}
-          {% if form.non_field_errors %}
-        <ul>
-        {% for error in form.non_field_errors %}
-          <li>{{ error }}</li>
-        {% endfor %}
-          </ul>
-      {% endif %}
-        <div class="w3-half">
-         <form method="post">
-        {% csrf_token %}
-           Origen : <input type="text" id="origen"  name = "origen" required class="vTextField" maxlength="30" />
-           <br>
-           <br>
-           Destino : <input type="text" id="destino"  name = "destino" required class="vTextField" maxlength="30" />
-           <br>
-          {% for field in form.visible_fields %}
-          {% if field.name == "tarifapreferencias" %}
-          <div class="tooltip">
-           <p> <label>{{ field.label_tag }}</label>
-            <i class="fa fa-question-circle"></i>
-  <span class="tooltiptext">Tarifa por kilómetro: El monto total que verán los pasajeros será la multiplicación de los kilómetros totales de su viaje y la tarifa indicada</span>
-</p></div>
-              {% else %}
-              <p>  <label>{{ field.label_tag }}</label>
-              {% endif %}
-              {{ field.errors }}
-              {{ field }}
-              {{ field.help_text }}
-            </p>
-              {% endfor %}
-       
-      </div>
-      </div>
-      <div class="w3-clear w3-center nextprev">
-        <a href="{% url 'cancelar_crear_viaje' %}" class="w3-button w3-dark-grey" >Cancelar </a>
-        <button class="w3-button w3-dark-grey" name="publicar" value="1" style="margin-left: 4%">Publicar Viaje</button>
-        <button class="w3-button w3-dark-grey" type = "submit" name="agregar"  value="1" style="margin-left: 4%">Agregar Paradas</button>
-        </div>
-      </form>
-    </div>
-    </div>
-</header>
+   <div class="banner-info">
+      <div class="w3-bar w3-black">
+        <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Publicar Viaje</button>
+         </div>
+          <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
+            <div class="banner-left wow fadeInLeft animated" data-wow-delay=".5s" > 
+            <h3>Publica tu viaje con nosotros</h3><br>
+              <div class="home-form-w3ls mt-5">
+                <div class="banner-left">
 
+                {% if error %}
+                  <h5>{{error}}</h5><br>
+                  {% endif %}
+                    {% if form.non_field_errors %}
+                <ul>
+                {% for error in form.non_field_errors %}
+                  <li>{{ error }}</li>
+                {% endfor %}
+                </ul>
+                {% endif %}
+                  <form method="post">
+                    <div class="row">
+                      <div class="col-lg-6">
+                  {% csrf_token %}
+                   <div class="form-group">
+                      <input class="form-control" type="text" name="origen" id="origen" required class="vTextField" maxlength="30" placeholder="Origen"><br>
+                      <input class="form-control" type="text" name="destino" id="destino" required class="vTextField" maxlength="30" placeholder="Destino">
+                  </div>
+                {% for field in form.visible_fields %}
+                {% if field.name == "porta_maleta" or field.name == "silla_niños" or field.name == "mascotas"%}
+                <label style="background-color: white;">{{ field.label_tag }}</label>
+                    {{ field.errors }}
+                    {{ field }}
+                    {{ field.help_text }}
+                {% else %}
+                    {{ field.errors }}
+                    {{ field }}
+                    {{ field.help_text }}      
+                    {% endif %}
+                  </p><br>  
+                    {% endfor %}
+               </div>
+            </div><br>            
+          <a href="{% url 'cancelar_crear_viaje' %}" class="w3-button w3-dark-grey" >Cancelar </a>
+          <button class="w3-button w3-dark-grey" name="publicar" value="1" style="margin-left: 4%">Publicar Viaje</button>
+          <button class="w3-button w3-dark-grey" type = "submit" name="agregar"  value="1" style="margin-left: 4%">Agregar Paradas</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
 <script>
 function onLoaded() {
 

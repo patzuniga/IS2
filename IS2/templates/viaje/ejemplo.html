@@ -19,17 +19,16 @@
         overflow: scroll;
         height: 174px;
     </style>
-<header class="w3-display-container w3-content w3-hide-small" style="max-width:1500px">
-  <img class="w3-image" src="https://www.gapyear.com/wp-content/uploads/2017/11/RoadTipsMain.jpg" alt="London" width="1500" height="500">
-  <div class="w3-display-middle" style="width:65%">
+<div class="banner-info">
     <div class="w3-bar w3-black">
-      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Agregar Paradas</button>
+      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Tu Ruta</button>
     </div>
-<div id="Viajes" class="w3-container w3-white">
+    <!-- Tabs -->
+    <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
       <h3>Publica tu viaje con nosotros</h3>
       <br>
       <div class = "w3-container">
-      <div id="map" class="w3-display-middle">:</div>
+      <div id="map" class="banner-info">:</div>
 <!--    <div id="general" class="w3-container-left">
       <h4> General: </h4>
         <div class="w3-half table-light" >
@@ -75,7 +74,7 @@
         </form>
   </div>
   </div>
-</header>
+
     <script>
       function initMap() {
         var directionsService = new google.maps.DirectionsService;

@@ -5,34 +5,14 @@
 <!-- Header -->
 
 <style type="text/css">
-  .tablitaRes tr{
-  background: #fff; 
-  border-collapse: collapse;
-  }
-  .tablitaRes tr{
-  background: #fff; 
-  border-collapse: collapse;
-  }
-.tablitaRes tr head{
-  background: black;
-}
-.tablitaRes td{
-  text-align: center;
-}
-.tablitaRes a,
-.tablitaRes a:visited{
-  display: block;
-  padding: 7px;
-  text-decoration: none;
-  color: black;
-  background: #fff;
-}
-}
-.tablitaRes a:hover{
-  background: #D2D7D2;
-} 
 .Origen-Destino{
   width: 250px;
+}
+ td{
+     text-align: center;
+        }
+ th{
+  text-align: center;
 }
 h5 {
   text-align: center;
@@ -45,61 +25,61 @@ strong{
   margin-left: 2%;
 }
 </style>
-<header class="w3-display-container w3-content w3-hide-small" style="max-width:1500px">
-  <img class="w3-image" src="https://www.gapyear.com/wp-content/uploads/2017/11/RoadTipsMain.jpg" alt="London" width="1500" height="500">
-  <div class="w3-display-middle" style="width:70%">
+<div class="banner-info">
     <div class="w3-bar w3-black">
-      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Nueva Reserva</button>
+      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Reservas</button>
     </div>
     <!-- Tabs -->
     <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
+      <div class="banner-left wow fadeInLeft animated" data-wow-delay=".5s" >
       <h3>Realizar Reservas</h3>
       <div class="w3-row-padding" style="margin:0 -16px;">
         <br><br>
-        <form method="get" action="/viaje/guardar_reservas">
-        <strong>Numero de reservas :</strong><input type="number" name="asientos" min="1" max="{{viaje.3}}" required><br>
-        <strong>Distancia  : </strong> {{viaje.2}}<br>
-        <strong>Precio :</strong> {{viaje.1}}<br>
-        <strong>Fecha  :</strong> {{tramos.0.0.fecha}}<br>
-        <strong>Hora Salida :</strong> {{tramos.0.0.hora_salida}}<br>
-        <h4>Itinerario</h4>
-        <table class="tablita" style = "overflow: scroll;" width="100%" >
-          <thead>
-            <tr>
-              <tr id="head">
-              <th scope="col" width="21%" >Origen</th>
-              <th scope="col" width="21%" >Destino</th>
-              <th scope="col" width="12%">Hora</th>
-              <th scope="col" >Fecha Llegada</th>
-              <th scope="col">Asientos Disponibles</th>
-              <th scope="col">Plazas Pedidas</th>
-            
-            </tr> 
-          </thead>
-          <tbody>
-          <tr class="clickable-row" >
-            <tr>
-            {% for tramitos in tramos %}
-              <td>{{ tramitos.0.origen.nombre }}</td>
-              <td>{{ tramitos.0.destino.nombre }}</td>
-              <td>{{ tramitos.0.hora_llegada }}</td>
-              <td>{{ tramitos.0.fecha }}</td>
-              <td>{{ tramitos.0.asientos_disponibles }}</td>
-              <td>{{ tramitos.1 }}</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table> 
-         <br> <input type="hidden" id="idviaje" name="idviaje" value="{{ viaje.0 }}">
+        <div>
+          <form method="get" action="/viaje/guardar_reservas">
+          <strong>Numero de reservas :</strong><input type="number" name="asientos" min="1" max="{{viaje.3}}" required><br>
+          <strong>Distancia  : </strong> {{viaje.2}}<br>
+          <strong>Precio :</strong> {{viaje.1}}<br>
+          <strong>Fecha  :</strong> {{tramos.0.0.fecha}}<br>
+          <strong>Hora Salida :</strong> {{tramos.0.0.hora_salida}}<br>
+          <h4>Itinerario</h4>
+        </div>
+        <div class="panel panel-default table-responsive">
+            <table class="table  table-responsive table-striped">
+              <thead>
+              <tr>
+                <th>Origen</th>
+                <th>Destino</th>
+                <th>Hora</th>
+                <th>Fecha Llegada</th>
+                <th>Asientos Disponibles</th>
+                <th>Plazas Pedidas</th>
+              </tr> 
+            </thead>
+            <tbody>
+              {% for tramitos in tramos %}
+                <tr>
+                  <td>{{ tramitos.0.origen.nombre }}</td>
+                  <td>{{ tramitos.0.destino.nombre }}</td>
+                  <td>{{ tramitos.0.hora_llegada }}</td>
+                  <td>{{ tramitos.0.fecha }}</td>
+                  <td>{{ tramitos.0.asientos_disponibles }}</td>
+                  <td>{{ tramitos.1 }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div><br> 
+        <div class="banner-left"> 
+          <input type="hidden" id="idviaje" name="idviaje" value="{{ viaje.0 }}">
               <input type="hidden" id="origen" name="origen" value="{{ tramos.0.0.origen.nombre }}">
               <input type="hidden" id="destino" name="destino" value="{{ ultimo.destino.nombre }}">
               <input type="hidden" id="precio" name="precio" value="{{ viaje.1 }}">
               <button class="w3-button w3-dark-grey" type="submit" style="margin-left: 2%">Realizar Reserva</button></form>
          <input type=button value="Atras" onClick="javascript:history.go(-1);" style="margin-left: 2%" class="w3-button w3-dark-grey">
+      </div>
     </div>     
   </div>
-</header>
-
+</div>
 <!-- Page content -->
   <!-- Contact -->
-{% endblock %}
