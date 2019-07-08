@@ -17,6 +17,11 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
     function hideURLbar(){ window.scrollTo(0,1); } </script>
 <!--//for-mobile-apps -->
 <!--Custom Theme files -->
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link href="{% static '/css/bootstrap.css' %}" rel="stylesheet" type="text/css" media="all" />
 <link href="{% static '/css/style.css' %}" rel="stylesheet" type="text/css" media="all" />
 
@@ -173,32 +178,21 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
   <script src="{% static '/js/main.js' %}"></script>
   <!--//search jQuery-->
   <!--smooth-scrolling-of-move-up-->
-  <script type="text/javascript">
-    $(document).ready(function() {
-    
-      var defaults = {
-        containerID: 'toTop', // fading element id
-        containerHoverID: 'toTopHover', // fading element hover id
-        scrollSpeed: 1200,
-        easingType: 'linear' 
-      };
-      
-      $().UItoTop({ easingType: 'easeOutQuart' });
-      
-    });
-  </script>
-  <script>
-// Tabs
+<script>
 function openLink(evt, linkName) {
   var i, x, tablinks;
   x = document.getElementsByClassName("myLink");
-  
+  for (i = 0; i < x.length; i++) {
+      x[i].style.display = "none";
+  }
   tablinks = document.getElementsByClassName("tablink");
+  for (i = 0; i < x.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" w3-red", "");
+  }
   document.getElementById(linkName).style.display = "block";
   evt.currentTarget.className += " w3-red";
 }
-// Click on the first tablink on load
-document.getElementsByClassName("tablink")[0].click();
+  document.getElementsByClassName("tablink")[0].click();
 </script>
   <!--//smooth-scrolling-of-move-up-->
   <!--Bootstrap core JavaScript
