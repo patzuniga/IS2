@@ -22,7 +22,10 @@
 							<div class = "w3-container">
 								<div id="map" class="map"></div>
 							</div>
-							<table class="table table-bordered" >
+              <br>
+              <div class="panel panel-default table-responsive">
+                <br>
+							<table class="table  table-responsive table-striped" >
 								<thead>
 									<tr id="head">
         								<th scope="col" >Direccion</th>
@@ -32,17 +35,28 @@
 								</thead>
 								<tbody> 
 									<tr>
-      									<td><a>{{ viaje.2.nombre }}</a></td>
-      									<td><a>{{ viaje.3 }}</a></td>      
-      									<td ><a href=""><button class="round-button" onclick=""><i class="fa fa-times " style="text-align: center;"></i></button></a></td>
+                    {% if destino %}
+      									<td><a>{{ siguiente.destino.direccion }}</a></td>
+      									<td><a>{{ siguiente.hora_llegada }}</a></td>
+                      {% else %}
+                      <td><a>{{ siguiente.origen.direccion }}</a></td>
+                      <td><a>{{ siguiente.hora_salida }}</a></td>
+                      {% endif %}
+                      <form method='POST'>
+                      {% csrf_token %}      
+      									<td><button type="submit" name="parada" value="1"><span style="color:green; font-size:1.5em;" class="glyphicon glyphicon-ok-sign "></span></button></td>
+                        </form>
 									</tr>
 								</tbody>
 							</table>
-							<br>
 						</div>
+            <br>
+          </div>
 						<div role="tabpanel" class="tab-pane fade" id="profile" aria-labelledby="profile-tab">
 							<h2 class="typoh2">Pasajeros proximos</h2>
-							<table class="table table-bordered" >
+              {% if pasajeros %}
+              <div class="panel panel-default table-responsive">
+							<table class="table  table-responsive table-striped" >
 								<thead>
 									<tr id="head">
         								<th scope="col" >Foto</th>
@@ -53,16 +67,24 @@
 								</thead>
 								<tbody> 
 									<tr>
-										<td><a>{{ viaje.2.nombre }}</a></td>
-      									<td><a>{{ viaje.2.nombre }}</a></td>
-      									<td><a>{{ viaje.3 }}</a></td>      
-      									<td ><a href=""><button class="round-button" onclick=""><i class="fa fa-times " style="text-align: center;"></i></button></a></td>
-									</tr>
+                    {% for pasajero in pasajeros %}
+										<td><a>{{ pasajero.foto }}</a></td>
+      									<td><a>{{ pasajero.nombre }}</a></td>     
+      									<td><button name="subir" value="1" style="background-color: #e6e6e6;"><span style="color:green; font-size:1.5em;" class="glyphicon glyphicon-ok-sign "></span></button></td>
+                        <td><button  name="ausente" value="1" style="background-color: #e6e6e6;"><span style="color:red; font-size:1.5em;" class="glyphicon glyphicon-remove-sign "></span></button></td>
+                    {% endfor %}
+                  </tr>
 								</tbody>
 							</table>
+              </div>
+            {% else %}
+          <h1 style="text-align: center;  font-size: 200%;">No se suben pasajeros en este trayecto</h1>
+        {% endif %}
 							<br>
 							<h2 class="typoh2">Pasajeros en el vehiculo</h2>
-							<table class="table table-bordered" >
+              {% if abordo %}
+              <div class="panel panel-default table-responsive">
+							<table class="table  table-responsive table-striped" >
 								<thead>
 									<tr id="head">
         								<th scope="col" >Foto</th>
@@ -72,17 +94,65 @@
 								</thead>
 								<tbody> 
 									<tr>
-										<td><a>{{ viaje.2.nombre }}</a></td>
+                    {% for pasajero in abordo %}
+										<td><a>{{ viaje.2.foto }}</a></td>
       									<td><a>{{ viaje.2.nombre }}</a></td>     
-      									<td ><a href=""><button class="round-button" onclick=""><i class="fa fa-times " style="text-align: center;"></i></button></a></td>
+      									<td><a href="/login" style="background-color: #e6e6e6;"><span style="color:green; font-size:1.5em;" class=" glyphicon glyphicon-circle-arrow-down"></span></a></td>
+                    {% endfor %}
 									</tr>
 								</tbody>
 							</table>
+              <br>
 						</div>
+            {% else %}
+          <h1 style="text-align: center;  font-size: 200%;">No hay pasajeros en el vehiculo</h1>
+          <br>
+        {% endif %}
+          </div>
 						<div role="tabpanel" class="tab-pane fade" id="dropdown1" aria-labelledby="dropdown1-tab">
-							<p>Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer, iphone skateboard locavore carles etsy salvia banksy hoodie helvetica. DIY synth PBR banksy irony. Leggings gentrify squid 8-bit cred pitchfork. Williamsburg banh mi whatever gluten-free, carles pitchfork biodiesel fixie etsy retro mlkshk vice blog. Scenester cred you probably haven't heard of them, vinyl craft beer blog stumptown. Pitchfork sustainable tofu synth chambray yr.</p>
+							<h2 class="typoh2">Reservas</h2>
+              {% if reservas %}
+              <div class="panel panel-default table-responsive">
+              <table class="table  table-responsive table-striped" >
+              <thead>
+                <tr>
+                <th >Pasajero</th>
+                <th >Plazas</th>
+                <th >Origen</th>
+                <th >Destino</th>
+                <th >Precio</th>
+                <th >Estado</th>
+                <th >Aceptar</th>
+                <th >Rechazar</th>
+              </tr>
+              </thead>
+            <tbody>
+              {% for reserva in reservas %}
+            <tr>
+            <td>{{ reserva.6}}</a></td>
+            <td>{{ reserva.1}}</a></td>
+            <td>{{ reserva.2}}</a></td>
+            <td>{{ reserva.3}}</a></td>
+            <td>{{ reserva.4}}</a></td>
+            <td>{{ reserva.5}}</a></td>
+            <td ><a href="{% url 'confirmarAceptarReservaConductor' reserva.0 %}"><button class="round-button" onclick=""><i class="fa fa-check" style="text-align: center;"></i></button></a></td>
+            <td ><a href="{% url 'confirmarCanReservaConductor' reserva.0 %}"><button class="round-button" onclick=""><i class="fa fa-times" style="text-align: center;"></i></button></a></td>
+            </tr>
+          {% endfor %}
+            </tbody>
+          </table>
+      </div>
+    </div>
+        {% else %}
+        <br><br>
+        <div class="banner-left wow fadeInLeft animated" data-wow-delay=".5s">
+        <h1 style="text-align: center;  font-size: 200%;"> No han realizado ninguna reserva para este viaje</h1>
+        </div>
+        <br>
+        {% endif %}
 						</div>
 					</div>
+          <p id="demo"></p>
 					<!--
 					<div style= "text-align: center; background: #fff" class = "breadcrumb">
      					<form method="post" id="myform">
@@ -98,20 +168,22 @@
 				</div>
   			</div>
 		</div>
- <script>
-      function initMap() {
-        var directionsService = new google.maps.DirectionsService;
-        var directionsDisplay = new google.maps.DirectionsRenderer;
-        var map = new google.maps.Map(document.getElementById('map'), {
+  <script>
+    var map;
+    var x = document.getElementById("demo");
+function initMap() {
+      var directionsService = new google.maps.DirectionsService;
+      var directionsDisplay = new google.maps.DirectionsRenderer;
+      map = new google.maps.Map(document.getElementById('map'), {
           zoom: 6,
           center: {lat: 41.85, lng: -87.65}
         });
         directionsDisplay.setMap(map);
 
-         // calculateAndDisplayRoute(directionsService, directionsDisplay);
+        calculateAndDisplayRoute(directionsService, directionsDisplay);
       }
 
-     /* function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+     function calculateAndDisplayRoute(directionsService, directionsDisplay) {
          var checkboxArray = {{ city_array|safe }};
          var waypts = []
         for (var i = 1; i < checkboxArray.length -1; i++) {
@@ -139,7 +211,49 @@
             window.alert('Directions request failed due to ' + status);
           }
         });
-      }*/
+      }
+var actualizar_posicion = setInterval(function() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(showPosition, showError);
+    } else { 
+      x.innerHTML = "Geolocation is not supported by this browser.";
+    }
+  function showPosition(position) {
+        var image = {
+          url: 'https://img.icons8.com/dusk/55/000000/user-location.png',
+          size: new google.maps.Size(35, 55),
+          origin: new google.maps.Point(10, 0),
+          anchor: new google.maps.Point(0, 55)
+        };
+        var shape = {
+          type: 'poly'
+        };
+            var marker = new google.maps.Marker({
+            position: {lat: position.coords.latitude, lng: position.coords.longitude},
+            map: map,
+            icon: image,
+            shape: shape,
+            title: "Mi posicion",
+            zIndex: 1
+            });
+  }
+function showError(error) {
+  switch(error.code) {
+    case error.PERMISSION_DENIED:
+      x.innerHTML = "User denied the request for Geolocation."
+      break;
+    case error.POSITION_UNAVAILABLE:
+      x.innerHTML = "Location information is unavailable."
+      break;
+    case error.TIMEOUT:
+      x.innerHTML = "The request to get user location timed out."
+      break;
+    case error.UNKNOWN_ERROR:
+      x.innerHTML = "An unknown error occurred."
+      break;
+  }
+}
+}, 1000);
     </script>
   <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAD6Q31QwQK0pv7twtzD32efp6hLa0uFEs&callback=initMap">

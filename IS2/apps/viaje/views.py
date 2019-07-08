@@ -785,46 +785,55 @@ def aceptarReservaConductor(request, pk):
 		return render(request, 'viaje/aceptarReservaConductor.html', {'exitoaceptarreservaconductor' : exitoaceptarreservaconductor})
 
 def administrar(request,pk):
-	if request.method == "POST":
-		if request.POST.get("boton"):
-			print("boton")
-			if(len(request.session['paradas'])==2):
-				if(1):
-					con_pasajeros = True
-					json_cities = json.dumps(request.session['paradas'])
-					sig = request.session['indices'][1]
-					return render (request, 'viaje/administrar.html', {"city_array" : json_cities, "siguiente": sig, "condicion": con_pasajeros})
-				return success(request, request.session['viaje'])
-			p = Parada.objects.get(id=request.session['siguiente'])
-			ind = request.session['paradas'].index(p.direccion)
-			request.session['paradas'] = request.session['paradas'][ind::]
-			request.session['indices'] = request.session['indices'][ind::]
-			sig = request.session['indices'][1]
-			request.session['siguiente'] = sig
-			json_cities = json.dumps(request.session['paradas'])
-			return render (request, 'viaje/administrar.html', {"city_array" : json_cities, "siguiente": sig})
+	try:
+		viaje = Viaje.objects.get(id=pk)
+	except:
+		raise Http404
+	if viaje.conductor.usuario == request.user and viaje.estado == "Iniciado":
+		if request.method == "POST":
+			if request.POST.get("parada"):
+				viaje.parada_actual+=1
+				viaje.save()
+				tramitos = viaje.tramos.all()
+				if viaje.parada_actual == len(tramitos)+1:
+					viaje.estado = "Terminado"
+					viaje.save()
+					request.session['valoraciones'] = viaje.id
+					return redirect('fin_viaje') 
+				paradas = []
+				for i in range(len(tramitos)):
+					paradas.append(tramitos[i].origen.direccion)
+				paradas.append(tramitos[len(tramitos)-1].destino.direccion)
+				json_cities = json.dumps(paradas[viaje.parada_actual-1::])
+				destino = False
+				if(viaje.parada_actual < len(tramitos)-1):
+					sig = tramitos[viaje.parada_actual]
+				else:
+					sig = tramitos[viaje.parada_actual-1]
+					destino = True
+				return render (request, 'conductor/administrar.html', {"city_array" : json_cities, "siguiente": sig, "destino": destino})
+
 		else:
-			return Http404
+			tramitos = viaje.tramos.all()
+			if viaje.parada_actual == len(tramitos)+1:
+					viaje.estado = "Terminado"
+					viaje.save()
+					request.session['valoraciones'] = viaje.id
+					return redirect('fin_viaje') 
+			paradas = []
+			for i in range(len(tramitos)):
+				paradas.append(tramitos[i].origen.direccion)
+			paradas.append(tramitos[len(tramitos)-1].destino.direccion)
+			json_cities = json.dumps(paradas[viaje.parada_actual-1::])
+			destino = False
+			if(viaje.parada_actual < len(tramitos)-1):
+				sig = tramitos[viaje.parada_actual]
+			else:
+				sig = tramitos[viaje.parada_actual-1]
+				destino = True
+			return render (request, 'conductor/administrar.html', {"city_array" : json_cities, "siguiente": sig, "destino": destino})
 	else:
-		viaje = Viaje.objects.get(id=pk) 
-		tramitos = viaje.tramos.all()
-		print("tramitos :", tramitos)
-		paradas = []
-		indices = []
-		for i in range(len(tramitos)):
-			paradas.append(tramitos[i].origen.direccion)
-			indices.append(tramitos[i].origen.id)
-		sig = tramitos[0].destino.id
-		paradas.append(tramitos[len(tramitos)-1].destino.direccion)
-		print(tramitos[len(tramitos)-1].destino.direccion)
-		indices.append(tramitos[len(tramitos)-1].destino.id)
-		request.session['paradas'] = paradas
-		request.session['viaje'] = pk
-		request.session['indices'] = indices
-		request.session['siguiente'] = sig
-		print("paradas :", paradas)
-		json_cities = json.dumps(paradas)
-		return render (request, 'viaje/administrar.html', {"city_array" : json_cities, "siguiente": sig})
+		raise Http404
 
 
 def detail_viaje_en_curso(request,pk):
