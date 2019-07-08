@@ -7,110 +7,119 @@
 {% extends 'login/base2.html' %}
 
 {% block content %}
+<style>
+.myLink {display: none}
+</style>
 <div class="container">
 	<div class="grid_3 grid_5 wow fadeInDown animated" data-wow-delay=".5s">
 				<h3 style="text-align: center ;" class="hdg">Administrar Viaje</h3>
-				<div style = "background: #fff" class="bs-example bs-example-tabs" role="tabpanel" data-example-id="togglable-tabs">
-					<ul id="myTab" class="nav nav-tabs" role="tablist">
-						<li role="presentation" class="active"><a href="#home" id="home-tab" role="tab" data-toggle="tab" aria-controls="home" aria-expanded="true">Mapa</a></li>
-						<li role="presentation"><a href="#profile" role="tab" id="profile-tab" data-toggle="tab" aria-controls="profile">Pasajeros</a></li>
-						<li role="presentation"><a href="#dropdown1" role="tab" id="dropdown1-tab" data-toggle="tab" aria-controls="dropdown1">Reservas</a></li>
-					</ul>
-					<div style="margin: 1em;" id="myTabContent" class="tab-content">
-						<div role="tabpanel" class="tab-pane fade in active" id="home" aria-labelledby="home-tab">
-							<h3>Ruta a seguir</h3>
-							<div class = "w3-container">
-								<div id="map" class="map"></div>
-							</div>
+				<div class="w3-bar w3-black">
+      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-map w3-margin-right"></i>Mapa</button>
+      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Pasajeros');"><i class="fa fa-user w3-margin-right"></i>Pasajeros</button>
+      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Reservas');"><i class="fa fa-bell w3-margin-right"></i>Reservas</button>
+    </div>
+          <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
+              <h2 style="text-align: center ;" >Ruta a seguir</h2>
+              <div class = "w3-container">
+                <div id="map" class="map"></div>
+              </div>
               <br>
               <div class="panel panel-default table-responsive">
                 <br>
-							<table class="table  table-responsive table-striped" >
-								<thead>
-									<tr id="head">
-        								<th scope="col" >Direccion</th>
-        								<th scope="col" >Hora</th>
-        								<th scope="col">Confirmar</th>
-									</tr>	
-								</thead>
-								<tbody> 
-									<tr>
+              <table class="table  table-responsive table-striped" >
+                <thead>
+                  <tr id="head">
+                        <th scope="col" >Direccion</th>
+                        <th scope="col" >Hora</th>
+                        <th scope="col">Confirmar</th>
+                  </tr> 
+                </thead>
+                <tbody> 
+                  <tr>
                     {% if destino %}
-      									<td><a>{{ siguiente.destino.direccion }}</a></td>
-      									<td><a>{{ siguiente.hora_llegada }}</a></td>
+                        <td><a>{{ siguiente.destino.direccion }}</a></td>
+                        <td><a>{{ siguiente.hora_llegada }}</a></td>
                       {% else %}
                       <td><a>{{ siguiente.origen.direccion }}</a></td>
                       <td><a>{{ siguiente.hora_salida }}</a></td>
                       {% endif %}
                       <form method='POST'>
                       {% csrf_token %}      
-      									<td><button type="submit" name="parada" value="1"><span style="color:green; font-size:1.5em;" class="glyphicon glyphicon-ok-sign "></span></button></td>
+                        <td><button type="submit" name="parada" value="1"><span style="color:green; font-size:1.5em;" class="glyphicon glyphicon-ok-sign "></span></button></td>
                         </form>
-									</tr>
-								</tbody>
-							</table>
-						</div>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
             <br>
           </div>
-						<div role="tabpanel" class="tab-pane fade" id="profile" aria-labelledby="profile-tab">
-							<h2 class="typoh2">Pasajeros proximos</h2>
+            <div id="Pasajeros" class="w3-container w3-white w3-padding-16 myLink">
+              <h2 style="text-align: center ;" >Pasajeros</h2>
+              <h3 class="typoh2">Pasajeros proximos</h3>
               {% if pasajeros %}
               <div class="panel panel-default table-responsive">
-							<table class="table  table-responsive table-striped" >
-								<thead>
-									<tr id="head">
-        								<th scope="col" >Foto</th>
-        								<th scope="col" >Nombre</th>
-        								<th scope="col">Sube</th>
-        								<th scope="col">No llega</th>
-									</tr>	
-								</thead>
-								<tbody> 
-									<tr>
+              <table class="table  table-responsive table-striped" >
+                <thead>
+                  <tr id="head">
+                        <th scope="col" >Foto</th>
+                        <th scope="col" >Nombre</th>
+                        <th scope="col">Sube</th>
+                        <th scope="col">No llega</th>
+                  </tr> 
+                </thead>
+                <tbody> 
+                  <tr>
                     {% for pasajero in pasajeros %}
-										<td><a>{{ pasajero.foto }}</a></td>
-      									<td><a>{{ pasajero.nombre }}</a></td>     
-      									<td><button name="subir" value="1" style="background-color: #e6e6e6;"><span style="color:green; font-size:1.5em;" class="glyphicon glyphicon-ok-sign "></span></button></td>
+                    <td><a>{{ pasajero.foto }}</a></td>
+                        <td><a>{{ pasajero.nombre }}</a></td>     
+                        <td><button name="subir" value="1" style="background-color: #e6e6e6;"><span style="color:green; font-size:1.5em;" class="glyphicon glyphicon-ok-sign "></span></button></td>
                         <td><button  name="ausente" value="1" style="background-color: #e6e6e6;"><span style="color:red; font-size:1.5em;" class="glyphicon glyphicon-remove-sign "></span></button></td>
                     {% endfor %}
                   </tr>
-								</tbody>
-							</table>
+                </tbody>
+              </table>
               </div>
-            {% else %}
-          <h1 style="text-align: center;  font-size: 200%;">No se suben pasajeros en este trayecto</h1>
+                    {% else %}
+        <br><br>
+        <div class="banner-left wow fadeInLeft animated" data-wow-delay=".5s">
+        <h1 style="text-align: center;  font-size: 200%;"> No se suben pasajeros en este trayecto</h1>
+        </div>
+        <br>
         {% endif %}
-							<br>
-							<h2 class="typoh2">Pasajeros en el vehiculo</h2>
+              <br>
+              <h3 class="typoh2">Pasajeros en el vehiculo</h3>
               {% if abordo %}
               <div class="panel panel-default table-responsive">
-							<table class="table  table-responsive table-striped" >
-								<thead>
-									<tr id="head">
-        								<th scope="col" >Foto</th>
-        								<th scope="col" >Nombre</th>
-        								<th scope="col">Baja</th>
-									</tr>	
-								</thead>
-								<tbody> 
-									<tr>
+              <table class="table  table-responsive table-striped" >
+                <thead>
+                  <tr id="head">
+                        <th scope="col" >Foto</th>
+                        <th scope="col" >Nombre</th>
+                        <th scope="col">Baja</th>
+                  </tr> 
+                </thead>
+                <tbody> 
+                  <tr>
                     {% for pasajero in abordo %}
-										<td><a>{{ viaje.2.foto }}</a></td>
-      									<td><a>{{ viaje.2.nombre }}</a></td>     
-      									<td><a href="/login" style="background-color: #e6e6e6;"><span style="color:green; font-size:1.5em;" class=" glyphicon glyphicon-circle-arrow-down"></span></a></td>
+                    <td><a>{{ viaje.2.foto }}</a></td>
+                        <td><a>{{ viaje.2.nombre }}</a></td>     
+                        <td><a href="/login" style="background-color: #e6e6e6;"><span style="color:green; font-size:1.5em;" class=" glyphicon glyphicon-circle-arrow-down"></span></a></td>
                     {% endfor %}
-									</tr>
-								</tbody>
-							</table>
+                  </tr>
+                </tbody>
+              </table>
               <br>
-						</div>
-            {% else %}
-          <h1 style="text-align: center;  font-size: 200%;">No hay pasajeros en el vehiculo</h1>
-          <br>
+            </div>
+        {% else %}
+        <br><br>
+        <div class="banner-left wow fadeInLeft animated" data-wow-delay=".5s">
+        <h1 style="text-align: center;  font-size: 200%;"> No hay pasajeros en el vehiculo</h1>
+        </div>
+        <br>
         {% endif %}
           </div>
-						<div role="tabpanel" class="tab-pane fade" id="dropdown1" aria-labelledby="dropdown1-tab">
-							<h2 class="typoh2">Reservas</h2>
+            <div id="Reservas" class="w3-container w3-white w3-padding-16 myLink">
+              <h2 style="text-align: center ;" >Reservas</h2>
               {% if reservas %}
               <div class="panel panel-default table-responsive">
               <table class="table  table-responsive table-striped" >
@@ -150,8 +159,8 @@
         </div>
         <br>
         {% endif %}
-						</div>
-					</div>
+            </div>
+          </div>
           <p id="demo"></p>
 					<!--
 					<div style= "text-align: center; background: #fff" class = "breadcrumb">
