@@ -1,17 +1,15 @@
 {% extends 'login/base_login.html' %}
 <!-- Header -->
 {% block content %}
-<header class="w3-display-container w3-content w3-hide-small" style="max-width:1500px">
-  <img class="w3-image" src="https://www.gapyear.com/wp-content/uploads/2017/11/RoadTipsMain.jpg" alt="London" width="1500" height="500">
-  <div class="w3-display-topmiddle" style="width:65% ;margin-top: 5%">
-    <div class="w3-bar w3-black">
-      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-user w3-margin-right"></i>Registrarme </button>
+<div class="banner-info">
+  <div class="w3-bar w3-black">
+      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Registrarme</button>
     </div>
-<div id="Viajes" class="w3-container w3-white w3-padding-16">
-      <h3>Te has registrado con éxito</h3>
-      <br>
-      <h5>¡Felicidades! Te has convertido en un usuario de NohJuimoh, inicia sesión con tus datos para vivir la experiencia (?) </h5>
+    <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
+      <div class="banner-left wow fadeInLeft animated" data-wow-delay=".5s"" >
+          <h3>Te has registrado con éxito</h3><br>
+          <h5>¡Felicidades! Te has convertido en un usuario de NohJuimoh, inicia sesión con tus datos para vivir la experiencia (?) </h5>
+      </div>
   </div>
-  </div>
-</header>
+</div>
 {% endblock %}

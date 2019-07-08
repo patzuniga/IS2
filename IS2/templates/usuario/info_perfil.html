@@ -1,37 +1,40 @@
-<header class="w3-display-container w3-content w3-hide-small" style="max-width:1500px" >
-  <img class="w3-image" src="https://www.gapyear.com/wp-content/uploads/2017/11/RoadTipsMain.jpg" alt="London" width="1500" height="500">
-  <div class="w3-display-middle" style="width:60%; vertical-align: text-top;"  >
-    <div class="w3-bar w3-black">
-      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Perfil');"><i class="fa fa-car w3-margin-right"></i>Perfil</button>
+<div class="banner-info">
+  <div class="w3-bar w3-black">
+      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Perfil</button>
     </div>
-    <!-- Tabs -->
-    <div id="Perfil" class="w3-container w3-white w3-padding-16 myLink"  >
-      <h3 style="text-align: center;">Información de Perfil</h3>
-      <div class="w3-row-padding"  style="margin:0 -16px;">
-        <div class="w3-half table-light" >
-          <p><strong>Nombre: </strong>{{perfil.0}} {{perfil.1}}</p>
-          <p><strong>E-mail: </strong>{{perfil.2}}</p>
-          <p><strong>Teléfono: </strong>{{perfil.3}}</p>
-          <p><strong>Dirección: </strong>{{perfil.4}}</p>
-          <p><strong>Profesión: </strong>{{perfil.5}}</p>
-          <p><strong>Fumador: </strong>{{perfil.6}}</p>
-          <p><strong>Calificación Promedio: </strong> poner algo aquí (raknar)</p>
+    <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
+      <div class="banner-info wow fadeInLeft animated" data-wow-delay=".5s"" >
+        <h1 style="text-align: center;">Información de Perfil</h1>
+            <div class="w3-row-padding"  style="margin:0 -16px;">
+              <div class="w3-half table-light" style="padding-left: 10%" >
+                <p><strong>Nombre: </strong>{{perfil.0}} {{perfil.1}}</p>
+                <p><strong>E-mail: </strong>{{perfil.2}}</p>
+                <p><strong>Teléfono: </strong>{{perfil.3}}</p>
+                <p><strong>Dirección: </strong>{{perfil.4}}</p>
+                <p><strong>Profesión: </strong>{{perfil.5}}</p>
+                <p><strong>Fumador: </strong>{{perfil.6}}</p>
+                <p><strong>Calificación Promedio: </strong> poner algo aquí (raknar)</p>
+                {% if perfil_conductor %}
+                <br>
+                <p><strong>Licencia: </strong>Clase {{perfil_conductor.0}}, obtenida en {{perfil_conductor.1}}</p>
+                <p><strong>Vehículo</strong></p>
+                <p><strong>Patente: </strong>{{perfil_conductor.2}}</p>
+                <p><strong>Marca: </strong>{{perfil_conductor.3}}</p>
+                <p><strong>Modelo: </strong>{{perfil_conductor.4}}</p>
+                <p><strong>Color: </strong>{{perfil_conductor.5}}</p>
+                <p><strong>Número de asientos: </strong>{{perfil_conductor.6}}</p>
+                <p><strong>Consumo: </strong>{{perfil_conductor.7}}</p>
+                <p><strong>Portamaleta: </strong>{{perfil_conductor.8}}</p>
+                {% endif %}
+              </div>
+          </div><br>
+        <div class="banner-left">
           {% if perfil_conductor %}
-          <p><strong>Licencia: </strong>Clase {{perfil_conductor.0}}, obtenida en {{perfil_conductor.1}}</p>
-          <p><strong>Vehículo</strong></p>
-          <p><strong>Patente: </strong>{{perfil_conductor.2}}</p>
-          <p><strong>Marca: </strong>{{perfil_conductor.3}}</p>
-          <p><strong>Modelo: </strong>{{perfil_conductor.4}}</p>
-          <p><strong>Color: </strong>{{perfil_conductor.5}}</p>
-          <p><strong>Número de asientos: </strong>{{perfil_conductor.6}}</p>
-          <p><strong>Consumo: </strong>{{perfil_conductor.7}}</p>
-          <p><strong>Portamaleta: </strong>{{perfil_conductor.8}}</p>
+          <a href="{% url 'editarperfilconduct' %}"><button class="w3-button w3-blue" style="text-align: center;">Editar Perfil</button></a>
+          {% else %}
+          <a href="{% url 'editarperfil' %}"><button class="w3-button w3-blue" style="text-align: center;">Editar Perfil</button></a>
           {% endif %}
-        </div>
+        </div><br><br>
     </div>
-    {% if perfil_conductor %}
- <a href="{% url 'editarperfilconduct' %}"><button class="w3-button w3-dark-grey" style="text-align: center;">Editar Perfil</button></a>
-    {% else %}
-    <a href="{% url 'editarperfil' %}"><button class="w3-button w3-dark-grey" style="text-align: center;">Editar Perfil</button></a>
-    {% endif %}
-</header>
+  </div>
+</div>

@@ -24,28 +24,27 @@
     color: green;
 }
     </style>
-  <div class="banner-info">
+<div class="banner-info">
     <div class="w3-bar w3-black">
-      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Agregar Paradas</button>
-    </div>
-    <!-- Tabs -->
-    <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
-      <h3>Publica tu viaje con nosotros</h3>
-      <div class="w3-row-padding" style="margin:0 -16px;">
-        <div class="w3-half">
-          {% if error %}
-           <a style = "width: 15% ;height: auto;font-size:1vw">{{error}}</a>
+        <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Buscar Viaje</button>
+     </div>
+     <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink"><br><br>
+       <div class="w3-row-padding" style="margin:0 -16px;">
+         <div class="w3-half">
+           {% if error %}
+              <a style = "width: 15% ;height: auto;font-size:1vw">{{error}}</a>
            {% endif %}
-         <form method="post">
-          {% csrf_token %}
-           Parada<br><input type="text" class="form-control" id="where_load"  name = "direccion" required class="vTextField" maxlength="30" />
+           <form method="post">
+           {% csrf_token %}
+             Parada<br><input type="text" class="form-control" id="where_load"  name = "direccion" required class="vTextField" maxlength="30" />
            {{ form.as_p}}
          </div>
+        </div>
          <br>
-       <div class="w3-clear w3-center nextprev">
+       <div class="banner-left">
           <a href="{% url 'cancelar_crear_viaje' %}" class="w3-button w3-dark-grey" >Cancelar </a>
-          <button class="w3-button w3-dark-grey" name="publicar2" value="1" style="margin-left: 4%">Publicar Viaje</button>
-          <button class="w3-button w3-dark-grey" type = "submit" name="agregar2"  value="1" style="margin-left: 4%">Agregar Parada</button>
+          <button class="w3-button w3-dark-grey" name="publicar2" value="1" style="margin-left: 3%">Publicar Viaje</button>
+          <button class="w3-button w3-dark-grey" type = "submit" name="agregar2"  value="1" style="margin-left: 3%">Agregar Parada</button>
       </div>
     </form>
     </div>

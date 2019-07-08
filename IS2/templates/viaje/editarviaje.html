@@ -10,16 +10,15 @@
     margin-right:15px;
 }
 </style>
-  <div class="banner-info">
-      <div class="w3-bar w3-black">
-        <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Editar Viaje</button>
-         </div>
-          <!-- Tabs -->
-          <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
-            <div class="banner-info wow fadeInLeft animated" data-wow-delay=".5s" > 
-              
-              <h1 style="text-align: center;">Editar viaje</h1>  
-                   <div class="banner-info">
+ <div class="banner-info">
+  <div class="w3-bar w3-black">
+      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Editar Viaje</button>
+    </div>
+    <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
+        <div class="banner-info wow fadeInLeft animated" data-wow-delay=".5s" >
+          <h1 align="center">Editar Viaje</h1><br>
+           <div class="w3-row-padding" style="margin:0 -16px;">
+              <div class="w3-half" style="padding-left: 10%;">
                       {% if error %}
                       <a style = "width: 15% ;height: auto;font-size:1vw">{{error}}</a>
                       {% endif %}
@@ -27,16 +26,15 @@
                       {% csrf_token %}
                       {{ form.as_p}}
                   </div>
-                
-   <div class="w3-clear nextprev">
-    <a href="{% url 'viaje_list' %}" class="w3-button w3-dark-grey" >Cancelar </a>
-   <button class="w3-button w3-dark-grey" name="publicar4"  value = 1 >Guardar</button>
-    
-  </div>
-   </form>
-
+            </div><br>
+                <div class="banner-left">
+                  <a href="{% url 'viaje_list' %}" class="w3-button w3-dark-grey" >Cancelar </a>
+                  <button class="w3-button w3-dark-grey" name="publicar4"  value = 1 >Guardar</button>
+                </div>
+            </form>
+          </div>
+        </div>
     </div>
-</header>
 
 <script>
 function onLoaded() {

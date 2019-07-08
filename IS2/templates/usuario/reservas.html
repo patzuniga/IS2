@@ -9,56 +9,55 @@
           text-align: center;
         }
       </style>  
+
 <div class="banner-info">
     <div class="w3-bar w3-black">
       <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Reservas</button>
     </div>
-    <!-- Tabs -->
     <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
-      <div class="banner-left wow fadeInLeft animated" data-wow-delay=".5s" >      
+      <div class="banner-info wow fadeInLeft animated" data-wow-delay=".5s" >      
         <h3>Mi Reservas</h3><br><br>
          {% if reservas %}
-        <div class="panel panel-default table-responsive">
-            <table class="table  table-responsive table-striped">
-              <thead>
-        			<tr>
-                <th>Conductor</th>
-                <th>Plazas Pedidas</th>
-                <th>Origen</th>
-                <th>Destino</th>
-                <th>Fecha inicio</th>
-                <th>Hora inicio</th>
-                <th>Fecha fin</th>
-                <th>Hora fin</th>
-                <th>Precio</th>
-                <th>Estado</th>
-                <th>Eliminar</th>
-        			</tr>	
-        			</thead>
-          		<tbody>
-              {% for reserva in reservas %}
-          			<tr>
-                <td>{{ reserva.1}}</a></td>
-                <td>{{ reserva.2}}</a></td>
-                <td>{{ reserva.3}}</a></td>
-                <td>{{ reserva.4}}</a></td>
-                <td>{{ reserva.5}}</a></td>
-                <td>{{ reserva.6}}</a></td>
-                <td>{{ reserva.7}}</a></td>
-                <td>{{ reserva.8}}</a></td>
-                <td>{{ reserva.9}}</a></td>
-                <td>{{ reserva.10}}</a></td>
-                <td ><a href = "{% url 'confirmacion' reserva.11 %}"><button class="round-button" onclick=""><i class="fa fa-times " style="text-align: center;"></i></button></a></td>
-                </tr>
-          		{% endfor %}
-              </tbody>
-		        </table>
-          </div>   
+              <div class="panel panel-default table-responsive">
+                <table class="table  table-responsive table-striped">
+                  <thead>
+              			<tr>
+                      <th>Conductor</th>
+                      <th>Plazas Pedidas</th>
+                      <th>Origen</th>
+                      <th>Destino</th>
+                      <th>Fecha inicio</th>
+                      <th>Hora inicio</th>
+                      <th>Fecha fin</th>
+                      <th>Hora fin</th>
+                      <th>Precio</th>
+                      <th>Estado</th>
+                      <th>Eliminar</th>
+              			</tr>	
+            			</thead>
+              		<tbody>
+                    {% for reserva in reservas %}
+                			<tr>
+                          <td>{{ reserva.1}}</a></td>
+                          <td>{{ reserva.2}}</a></td>
+                          <td>{{ reserva.3}}</a></td>
+                          <td>{{ reserva.4}}</a></td>
+                          <td>{{ reserva.5}}</a></td>
+                          <td>{{ reserva.6}}</a></td>
+                          <td>{{ reserva.7}}</a></td>
+                          <td>{{ reserva.8}}</a></td>
+                          <td>{{ reserva.9}}</a></td>
+                          <td>{{ reserva.10}}</a></td>
+                          <td ><a href = "{% url 'confirmacion' reserva.11 %}"><button class="round-button" onclick=""><i class="fa fa-times " style="text-align: center;"></i></button></a></td>
+                      </tr>
+                		{% endfor %}
+                  </tbody>
+    		        </table>
+              </div>   
             {% else %}
               <h3>No has realizado ninguna reserva</h3>
             {% endif %}
         </div>	
       <div>
-		</div>
-  </div>
+	</div></div></div>
 	{% endblock %}

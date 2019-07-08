@@ -6,12 +6,12 @@
   h3{text-align: center;}
   h4{text-align: center;}
 </style>
-<div id="Viajes" class="banner-left">
+<div class="banner-info">
   <div class="w3-bar w3-black">
       <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Confirmar</button>
     </div>
-
     <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
+      <div class="banner-left wow fadeInLeft animated" data-wow-delay=".5s"" >
       <h3>Confirmar Cancelación Reserva</h3>
         <div class="w3-container" style="margin:0 -16px;">
             <h4 style="color: black;">¿Estas seguro que quieres rechazar esta reserva?</h4>
@@ -21,5 +21,6 @@
           <a href="{% url 'viaje_list' %}"><button class="w3-button w3-dark-grey">NO</button></a>
         </div>
     </div>
+  </div>
 </div>
 {% endblock %}

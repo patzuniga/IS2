@@ -12,60 +12,63 @@
       </style>
 <div class="banner-info">
   <div class="w3-bar w3-black">
-      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Confirmar</button>
+      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Detalles Viaje</button>
     </div>
     <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
-      <div class="banner-left wow fadeInLeft animated" data-wow-delay=".5s"" >
-      <h1 style="text-align: center;">Tu Viaje</h1>
-        <div class="container">
-          <p><strong>Fecha Salida: </strong>{{viajes.2}} a las {{viajes.1.0.0.hora_salida}}</p>
-          <p><strong>Tiene Porta-Maleta: </strong>{% if viajes.0.porta_maleta %} SI {% else %} NO {% endif %}</p>
-          <p><strong>Tiene Silla de Niños: </strong>{% if viajes.0.silla_niños %} SI {% else %} NO {% endif %}</p>
-          <p><strong>Permite Mascostas: </strong>{% if viajes.0.mascotas %} SI {% else %} NO {% endif %}</p>
-          <p><strong>Tarifa : </strong> {{viajes.0.tarifaPreferencias}}</p>
-          <p><strong>Asientos Totales: </strong> {{viajes.0.plazas_disponibles}}</p>
-          <p><strong>Estado Viaje: </strong>{{viajes.0.estado}}</p>
-		    </div>
-		</div>
+      <div class="banner-info wow fadeInLeft animated" data-wow-delay=".5s"" >
+         <h1 style="text-align: center;">Tu Viaje</h1>
+           <div class="banner-info" style="padding-left: 5%;">
+              <p><strong>Fecha Salida: </strong>{{viajes.2}} a las {{viajes.1.0.0.hora_salida}}</p>
+              <p><strong>Tiene Porta-Maleta: </strong>{% if viajes.0.porta_maleta %} SI {% else %} NO {% endif %}</p>
+              <p><strong>Tiene Silla de Niños: </strong>{% if viajes.0.silla_niños %} SI {% else %} NO {% endif %}</p>
+              <p><strong>Permite Mascostas: </strong>{% if viajes.0.mascotas %} SI {% else %} NO {% endif %}</p>
+              <p><strong>Tarifa : </strong> {{viajes.0.tarifaPreferencias}}</p>
+              <p><strong>Asientos Totales: </strong> {{viajes.0.plazas_disponibles}}</p>
+              <p><strong>Estado Viaje: </strong>{{viajes.0.estado}}</p>
+		      </div>
+		  </div>
 
-    <div class="banner-left wow fadeInLeft animated" data-wow-delay=".5s">      
-    <h1 style="text-align: center;  font-size: 200%;">Paradas viaje</h1>
-        <div class="panel panel-default table-responsive">
-		      {% if viajes.0 %}
-          <table class="table  table-responsive table-striped">
-            <thead>
-              <tr>
-                <th>Origen</th>
-                <th>Destino</th>
-                <th> Hora Llegada</th>
-                <th>Fecha</th>
-                <th>Asientos Disp.</th>
-                <th>Reservas</th>
+      <div class="banner-left wow fadeInLeft animated" data-wow-delay=".5s">      
+          <h1 style="text-align: center;  font-size: 200%;">Paradas viaje</h1>
+          <div class="panel panel-default table-responsive">
+    		    {% if viajes.0 %}
+            <table class="table  table-responsive table-striped">
+                <thead>
+                  <tr>
+                    <th>Origen</th>
+                    <th>Destino</th>
+                    <th> Hora Llegada</th>
+                    <th>Fecha</th>
+                    <th>Asientos Disp.</th>
+                    <th>Reservas</th>
+                  </tr>
+                </thead>
+                <tbody>
+          			  {% for viaje in viajes.1 %}
+                    <tr >
+                			<td>{{ viaje.0.origen.nombre }}</td>
+                      <td>{{ viaje.0.destino.nombre }}</td>
+                      <td>{{ viaje.0.hora_llegada }}</td>
+                      <td>{{ viaje.0.fecha }}</a></td>
+                      <td>{{ viaje.0.asientos_disponibles }}</a></td>
+                      <td>{{ viaje.1 }}</a></td>
                     </tr>
-              </thead>
-              <tbody>
-      			   {% for viaje in viajes.1 %}
-                <tr >
-            			<td>{{ viaje.0.origen.nombre }}</td>
-                  <td>{{ viaje.0.destino.nombre }}</td>
-                  <td>{{ viaje.0.hora_llegada }}</td>
-                  <td>{{ viaje.0.fecha }}</a></td>
-                  <td>{{ viaje.0.asientos_disponibles }}</a></td>
-                  <td>{{ viaje.1 }}</a></td>
-                </tr>
-            		  {% endfor %}
-              </tbody> 
-          </table>
-        	{% else %}
-            <h3>No hay registros de viajes</h3>
-          {% endif %}
-		</div><br>
-      <input type=button value="Atras" onClick="javascript:history.go(-1);" style="margin-left: 2%" class="w3-button w3-dark-grey"> 
-		<div></div>
-			{% csrf_token %}
-   			<input type="hidden" name="holiwi"  id="holiwi">
-		</div>
-	</div>
+                	{% endfor %}
+                </tbody> 
+            </table>
+            {% else %}
+                <h3>No hay registros de viajes</h3>
+             {% endif %}
+    		  </div><br>
+          <input type=button value="Atras" onClick="javascript:history.go(-1);" style="margin-left: 2%" class="w3-button w3-dark-grey"> 
+      		<div>
+      			{% csrf_token %}
+         			<input type="hidden" name="holiwi"  id="holiwi">
+      		</div>
+    	</div><br><br>
+    </div>
+</div>
+
 <script>
       function initMap() {
         var directionsService = new google.maps.DirectionsService;

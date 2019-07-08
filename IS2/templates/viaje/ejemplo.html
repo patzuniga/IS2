@@ -20,15 +20,14 @@
         height: 174px;
     </style>
 <div class="banner-info">
-    <div class="w3-bar w3-black">
-      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Tu Ruta</button>
+  <div class="w3-bar w3-black">
+      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Mapa Viaje</button>
     </div>
-    <!-- Tabs -->
     <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
-      <h3>Publica tu viaje con nosotros</h3>
-      <br>
-      <div class = "w3-container">
-      <div id="map" class="banner-info">:</div>
+      <div class="banner-left wow fadeInLeft animated" data-wow-delay=".5s"" >
+        <h3>Publica tu viaje con nosotros</h3><br>
+           <div class = "banner-left">
+              <div id="map" class="banner-left" style="padding-left: 20%;">:</div>
 <!--    <div id="general" class="w3-container-left">
       <h4> General: </h4>
         <div class="w3-half table-light" >
@@ -64,16 +63,18 @@
     </table>
     </div>
     <div>-->
-      <form method="post" id="myform">
-        {% csrf_token %}
-       <input type= "hidden" name="holiwi"  id="holiwi">
-   <div class="w3-clear w3-center nextprev">
-          <a href="{% url 'cancelar_crear_viaje' %}"><button class="w3-button w3-dark-grey" name="cancelar" value="1" style="margin-top:20vw" >Cancelar </button></a>
-          <button class="w3-button w3-dark-grey" name="listo" value="1" style="margin-top:20vw" >Publicar Viaje </button>
-</div>
-        </form>
-  </div>
-  </div>
+            <form method="post" id="myform">
+            {% csrf_token %}
+            <input type= "hidden" name="holiwi"  id="holiwi">
+               <div class="w3-clear w3-center nextprev">
+                    <a href="{% url 'cancelar_crear_viaje' %}"><button class="w3-button w3-dark-grey" name="cancelar" value="1" style="margin-top:20vw" >Cancelar </button></a>
+                    <button class="w3-button w3-dark-grey" name="listo" value="1" style="margin-top:20vw" >Publicar Viaje </button>
+                </div>
+            </form>
+          </div>
+       </div>
+      </div>
+    </div>
 
     <script>
       function initMap() {

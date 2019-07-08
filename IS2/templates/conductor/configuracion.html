@@ -13,7 +13,7 @@
       <p>Esto hará que las reservas se confirmen inmediatamente cuando un pasajero las pida, mientras se dispongan de asientos en el viaje.</p><br><br>
       <form action='../cambio/' method='post'>
         {% csrf_token %}
-      <button type='submit' class="w3-button w3-dark-grey" >{% if auto_a %} Desactivar {% else %} Activar {% endif %}</button><br><br>
+      <button type='submit' class="w3-button w3-blue" >{% if auto_a %} Desactivar {% else %} Activar {% endif %}</button><br><br>
       </form>
     </div>
   </div>

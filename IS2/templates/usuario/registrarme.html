@@ -1,24 +1,23 @@
 {% extends 'login/base_login.html' %}
 <!-- Header -->
 {% block content %}
-<header class="w3-display-container w3-content w3-hide-small" style="max-width:1500px">
-  <img class="w3-image" src="https://www.gapyear.com/wp-content/uploads/2017/11/RoadTipsMain.jpg" alt="London" width="1500" height="500">
-  <div class="w3-display-topmiddle" style="width:65% ;margin-top: 5%">
-    <div class="w3-bar w3-black">
-      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-user w3-margin-right"></i>Registrarme </button>
+<div class="banner-info">
+  <div class="w3-bar w3-black">
+      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Registrarme</button>
     </div>
-<div id="Viajes" class="w3-container w3-white w3-padding-16">
-      <h3>Introduce tus datos</h3>
-      <form method="post">
-          {% csrf_token %}
-           {{ form.as_p}}
-         <br>
-       <div class="w3-clear w3-center nextprev">
-          <button class="w3-button w3-dark-grey" name="pasajero" value="1" style="margin-left: 4%">Registrarme como Pasajero</button>
-          <button class="w3-button w3-dark-grey" type = "submit" name="conductor"  value="1" style="margin-left: 4%">Registrarme como Conductor</button>
-      </div>
-    </form>
-  </div>
-  </div>
-</header>
+    <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
+      <div class="banner-info wow fadeInLeft animated" data-wow-delay=".5s"" >
+          <h3>Introduce tus datos</h3>
+          <form method="post">
+              {% csrf_token %}
+               {{ form.as_p}}
+             <br>
+           <div class="w3-clear w3-center nextprev">
+              <button class="w3-button w3-dark-grey" name="pasajero" value="1" style="margin-left: 4%">Registrarme como Pasajero</button>
+              <button class="w3-button w3-dark-grey" type = "submit" name="conductor"  value="1" style="margin-left: 4%">Registrarme como Conductor</button>
+           </div>
+          </form>
+       </div>
+    </div>
+</div>
 {% endblock %}
