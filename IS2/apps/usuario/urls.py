@@ -16,6 +16,7 @@ urlpatterns = [
 	url(r'^conductor/', include('apps.conductor.urls')),
 	url(r'^ver_reservas/',ver_reservas, name= 'ver_reservas'),
 	url(r'^cancelar/(?P<pk>\d+)/$',confirmacion, name = 'confirmacion'),
+	url(r'^alerta$',alerta, name= 'alerta'),    
 	url(r'^cancelar/done/(?P<pk>\d+)/$',cancelar_reserva, name= 'cancelar_reserva'),  
 	url(r'^editarperfil/$', editarperfil, name='editarperfil'),
 	url(r'^editarperfilconduct/$', editarperfilconduct, name='editarperfilconduct'),     

@@ -23,4 +23,6 @@ urlpatterns = [
     url(r'^cancelarReservaConductor/(?P<pk>\d+)/$', cancelarReservaConductor, name='cancelarReservaConductor'),
     url(r'^confirmarAceptarReservaConductor/(?P<pk>\d+)/$', confirmarAceptarReservaConductor, name='confirmarAceptarReservaConductor'),
     url(r'^aceptarReservaConductor/(?P<pk>\d+)/$', aceptarReservaConductor, name='aceptarReservaConductor'),
+    url(r'^administrar/(?P<pk>\d+)/$', administrar, name='administrar'),
+    url(r'^viaje_reserva/(?P<pk>\d+)$', detail_viaje_en_curso, name='viaje_reserva'),
 ]

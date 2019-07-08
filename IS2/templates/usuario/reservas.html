@@ -18,42 +18,48 @@
       <div class="banner-info wow fadeInLeft animated" data-wow-delay=".5s" >      
         <h3>Mi Reservas</h3><br><br>
          {% if reservas %}
-              <div class="panel panel-default table-responsive">
-                <table class="table  table-responsive table-striped">
-                  <thead>
-              			<tr>
-                      <th>Conductor</th>
-                      <th>Plazas Pedidas</th>
-                      <th>Origen</th>
-                      <th>Destino</th>
-                      <th>Fecha inicio</th>
-                      <th>Hora inicio</th>
-                      <th>Fecha fin</th>
-                      <th>Hora fin</th>
-                      <th>Precio</th>
-                      <th>Estado</th>
-                      <th>Eliminar</th>
-              			</tr>	
-            			</thead>
-              		<tbody>
-                    {% for reserva in reservas %}
-                			<tr>
-                          <td>{{ reserva.1}}</a></td>
-                          <td>{{ reserva.2}}</a></td>
-                          <td>{{ reserva.3}}</a></td>
-                          <td>{{ reserva.4}}</a></td>
-                          <td>{{ reserva.5}}</a></td>
-                          <td>{{ reserva.6}}</a></td>
-                          <td>{{ reserva.7}}</a></td>
-                          <td>{{ reserva.8}}</a></td>
-                          <td>{{ reserva.9}}</a></td>
-                          <td>{{ reserva.10}}</a></td>
-                          <td ><a href = "{% url 'confirmacion' reserva.11 %}"><button class="round-button" onclick=""><i class="fa fa-times " style="text-align: center;"></i></button></a></td>
-                      </tr>
-                		{% endfor %}
-                  </tbody>
-    		        </table>
-              </div>   
+        <div class="panel panel-default table-responsive">
+            <table class="table  table-responsive table-striped">
+              <thead>
+        			<tr>  
+                <th></th>
+                <th>Conductor</th>
+                <th>Plazas Pedidas</th>
+                <th>Origen</th>
+                <th>Destino</th>
+                <th>Fecha inicio</th>
+                <th>Hora inicio</th>
+                <th>Fecha fin</th>
+                <th>Hora fin</th>
+                <th>Precio</th>
+                <th>Estado</th>
+                <th>Eliminar</th>
+        			</tr>	
+        			</thead>
+          		<tbody>
+              {% for reserva in reservas %}
+          			<tr>
+                  {% if reserva.12 == "Iniciado" and reserva.10 == "Aprobada" or reserva.10 == "Transito" and reserva.12 == "Iniciado" %}
+                  <td><a href="/viaje/viaje_reserva/{{reserva.11}}"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
+                  {% else %}
+                  <td></td>
+                  {% endif %}
+                  <td>{{ reserva.1}}</a></td>
+                  <td>{{ reserva.2}}</a></td>
+                  <td>{{ reserva.3}}</a></td>
+                  <td>{{ reserva.4}}</a></td>
+                  <td>{{ reserva.5}}</a></td>
+                  <td>{{ reserva.6}}</a></td>
+                  <td>{{ reserva.7}}</a></td>
+                  <td>{{ reserva.8}}</a></td>
+                  <td>{{ reserva.9}}</a></td>
+                  <td>{{ reserva.10}}</a></td>
+                  <td ><a href = "{% url 'confirmacion' reserva.11 %}"><button class="round-button" onclick=""><i class="fa fa-times " style="text-align: center;"></i></button></a></td>
+                </tr>
+          		{% endfor %}
+              </tbody>
+		        </table>
+          </div>   
             {% else %}
               <h3>No has realizado ninguna reserva</h3>
             {% endif %}
