@@ -1,6 +1,6 @@
 from django import forms
 from apps.viaje.models import Viaje
-from datetime import datetime
+from datetime import datetime, timedelta
 import pytz
 
 from .models import *
@@ -32,6 +32,8 @@ class ViajeForm(forms.Form):
 			raise forms.ValidationError("Las fechas indicadas no pueden ser menores a la actual")
 		elif (fecha_destino <= fecha_origen):
 			raise forms.ValidationError("Fecha y hora de término deben ser mayores a la fecha y hora de inicio.")
+		elif (fecha_destino > fecha_origen + timedelta(days=1)):
+			raise forms.ValidationError("El viaje solo puede durar 24 hrs.")	
 			
 class EditarViajeForm(forms.Form):
 	origen = forms.CharField(label="Origen",widget=forms.TextInput(attrs={'class':'form-control'}))

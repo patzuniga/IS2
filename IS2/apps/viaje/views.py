@@ -963,3 +963,6 @@ def aceptarReservaConductor(request, pk):
 	else:
 		exitoaceptarreservaconductor = False
 		return render(request, 'viaje/aceptarReservaConductor.html', {'exitoaceptarreservaconductor' : exitoaceptarreservaconductor})
+
+#@login_required()
+#def Viajereservasver(request):		

@@ -1,14 +1,18 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import render, redirect, HttpResponse
-
+from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
 # Create your views here.
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from apps.usuario.models import Usuario, Perfil
+from apps.conductor.models import Vehiculo, Conductor
 from apps.viaje.models import Reserva,Viaje
-from apps.usuario.forms import Registrationform
+from apps.usuario.forms import *
 from apps.conductor.views import registro_conductor
+from apps.conductor.views import Conductor, registro_conductor
 from datetime import datetime 
 from datetime import timedelta
 import pytz
@@ -127,3 +131,153 @@ def registro(request):
 	else:
 		form = Registrationform()
 		return render(request, 'usuario/registrarme.html', {'form': form})
+
+def editarperfil(request):
+	user = Usuario.objects.get(id=request.user.id)
+	#user = us.perfil
+	if request.method == 'POST':
+		form = EditarPerfil(request.POST)
+		print("POST")
+		if form.is_valid():
+			print("formulario valido")
+			if(user.username != form.cleaned_data['username']):
+				username = form.cleaned_data['username']
+				username_qs = Usuario.objects.filter(username=username)
+				if username_qs.exists():
+					error = "El nombre de usuario ya está en uso."
+					formu = EditarPerfil()
+					return render(request,'usuario/editarperfil.html',{'form':form, 'error': error})	
+			user.username = form.cleaned_data['username']
+			user.email = form.cleaned_data['email']
+			user.perfil.numero_telefono = form.cleaned_data['numero_telefono']
+			user.perfil.direccion = form.cleaned_data['direccion']
+			user.perfil.fumador = form.cleaned_data['fumador']
+			user.perfil.profesion = form.cleaned_data['profesion']
+			user.save()
+			print("guardado")
+			#us.save()
+			return redirect('ver_perfil')
+	else:    	
+		data={'username': user.username,
+			'email':user.email,
+			'numero_telefono':user.perfil.numero_telefono,
+			'direccion':user.perfil.direccion,
+			'fumador':user.perfil.fumador,
+			'profesion':user.perfil.profesion,
+		}
+		form = EditarPerfil(initial= data)
+	return render(request, 'usuario/editarperfil.html', {'form': form})
+
+def editarperfilconduct(request):
+	user = Usuario.objects.get(id=request.user.id)
+	cond = Conductor.objects.get(usuario=user)
+	#cond = user.conductor_set.all()
+	#user = us.perfil
+	if request.method == 'POST':
+		form = EditarPerfilConduct(request.POST)
+		print("POST")
+		if form.is_valid():
+			print("formulario valido")
+			if(user.username != form.cleaned_data['username']):
+				username = form.cleaned_data['username']
+				username_qs = Usuario.objects.filter(username=username)
+				if username_qs.exists():
+					error = "El nombre de usuario ya está en uso."
+					formu = EditarPerfil()
+					return render(request,'usuario/editarperfil.html',{'form':form, 'error': error})	
+			user.username = form.cleaned_data['username']
+			user.email = form.cleaned_data['email']
+			user.perfil.numero_telefono = form.cleaned_data['numero_telefono']
+			user.perfil.direccion = form.cleaned_data['direccion']
+			user.perfil.fumador = form.cleaned_data['fumador']
+			user.perfil.profesion = form.cleaned_data['profesion']
+			cond.clasedelicencia = form.cleaned_data['clasedelicencia']
+			cond.fecha_obtencion = form.cleaned_data['fecha_obtencion']
+			cond.car.patente = form.cleaned_data['patente']
+			cond.car.marca = form.cleaned_data['marca']
+			cond.car.modelo = form.cleaned_data['modelo']
+			cond.car.maleta = form.cleaned_data['maleta']
+			cond.car.color = form.cleaned_data['color']
+			cond.car.Numeroasientos = form.cleaned_data['Numeroasientos']
+			cond.car.consumo = form.cleaned_data['consumo']
+			cond.car.save()
+			cond.save()
+			user.save()
+			print("guardado")
+			#us.save()
+			return redirect('ver_perfil')
+	else:    	
+		data={'username': user.username,
+			'email':user.email,
+			'numero_telefono':user.perfil.numero_telefono,
+			'direccion':user.perfil.direccion,
+			'fumador':user.perfil.fumador,
+			'profesion':user.perfil.profesion,
+			'clasedelicencia':cond.clasedelicencia,
+			'fecha_obtencion':cond.fecha_obtencion,
+			'patente':cond.car.patente,
+    		'marca':cond.car.marca,
+    		'modelo':cond.car.modelo,
+    		'maleta':cond.car.maleta,
+    		'color':cond.car.color,
+    		'Numeroasientos':cond.car.Numeroasientos,
+    		'consumo':cond.car.consumo,
+		}
+		form = EditarPerfilConduct(initial= data)
+	return render(request, 'usuario/editarperfilconduct.html', {'form': form})
+
+def CambiarContraseña(request):
+	if request.method == 'POST':
+		form = PasswordChangeForm(user =request.user, data = request.POST)
+		if form.is_valid():
+			form.save()
+			request.user.save()
+			update_session_auth_hash(request, form.user)  # Important!
+			messages.success(request, 'Tu contraseña ha sido actualizada con éxito!')
+			return redirect('ver_perfil')
+		else:
+			messages.error(request, 'Por favor corregir error.')
+	else:
+		form = PasswordChangeForm(request.user)
+	return render(request, 'usuario/cambiarcontrasena.html', {'form': form})
+
+#para no desplegar Nones
+def ingresado(algo):
+	return (algo if algo != None else 'No ingresado')
+#para no poner true o false
+def sino(que):
+	return ('Sí' if que else 'No')
+
+@login_required()
+def ver_perfil(request):
+	info_perfil = []
+	us = Usuario.objects.get(id=request.user.id)
+	yo = Perfil.objects.get(usuario=us)
+	info_perfil.append(ingresado(us.first_name))
+	info_perfil.append(ingresado(us.last_name))
+	info_perfil.append(ingresado(us.email))
+	info_perfil.append(ingresado(yo.numero_telefono))
+	info_perfil.append(ingresado(yo.direccion))
+	info_perfil.append(ingresado(yo.profesion))
+	info_perfil.append(sino(yo.fumador))#('Sí' if yo.fumador else 'No')
+
+
+	#cond = us.conductor_set.all()[0] ##Conductor.objects.get(usuario_id=request.user.id)
+	#tiene que haber una mejor forma de hacer esto, pero estoy sin internet ("<
+	cond = us.conductor_set.all()
+	for xor in cond:
+		info_condu = []
+		info_condu.append(ingresado(xor.clasedelicencia))
+		info_condu.append(ingresado(xor.fecha_obtencion))
+		#auto
+		info_condu.append(ingresado(xor.car.patente))
+		info_condu.append(ingresado(xor.car.marca))
+		info_condu.append(ingresado(xor.car.modelo))
+		info_condu.append(ingresado(xor.car.color))
+		info_condu.append(ingresado(xor.car.Numeroasientos))
+		info_condu.append(ingresado(xor.car.consumo))
+		info_condu.append(sino(xor.car.maleta))
+		return render(request, 'usuario/mi_perfil_conductor.html', {'perfil': info_perfil, 'perfil_conductor': info_condu})
+
+	return render(request, 'usuario/mi_perfil.html', {'perfil': info_perfil})
+
