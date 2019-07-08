@@ -31,6 +31,7 @@ class Tramo(models.Model):
 
 	def __unicode__(self):
 		return str(self.id)
+		
 class Viaje(models.Model):
 	fecha = models.DateField()
 	estado = models.CharField(max_length=20,null=False)

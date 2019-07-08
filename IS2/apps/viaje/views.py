@@ -964,5 +964,98 @@ def aceptarReservaConductor(request, pk):
 		exitoaceptarreservaconductor = False
 		return render(request, 'viaje/aceptarReservaConductor.html', {'exitoaceptarreservaconductor' : exitoaceptarreservaconductor})
 
-#@login_required()
-#def Viajereservasver(request):		
+@login_required()
+def Proximareserva(request, pk):
+	viajes=[]
+	paradas = []
+	trams = []
+	viaje  = Viaje.objects.get(id = pk)
+	pk = pk
+	tramitos = viaje.tramos.all()
+	ultimo = len(tramitos)
+	if request.method == 'POST' or request.method == 'GET':
+		aux = Viaje.objects.get(id = pk)
+		tramitos = aux.tramos.all().order_by('orden_en_viaje')
+		if request.POST.get("subee"):
+			print("boton subee")
+			print(request.POST.get("subee"))
+			pk = request.POST.get("sube")
+			reservas = Reserva.objects.filter(id=pk)
+			reserva = reservas[0]
+			u = Usuario.objects.get(id=request.user.pk)	
+			if(reserva.estado == "Aprobada"):
+				reserva.estado = "Transito"
+				print(reserva.estado)
+				reserva.save()
+				return	render(request, 'viaje/viajecito.html', {'viajes':viajes, 'reservasaceptadas':reservasaceptadas,'ultimo':ultimo,'reservastransito':reservastransito})
+			else:
+				return	render(request, 'viaje/viajecito.html', {'viajes':viajes, 'reservasaceptadas':reservasaceptadas,'ultimo':ultimo,'reservastransito':reservastransito})
+		elif request.POST.get("nosube"):
+			pk = request.POST.get("nosube")
+			reservas = Reserva.objects.filter(id=pk)
+			reserva = reservas[0]
+			u = Usuario.objects.get(id=request.user.pk)
+			conductor = u.conductor_set.all()[0]
+			tramosreserva = reserva.tramos.all()
+			for t in tramosreserva:
+				for i in tramosreserva:
+					i.asientos_disponibles += reserva.plazas_pedidas
+					i.save()
+				reserva.estado = "Abortada"
+				reserva.save()
+				return	render(request, 'viaje/viajecito.html', {'viajes':viajes, 'reservasaceptadas':reservasaceptadas,'ultimo':ultimo,'reservastransito':reservastransito})
+			else:
+				return	render(request, 'viaje/viajecito.html', {'viajes':viajes, 'reservasaceptadas':reservasaceptadas,'ultimo':ultimo,'reservastransito':reservastransito})
+		elif request.POST.get("baja"):
+			pk = request.POST.get("baja")
+			reservas = Reserva.objects.filter(id=pk)
+			reserva = reservas[0]
+			u = Usuario.objects.get(id=request.user.pk)
+			conductor = u.conductor_set.all()[0]
+			if(reserva.estado == "Transito"):
+				reserva.estado = "Terminada"
+				print(reserva.estado)
+				reserva.save()
+				return	render(request, 'viaje/viajecito.html', {'viajes':viajes, 'reservasaceptadas':reservasaceptadas,'ultimo':ultimo,'reservastransito':reservastransito})
+			else:
+				return	render(request, 'viaje/viajecito.html', {'viajes':viajes, 'reservasaceptadas':reservasaceptadas,'ultimo':ultimo,'reservastransito':reservastransito})
+		
+		try:
+			current_user = request.user
+			u = Usuario.objects.get(id=current_user.id)
+			u.conductor_set.all()[0]
+			r=Reserva.objects.all()
+			reservas = []
+			reservasaceptadas = []
+			reservastransito = []
+			
+			for reserva in r:
+				if (reserva.estado == "Aceptada"):
+					tramosreserva = reserva.tramos.all()
+					aux = []
+					if reserva.tramos.all()[0].viaje == int(pk):
+						aux.append(reserva.id)
+						aux.append(reserva.plazas_pedidas)
+						aux.append(tramosreserva[0].origen.nombre)
+						aux.append(tramosreserva[len(tramosreserva)-1].destino.nombre)
+						aux.append(reserva.precio)
+						aux.append(reserva.estado)
+						aux.append(reserva.usuario)
+						reservasaceptadas.append(aux)	
+				if (reserva.estado == "Transito"):
+					tramosreserva = reserva.tramos.all()
+					aux = []
+					print(reserva.tramos.all()[0].viaje == int(pk))
+					if reserva.tramos.all()[0].viaje == int(pk):
+						aux.append(reserva.id)
+						aux.append(reserva.plazas_pedidas)
+						aux.append(tramosreserva[0].origen.nombre)
+						aux.append(tramosreserva[len(tramosreserva)-1].destino.nombre)
+						aux.append(reserva.precio)
+						aux.append(reserva.estado)
+						aux.append(reserva.usuario)
+						reservastransito.append(aux)
+			return render(request, 'viaje/viajecito.html', {'viajes':viajes, 'reservasaceptadas':reservasaceptadas,'ultimo':ultimo,'reservastransito':reservastransito})
+		except:
+			return render(request, 'viaje/viajecito.html', {'viajes':viajes, 'reservasaceptadas':reservasaceptadas,'ultimo':ultimo,'reservastransito':reservastransito})
+		

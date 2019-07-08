@@ -23,4 +23,5 @@ urlpatterns = [
     url(r'^cancelarReservaConductor/(?P<pk>\d+)/$', cancelarReservaConductor, name='cancelarReservaConductor'),
     url(r'^confirmarAceptarReservaConductor/(?P<pk>\d+)/$', confirmarAceptarReservaConductor, name='confirmarAceptarReservaConductor'),
     url(r'^aceptarReservaConductor/(?P<pk>\d+)/$', aceptarReservaConductor, name='aceptarReservaConductor'),
+    url(r'^administrarviaje/(?P<pk>\d+)/$',Proximareserva, name= 'Proximareserva'),
 ]
