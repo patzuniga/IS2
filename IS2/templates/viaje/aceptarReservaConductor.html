@@ -21,7 +21,11 @@
           <h4 style="color: black;">Lo sentimos, la reserva no puede ser aceptada.</h4>
       {% endif %}
       <br>
+          {% if encurso %}
+          <a href="{% url 'administrar' id2 %}" class="w3-button w3-dark-grey" >Volver al viaje en progreso </a>
+          {% else %}
           <a href="{% url 'viaje_list' %}" class="w3-button w3-dark-grey" >Volver a mis viajes publicados </a>
-	</div>
+          {% endif %}
+  </div>
 </div>
 {% endblock %}

@@ -144,9 +144,17 @@
             <td>{{ reserva.3}}</a></td>
             <td>{{ reserva.4}}</a></td>
             <td>{{ reserva.5}}</a></td>
-            <td ><a href="{% url 'confirmarAceptarReservaConductor' reserva.0 %}"><button class="round-button" onclick=""><i class="fa fa-check" style="text-align: center;"></i></button></a></td>
-            <td ><a href="{% url 'confirmarCanReservaConductor' reserva.0 %}"><button class="round-button" onclick=""><i class="fa fa-times" style="text-align: center;"></i></button></a></td>
+            
+            <form action="{% url 'confirmarAceptarReservaConductor' reserva.0 %}" method="post">
+            {% csrf_token %}
+            <td ><a href="{% url 'confirmarAceptarReservaConductor' reserva.0 %}"><button class="round-button" name="encurso" onclick=""><i class="fa fa-check" style="text-align: center;"></i></button></a></td>
+            </form>
+            <form action="{% url 'confirmarCanReservaConductor' reserva.0 %}" method="post">
+            {% csrf_token %}
+            <td ><a href="{% url 'confirmarCanReservaConductor' reserva.0 %}"><button class="round-button" name="encurso" onclick=""><i class="fa fa-times" style="text-align: center;"></i></button></a></td>
+            </form>
             </tr>
+
           {% endfor %}
             </tbody>
           </table>

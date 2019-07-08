@@ -118,7 +118,7 @@ def viaje_listo(request):
 			par1.nombre = paradas[i][2]
 			par1.direccion = paradas[i][3]
 			par1.save()
-			viaje.parada_actual = par1
+			#viaje.parada_actual = par1
 
 			par2 = Parada()
 			par2.nombre = paradas[i+1][2]
@@ -882,6 +882,14 @@ def cancelar_crear_viaje(request):
 	return redirect('home')
 @login_required()
 def confirmarCanReservaConductor(request, pk):
+	r=Reserva.objects.get(id=pk)
+	if(request.POST.get("encurso") is not None):
+		print('viaje en curso')
+		idv = r.tramos.all()[0].viaje
+		return render(request, 'viaje/confirmarCanReservaConductor.html', {'id' : pk , 'id2' : idv})
+	else:
+		print('E')
+
 	return render(request, 'viaje/confirmarCanReservaConductor.html', {'id' : pk})
 
 @login_required()
@@ -897,10 +905,19 @@ def cancelarReservaConductor(request, pk):
 		print(reserva.estado)
 		reserva.save()
 		exitocancelarreservaconductor = True
-		return render(request, 'viaje/cancelarReservaConductor.html', {'exitocancelarreservaconductor' : exitocancelarreservaconductor})
+	#	return render(request, 'viaje/cancelarReservaConductor.html', {'exitocancelarreservaconductor' : exitocancelarreservaconductor})
 	else:
 		exitocancelarreservaconductor = False
-		return render(request, 'viaje/cancelarReservaConductor.html', {'exitocancelarreservaconductor' : exitocancelarreservaconductor})
+	#	return render(request, 'viaje/cancelarReservaConductor.html', {'exitocancelarreservaconductor' : exitocancelarreservaconductor})
+	if(request.POST.get("encurso") is not None):
+		print('viaje en curso')
+		encurso = True
+		idv = reserva.tramos.all()[0].viaje
+		return render(request, 'viaje/cancelarReservaConductor.html', {'exitocancelarreservaconductor' : exitocancelarreservaconductor , 'encurso' : encurso, 'id2' : idv})
+	else:
+		encurso = False
+
+	return render(request, 'viaje/cancelarReservaConductor.html', {'exitocancelarreservaconductor' : exitocancelarreservaconductor , 'encurso' : encurso})
 
 @login_required()
 def confirmarCanReservaAceptadaConductor(request, pk):
@@ -931,7 +948,17 @@ def cancelarReservaAceptadaConductor(request, pk):
 
 @login_required()
 def confirmarAceptarReservaConductor(request, pk):
-	return render(request, 'viaje/confirmarAceptarReservaConductor.html', {'id' : pk})
+	r=Reserva.objects.get(id=pk)
+	if(request.POST.get("encurso") is not None):
+		print('viaje en curso')
+		#dire = 'administrar'
+		idv = r.tramos.all()[0].viaje
+		return render(request, 'viaje/confirmarAceptarReservaConductor.html', {'id' : pk , 'id2' : idv})#, 'rechazo' : dire})
+	else:
+		print('E')
+		#dire = 'viaje_list'
+
+	return render(request, 'viaje/confirmarAceptarReservaConductor.html', {'id' : pk })#, 'rechazo' : dire})
 
 @login_required()
 def aceptarReservaConductor(request, pk):
@@ -959,14 +986,39 @@ def aceptarReservaConductor(request, pk):
 		conductor.save()
 		reserva.save()
 		exitoaceptarreservaconductor = True
-		return render(request, 'viaje/aceptarReservaConductor.html', {'exitoaceptarreservaconductor' : exitoaceptarreservaconductor})
+	#	return render(request, 'viaje/aceptarReservaConductor.html', {'exitoaceptarreservaconductor' : exitoaceptarreservaconductor})
 	else:
 		exitoaceptarreservaconductor = False
-		return render(request, 'viaje/aceptarReservaConductor.html', {'exitoaceptarreservaconductor' : exitoaceptarreservaconductor})
+	#	return render(request, 'viaje/aceptarReservaConductor.html', {'exitoaceptarreservaconductor' : exitoaceptarreservaconductor})
+
+	if(request.POST.get("encurso") is not None):
+		print('viaje en curso')
+		encurso = True
+		idv = reserva.tramos.all()[0].viaje
+		return render(request, 'viaje/aceptarReservaConductor.html', {'exitoaceptarreservaconductor' : exitoaceptarreservaconductor , 'encurso' : encurso, 'id2' : idv})
+	else:
+		encurso = False
+
+	return render(request, 'viaje/aceptarReservaConductor.html', {'exitoaceptarreservaconductor' : exitoaceptarreservaconductor})
 
 def administrar(request,pk):
 	try:
 		viaje = Viaje.objects.get(id=pk)
+		reservas = []
+		r=Reserva.objects.all()
+		for reserva in r:
+			if (reserva.estado == "Por Aprobar"):
+				tramosreserva = reserva.tramos.all()
+				aux = []
+				if reserva.tramos.all()[0].viaje == int(pk):
+					aux.append(reserva.id)
+					aux.append(reserva.plazas_pedidas)
+					aux.append(tramosreserva[0].origen.nombre)
+					aux.append(tramosreserva[len(tramosreserva)-1].destino.nombre)
+					aux.append(reserva.precio)
+					aux.append(reserva.estado)
+					aux.append(reserva.usuario)
+					reservas.append(aux)
 	except:
 		raise Http404
 	if viaje.conductor.usuario == request.user and viaje.estado == "Iniciado":
@@ -991,7 +1043,7 @@ def administrar(request,pk):
 				else:
 					sig = tramitos[viaje.parada_actual-1]
 					destino = True
-				return render (request, 'conductor/administrar.html', {"city_array" : json_cities, "siguiente": sig, "destino": destino})
+				return render (request, 'conductor/administrar.html', {"city_array" : json_cities, "siguiente": sig, "destino": destino,'reservas':reservas})
 
 		else:
 			tramitos = viaje.tramos.all()
@@ -1011,7 +1063,7 @@ def administrar(request,pk):
 			else:
 				sig = tramitos[viaje.parada_actual-1]
 				destino = True
-			return render (request, 'conductor/administrar.html', {"city_array" : json_cities, "siguiente": sig, "destino": destino})
+			return render (request, 'conductor/administrar.html', {"city_array" : json_cities, "siguiente": sig, "destino": destino,'reservas':reservas})
 	else:
 		raise Http404
 
