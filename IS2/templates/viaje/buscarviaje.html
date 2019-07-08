@@ -1,21 +1,19 @@
 {% extends 'login/base.html' %}
 
 {% block content %}
-<header class="w3-display-container w3-content w3-hide-small" style="max-width:1500px">
-  <img class="w3-image" src="https://www.gapyear.com/wp-content/uploads/2017/11/RoadTipsMain.jpg" alt="London" width="1500" height="500">
-  <div class="w3-display-middle" style="width:65%">
+<div class="banner-info">
     <div class="w3-bar w3-black">
-      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Buscar viaje</button>
+      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Buscar Viaje</button>
     </div>
     <!-- Tabs -->
-    <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
+    <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink"><br><br>
       <div class="w3-row-padding" style="margin:0 -16px;">
         <div class="w3-half">
          <form method="post">
         {% csrf_token %}
-           Origen : <input type="text" id="origen"  name = "origen" required class="vTextField" maxlength="30" />
+           Origen : <input  type="text" id="origen"  name = "origen" required class="vTextField form-control" maxlength="30" />
            <br>
-           Destino : <input type="text" id="destino"  name = "destino" required class="vTextField" maxlength="30" />
+           Destino : <input type="text" id="destino"  name = "destino" required class="vTextField form-control" maxlength="30" />
            <br>
           {{ form.as_p}}
 
@@ -24,7 +22,7 @@
       <p><button class="w3-button w3-dark-grey" type = "submit" >Buscar viaje</button></p>
     </form>
     </div>
-</header>
+<br><br>
 <script>
 function onLoaded() {
 

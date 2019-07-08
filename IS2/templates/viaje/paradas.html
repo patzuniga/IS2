@@ -24,10 +24,7 @@
     color: green;
 }
     </style>
-
-<header class="w3-display-container w3-content w3-hide-small" style="max-width:1500px">
-  <img class="w3-image" src="https://www.gapyear.com/wp-content/uploads/2017/11/RoadTipsMain.jpg" alt="London" width="1500" height="500">
-  <div class="w3-display-middle" style="width:65%">
+  <div class="banner-info">
     <div class="w3-bar w3-black">
       <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Agregar Paradas</button>
     </div>
@@ -41,7 +38,7 @@
            {% endif %}
          <form method="post">
           {% csrf_token %}
-           Parada : <input type="text" id="where_load"  name = "direccion" required class="vTextField" maxlength="30" />
+           Parada<br><input type="text" class="form-control" id="where_load"  name = "direccion" required class="vTextField" maxlength="30" />
            {{ form.as_p}}
          </div>
          <br>
@@ -53,7 +50,7 @@
     </form>
     </div>
   </div>
-</header>
+
 <script>
 function onLoaded() {
 
@@ -66,25 +63,6 @@ function onLoaded() {
 
     }
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAD6Q31QwQK0pv7twtzD32efp6hLa0uFEs&libraries=places&callback=onLoaded"></script>
-            
-</script>
-<script>
-// Tabs
-function openLink(evt, linkName) {
-  var i, x, tablinks;
-  x = document.getElementsByClassName("myLink");
-  for (i = 0; i < x.length; i++) {
-      x[i].style.display = "none";
-  }
-  tablinks = document.getElementsByClassName("tablink");
-  for (i = 0; i < x.length; i++) {
-      tablinks[i].className = tablinks[i].className.replace(" w3-red", "");
-  }
-  document.getElementById(linkName).style.display = "block";
-  evt.currentTarget.className += " w3-red";
-}
-// Click on the first tablink on load
-document.getElementsByClassName("tablink")[0].click();
-</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAD6Q31QwQK0pv7twtzD32efp6hLa0uFEs&libraries=places&callback=onLoaded"></script>            
+
 {% endblock %}

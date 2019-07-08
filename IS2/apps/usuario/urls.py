@@ -7,7 +7,7 @@ from django.conf.urls import include,url
 from django.contrib import admin
 
 urlpatterns = [
-	url(r'^login/$', auth_views.login, {'template_name': 'login/login.html'}, name='login'),
+	url(r'^login/$', auth_views.login, {'template_name' : 'login/login.html'}, name='login'),
 	url(r'^registro$',registro, name= 'registro'),    
 	url(r'logout$', auth_views.logout, {'next_page': '/'}, name="logout"),
 	url(r'^$', home, name='home'),

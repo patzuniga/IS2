@@ -759,12 +759,12 @@ def Editarlisto(request,idviaje):
 
 @login_required()
 def confirmarCan(request, pk):
+	if(tiene_reservas(pk)):
+		return redirect('cancelar_editar_error')
 	return render(request, 'viaje/confirmarCanc.html', {'id' : pk})
 
 @login_required()
 def cancelar(request, pk):
-	if(tiene_reservas(pk)):
-		return redirect('cancelar_editar_error')
 	viaje = Viaje.objects.get(id=pk)
 	tramitos = viaje.tramos.all()
 	i = len(tramitos)-1
