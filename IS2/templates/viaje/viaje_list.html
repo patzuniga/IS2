@@ -19,51 +19,50 @@
       <div class="w3-bar w3-black">
         <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Lista Viajes</button>
          </div>
-    <!-- Tabs -->
-    <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
-      <div class="banner-left wow fadeInLeft animated" data-wow-delay=".5s" >      
-        <h3>Tus Viajes</h3><br><br>
-         {% if viajes %}
-        <div class="panel panel-default table-responsive" style="background-color: white;">
-            <table class="table  table-responsive table-striped">
-        			<thead>
-          			<tr>
-                  <th >Origen</th>
-                  <th >Destino</th>
-                  <th >Fecha</th>
-                  <th >Hora</th>      
-                  <th >Estado </th>
-                  <th >N° Paradas</th>
-                  <th >Asientos Totales</th>
-                  <th >Reservas</th>
-                  <th >Editar </th>
-                  <th >Cancelar</th>
-          			</tr>	
-          		</thead>
-        		   <tbody>
-        			{% for viaje in viajes %}
-          			<tr data-href="{% url 'viaje_details' viaje.0.id %}" style="cursor: pointer">
-                  <td>{{ viaje.1.origen.nombre }}</td>
-                  <td>{{ viaje.2.destino.nombre }}</td>
-                  <td>{{ viaje.3 }}</td>
-                  <td>{{ viaje.1.hora_salida }}</td>
-                  <td>{{ viaje.0.estado }}</td>
-                  <td>{{ viaje.4 }}</td>
-                  <td>{{ viaje.5 }}</td>
-                  <td>{{ viaje.6 }}</td>      
-                  <td><a href="{% url 'editarviaje' viaje.0.id %}" style="background-color: #e6e6e6;"><button><span class="glyphicon glyphicon-pencil "></span></button></a></td>
-                  <td><a href="{% url 'confirmarCan' viaje.0.id %}"><button><i class="glyphicon glyphicon-remove" style="text-align: center;"></i></button></a></td>
-                </tr>
-        		{% endfor %}
-        		</tbody>
-    		    </table>
-         </div>
-        {% else %}
-        <h1 style="text-align: center;  font-size: 200%;">No hay registros de viajes</h1>
-        {% endif %}
-        </div><br>
-      </div><br><br><br><br>
-  </div>
+          <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
+            <div class="banner-left wow fadeInLeft animated" data-wow-delay=".5s" >      
+              <h3>Tus Viajes</h3><br><br>
+               {% if viajes %}
+              <div class="panel panel-default table-responsive" style="background-color: white;">
+                  <table class="table  table-responsive table-striped">
+              			<thead>
+                			<tr>
+                        <th >Origen</th>
+                        <th >Destino</th>
+                        <th >Fecha</th>
+                        <th >Hora</th>      
+                        <th >Estado </th>
+                        <th >N° Paradas</th>
+                        <th >Asientos Totales</th>
+                        <th >Reservas</th>
+                        <th >Editar </th>
+                        <th >Cancelar</th>
+                			</tr>	
+                		</thead>
+              		  <tbody>
+              			{% for viaje in viajes %}
+                			<tr data-href="{% url 'viaje_details' viaje.0.id %}" style="cursor: pointer">
+                        <td>{{ viaje.1.origen.nombre }}</td>
+                        <td>{{ viaje.2.destino.nombre }}</td>
+                        <td>{{ viaje.3 }}</td>
+                        <td>{{ viaje.1.hora_salida }}</td>
+                        <td>{{ viaje.0.estado }}</td>
+                        <td>{{ viaje.4 }}</td>
+                        <td>{{ viaje.5 }}</td>
+                        <td>{{ viaje.6 }}</td>      
+                        <td><a href="{% url 'editarviaje' viaje.0.id %}" style="background-color: #e6e6e6;"><button><span class="glyphicon glyphicon-pencil "></span></button></a></td>
+                        <td><a href="{% url 'confirmarCan' viaje.0.id %}"><button><i class="glyphicon glyphicon-remove" style="text-align: center;"></i></button></a></td>
+                      </tr>
+              		{% endfor %}
+              		</tbody>
+          		    </table>
+              </div>
+              {% else %}
+                  <h1 style="text-align: center;  font-size: 200%;">No hay registros de viajes</h1>
+              {% endif %}
+            </div><br>
+        </div><br><br><br>
+    </div>
 <script type="text/javascript">
   $('tr[data-href]').on("click", function() {
 

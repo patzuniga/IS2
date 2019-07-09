@@ -71,9 +71,10 @@
             <td>{{ reservasdecididas.1}}</td>
             <td>{{ reservasdecididas.3}}</td>
             <td>{{ reservasdecididas.5}}</td>
-            
-            <td ><a href="{% url 'baja' viaje.0 reservasdecididas.0 %}"formmethod='post' class="round-button" onclick=""><i class="fa fa-sign-out" name="baja" style="text-align: center;"></i></button></td>
-       
+            <form method="POST2">
+            {% csrf_token %}
+            <td ><button class="round-button" onclick=""><i class="fa fa-sign-out" name="baja" style="text-align: center;"></i></button></td>
+       </form>
           </tr>
           {% endfor %}
           {% else %}

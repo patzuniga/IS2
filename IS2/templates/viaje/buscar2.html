@@ -1,4 +1,4 @@
-{% extends 'login/base.html' %}
+  {% extends 'login/base.html' %}
 
 {% block content %}
  <style type="text/css">
@@ -13,13 +13,12 @@
     <div class="w3-bar w3-black">
       <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Reservas</button>
     </div>
-    <!-- Tabs -->
     <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
       <div class="banner-left wow fadeInLeft animated" data-wow-delay=".5s" >      
         <h3>Viajes que coincidan con : De {{origen}} a {{destino}} </h3>
           {% csrf_token %}
           {% if viajes %}
-            <div class="panel panel-default table-responsive">
+                <div class="panel panel-default table-responsive">
                   <table class="table  table-responsive table-striped">
                     <thead>
                       <tr>
@@ -41,7 +40,7 @@
                         <td>{{ viaje.2.destino.nombre }}</td>
                         <td>{{ viaje.1.fecha }}</td>
                         <td>{{ viaje.1.hora_salida }}</td>
-                  			<td>{{ viaje.3 }}</a></td>
+                  			<td>{{ viaje.3 }}</td>
                         <td>{{ viaje.0.conductor.usuario }}</td>
                         <td>{{ viaje.4 }}</td>
                         <td>{{ viaje.5 }}</td>
@@ -58,16 +57,18 @@
               </div>
               {% else %}
               <div class="w3-container">
-            <h1>Lo sentimos, no hay viajes que coincidan con tu búsqueda</h1>
+                <h1>Lo sentimos, no hay viajes que coincidan con tu búsqueda</h1>
               </div>
-            {% endif %}
-          </div>
-            <div class="banner-left">
-            <p><a href=" {% url 'buscar_viaje' %}" ><button class="w3-button w3-dark-grey" type = "submit" >Volver a buscar viajes</button></a></p></div>
-    </div></div>  
+             {% endif %}
+          </div><br>
+          <div class="banner-left">
+            <p><a href=" {% url 'buscar_viaje' %}" ><button class="w3-button w3-dark-grey" type = "submit" >Volver a buscar viajes</button></a></p>
+          </div><br><br>
+    </div>
+</div>
+  
 <script type="text/javascript">
   $('tr[data-href]').on("click", function() {
-
     document.location = $(this).data('href');
 });
 </script>

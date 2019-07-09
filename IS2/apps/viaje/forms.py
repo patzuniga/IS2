@@ -38,15 +38,15 @@ class ViajeForm(forms.Form):
 class EditarViajeForm(forms.Form):
 	origen = forms.CharField(label="Origen",widget=forms.TextInput(attrs={'class':'form-control'}))
 	destino = forms.CharField(label="Destino",widget=forms.TextInput(attrs={'class':'form-control'}))
-	fecha = forms.DateField(label = "Fecha de inicio (DD/MM/YY)")
-	hora_origen = forms.TimeField(label = "Hora Origen")
+	fecha = forms.DateField(label = "Fecha de inicio (DD/MM/YY)",widget=forms.TextInput(attrs={'class':'form-control'}))
+	hora_origen = forms.TimeField(label = "Hora Origen",widget=forms.TextInput(attrs={'class':'form-control'}))
 	porta_maleta = forms.BooleanField(required = False)
 	silla_niños = forms.BooleanField(required = False)
 	mascotas = forms.BooleanField(required = False)
-	tarifapreferencias = forms.IntegerField(label = "Tarifa")
-	asientos_disponibles = forms.IntegerField(label = "Asientos disponibles")
-	fecha_destino = forms.DateField(label = "Fecha de Termino (DD/MM/YY)")
-	hora_destino = forms.TimeField(label = "Hora Destino")
+	tarifapreferencias = forms.IntegerField(label = "Tarifa",widget=forms.NumberInput(attrs={'class':'form-control'}))
+	asientos_disponibles = forms.IntegerField(label = "Asientos disponibles",widget=forms.NumberInput(attrs={'class':'form-control'}))
+	fecha_destino = forms.DateField(label = "Fecha de Termino (DD/MM/YY)",widget=forms.TextInput(attrs={'class':'form-control'}))
+	hora_destino = forms.TimeField(label = "Hora Destino",widget=forms.TextInput(attrs={'class':'form-control'}))
 
 class ParadasForm(forms.Form):
 	fecha = forms.DateField(label = "Fecha de llegada",widget=forms.TextInput(attrs={'class':'form-control'}))

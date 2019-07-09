@@ -90,7 +90,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
       <div class="container">
         <div class="nav navbar-nav header-two-left">
           <ul>
-            <li><a href="templates/#"><i class="glyphicon glyphicon-user" aria-hidden="true"></i>{{user.username}}</a></li>
+            <li><a href="{% url 'ver_perfil' %}"><i class="glyphicon glyphicon-user" aria-hidden="true"></i>{{user.username}}</a></li>
           </ul>
         </div>
         <div class="nav navbar-nav logo wow zoomIn animated" data-wow-delay=".7s">
@@ -115,8 +115,13 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
           <!--navbar-header-->
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav top-nav-info">
-              <li><a href= "{% url 'viaje_crear' %}">Publicar Viaje</a></li>        
-              <li><a href="{% url 'viaje_list' %}" class="notification" >Ver Viajes<span class="badge" style="font-size: 1.2vw">{{user.conductor_set.all.0.reservas_por_aprobar}}</span>  </a></li>
+              <li><a href= "{% url 'viaje_crear' %}">Publicar Viaje</a></li> 
+              {% if user.conductor_set.all.0.reservas_por_aprobar == 0 %}
+              <li><a href="{% url 'viaje_list' %}">Ver Viajes</a></li>
+              {% else %}
+              <li><a href="{% url 'viaje_list' %}" class="notification" >Ver Viajes<span class="badge" style="font-size: 1.2vw">
+              {{user.conductor_set.all.0.reservas_por_aprobar}}</span>  </a></li>
+              {% endif %}
               <li><a href="{% url 'viaje_list' %}">Valoraciones</a></li>
               <li><a href= "{% url 'configuracion' %}"><span class="glyphicon glyphicon-cog"></span></a></li>
               <li><a href="logout">Log out</a></li>

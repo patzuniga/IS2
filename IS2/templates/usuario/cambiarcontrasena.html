@@ -3,33 +3,26 @@
 {% block content %}
 
 <!-- Header -->
-<header class="w3-display-container w3-content w3-hide-small" style="max-width:1500px">
-  <img class="w3-image" src="https://www.gapyear.com/wp-content/uploads/2017/11/RoadTipsMain.jpg" alt="London" width="1500" height="500">
-  <div class="w3-display-middle" style="width:75%">
-    <div class="w3-bar w3-black">
+<div class="banner-info">
+  <div class="w3-bar w3-black">
       <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Cambiar Contraseña</button>
+      </div>
+      <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
+        <div class="banner-info wow fadeInLeft animated" data-wow-delay=".5s" >
+          <h3><strong>Cambiar Contraseña</strong></h3>
+           <div class="w3-row-padding" style="margin:0 -16px;">
+            <div class="w3-half" style="padding-left: 15%;">
+             <form method="post">
+             {% csrf_token %}
+             {{ form.as_p}}
+            </div>
+          </div>
+          <div class="banner-left">
+            <a href="{% url 'ver_perfil' %}" class="w3-button w3-dark-grey" >Cancelar </a>
+           <button class="w3-button w3-dark-grey" type="submit" name="pasajero" value="1" >Guardar</button>
+         </div>
+        </form>
+       </div> 
     </div>
-     <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
-      <h3><strong>Cambiar Contraseña</strong></h3>
-       <div class="w3-row-padding" style="margin:0 -16px;">
-        <div class="w3-half">
-         <form method="post">
-        {% csrf_token %}
-           {{ form.as_p}}
-      </div>
-      </div>
-   <div class="w3-clear nextprev">
-
-    <a href="{% url 'ver_perfil' %}" class="w3-button w3-dark-grey" >Cancelar </a>
-   <button class="w3-button w3-dark-grey" type="submit" name="pasajero" value="1" >Guardar</button>
-      </div>
-  
-   </form>
-  
-  </div>  <!-- Tabs -->
-    
-</header>
-
-<!-- Page content -->
-  <!-- Contact -->
+</div>
 {% endblock %}
