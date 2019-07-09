@@ -1094,15 +1094,27 @@ def detail_viaje_en_curso(request,pk):
 
 def mandar_alerta(id_viaje,parada):
 	v = Viaje.objects.filter(id=viaje_id)[0]
-	p = Parada.objects.filter(id=parada)[0]
 	tramos = v.tramos.all().order_by('orden_en_viaje')
 	for tramo in tramos:
-		if(tramo.direccion) == p.direccion and tramo.reservas.all()[0].estado != "Alertada":
+		if(tramo.origen.id) == parada:
 			for reserva in tramo.reservas.all():
-				reserva.estado = "Alertada"
 				reserva.usuario.mensaje = "El conductor esta cerca del punto de encuentro"
 			break
 	return 0
 
+def iniciarviaje(request,pk):
+	v = Viaje.objects.filter(id=pk)[0]
+	tz = pytz.timezone('Chile/Continental')
+	actual = datetime.strptime(datetime.now(tz=tz).strftime("%d/%m/%Y %H:%M:%S") , "%d/%m/%Y %H:%M:%S")
+	fecha_origen = datetime.strptime(datetime.combine(v.fecha,v.tramos.all()[0].hora_salida).strftime("%d/%m/%Y %H:%M:%S") , "%d/%m/%Y %H:%M:%S")
+	if(v.estado == "Iniciado"):
+		return redirect('administrar',pk=pk)
+	if(v.conductor.usuario == request.user and v.estado=="Registrado" and abs(actual - fecha_origen) < timedelta(minutes=30)):
+		v.estado = "Iniciado"
+		v.save()
+		return redirect('administrar',pk=pk)
+	titulo = "No se puede inicar viaje"
+	mensaje = "El viaje no cumple con las condiciones para ser iniciado."
+	return render(request,'conductor/error.html',{"titulo" : titulo, "mensaje" : mensaje})
 #@login_required()
 #def Viajereservasver(request):		

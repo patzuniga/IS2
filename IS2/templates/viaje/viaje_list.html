@@ -35,6 +35,7 @@
                         <th >N° Paradas</th>
                         <th >Asientos Totales</th>
                         <th >Reservas</th>
+                        <th >Iniciar </th>
                         <th >Editar </th>
                         <th >Cancelar</th>
                 			</tr>	
@@ -49,7 +50,8 @@
                         <td>{{ viaje.0.estado }}</td>
                         <td>{{ viaje.4 }}</td>
                         <td>{{ viaje.5 }}</td>
-                        <td>{{ viaje.6 }}</td>      
+                        <td>{{ viaje.6 }}</td>
+                        <td><a href="{% url 'iniciarviaje' viaje.0.id %}" style="background-color: #e6e6e6;"><button><span class="glyphicon glyphicon-play "></span></button></a></td>      
                         <td><a href="{% url 'editarviaje' viaje.0.id %}" style="background-color: #e6e6e6;"><button><span class="glyphicon glyphicon-pencil "></span></button></a></td>
                         <td><a href="{% url 'confirmarCan' viaje.0.id %}"><button><i class="glyphicon glyphicon-remove" style="text-align: center;"></i></button></a></td>
                       </tr>
