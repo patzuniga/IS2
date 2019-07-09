@@ -1,20 +1,30 @@
 {% extends 'login/base_login.html' %}
 <!-- Header -->
 {% block content %}
-	<header class="w3-display-container w3-content " style="max-width: 1500px; height: auto;">
-		<img class="w3-image" src="https://www.gapyear.com/wp-content/uploads/2017/11/RoadTipsMain.jpg" alt="London" style = "display: block;margin-left: auto;margin-right: auto;width: 100%;">
-		<div class="w3-display-topmiddle" style="width:65%">
-			<div class="w3-display-topmiddle w3-tangerine" style = "text-align:center; margin-top:15%; font-:sans-serif; font-size: 3vw" >Member Login</div>
-			<p>
-				<input class="w3-display-topmiddle w3-input w3-padding w3-border w3-round-large w3-light-grey" style="margin-top:25%;width:40%;height:5vw;font-size: 1.5vw" type="test" placeholder="Usuario" name="username" required="">
-			</p>
-      		<p>
-      			<input class="w3-display-topmiddle w3-input w3-padding w3-border w3-round-large w3-light-grey" style="margin-top:35%;width:40%; height:5vw; font-size: 1.5vw" type="password" placeholder="Contraseña" name="password" required="">
-      		</p>
-      		<div class="wrapper" style = "text-align: center; margin-top:40%; font-weight: 700; font-size:1.5vw; " >
-     			<button class="w3-button w3-display-middle w3-black" type="submit" style="margin-top:30%;left: 50%; width:20%; height:3vw; font-size:1.5vw">Entrar</button>
-			</div>
-      		</div>
+	<div class="banner">
+	<div style = "margin-top: 1em" class="login-page">
+		<div class="title-info wow fadeInUp animated" data-wow-delay=".5s">
+			<h3 class="title">Log in</h3>
 		</div>
-	</header>
-{% endblock %}
+		<div class="widget-shadow">
+			<div class="login-top wow fadeInUp animated" data-wow-delay=".7s">
+				<h4>¡Bienvenido de vuelta! <br> ¿No tienes cuenta? <a href="register.html">  Registrate »</a> </h4>
+			</div>
+			<div class="login-body wow fadeInUp animated" data-wow-delay=".7s">
+					<input type="text" class="user" name="username" placeholder="Enter your email" required="">
+					<input type="password" name="password" class="lock" placeholder="Password">
+					<input type="submit" name="Sign In" value="Sign In">
+					<div class="forgot-grid">
+						<label class="checkbox"><input type="checkbox" name="checkbox"><i></i>Remember me</label>
+						<div class="forgot">
+							<a href="#">Forgot Password?</a>
+						</div>
+						<div class="clearfix"> </div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+	<!--//login-->
+	{% endblock %}

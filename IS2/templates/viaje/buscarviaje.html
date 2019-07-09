@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 {% extends 'login/base.html' %}
 
 {% block content %}
@@ -117,3 +118,61 @@ document.getElementsByClassName("tablink")[0].click();
 </script>
 {% endblock %}
 >>>>>>> db176312e90c3b22d3759778b14fdc4baf08cc0a
+=======
+{% extends 'login/base.html' %}
+
+{% block content %}
+<div class="banner-info">
+    <div class="w3-bar w3-black">
+      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Buscar Viaje</button>
+    </div>
+    <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink"><br><br>
+      <div class="w3-row-padding" style="margin:0 -16px;">
+        <div class="w3-half">
+           <form method="post">
+           {% csrf_token %}
+           Origen : <input  type="text" id="origen"  name = "origen" required class="vTextField form-control" maxlength="30" /><br>
+           Destino : <input type="text" id="destino"  name = "destino" required class="vTextField form-control" maxlength="30" /><br>
+           {{ form.as_p}}
+        </div>
+      </div>
+      <p><button class="w3-button w3-dark-grey" type = "submit" >Buscar viaje</button></p>
+          </form>
+    </div><br><br>
+</div>
+<script>
+function onLoaded() {
+
+ var options = {
+  types: ['(cities)'],
+  componentRestrictions: {country: "cl"}
+ };
+        var location_input = document.getElementById('origen');
+        var location_input2 = document.getElementById('destino');
+        var autocomplete = new google.maps.places.Autocomplete(location_input,options);
+        var autocomplete = new google.maps.places.Autocomplete(location_input2,options);
+    }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAD6Q31QwQK0pv7twtzD32efp6hLa0uFEs&libraries=places&callback=onLoaded"></script>
+            
+</script>
+<script>
+// Tabs
+function openLink(evt, linkName) {
+  var i, x, tablinks;
+  x = document.getElementsByClassName("myLink");
+  for (i = 0; i < x.length; i++) {
+      x[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablink");
+  for (i = 0; i < x.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" w3-red", "");
+  }
+  document.getElementById(linkName).style.display = "block";
+  evt.currentTarget.className += " w3-red";
+}
+// Click on the first tablink on load
+document.getElementsByClassName("tablink")[0].click();
+</script>
+{% endblock %}
+>>>>>>> 5eac8d8ce2bc1cb912118f0f04978f420b9fde8d
