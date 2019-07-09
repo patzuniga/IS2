@@ -7,7 +7,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 {% load static %}
 <html>
 <head>
-<title>Modern Shoppe a Ecommerce Online Shopping Category Flat Bootstrap Responsive Website Template | Home :: w3layouts</title>
+<title>Login - NohJuimoh</title>
 <!-- for-mobile-apps -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -59,9 +59,6 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 		<div class="header-two navbar navbar-default"><!--header-two-->
 			<div class="container">
 				<div class="nav navbar-nav header-two-left">
-					<ul>
-						<li><i class="glyphicon glyphicon-user" aria-hidden="true"></i><a href="templates/#">Visitante</a></li>			
-					</ul>
 				</div>
 				<div class="nav navbar-nav logo wow zoomIn animated" data-wow-delay=".7s">
 					<h1><a href="templates/index.html"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"><b>NohJuimoh</b></span><span class="tag">Sistema de búsqueda de viajes</span> </a></h1>
@@ -84,9 +81,9 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 					<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 						<ul class="nav navbar-nav top-nav-info">
 							<li><a href="templates/index.html" class="active">Home</a></li>
-							<li><a href="templates/index.html">Log in</a></li>
-							<li><a href="templates/index.html">Registrarme</a></li>
-							<li><a href="templates/index.html">FAQ</a></li>
+							<li><a href="{% url 'login' %}">Log in</a></li>
+							<li><a href="{% url 'registro' %}">Registrarme</a></li>
+							<li><a href="#">FAQ</a></li>
 						</ul> 
 						<div class="clearfix"> </div>
 						<!--//navbar-collapse-->
@@ -97,19 +94,19 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 		</div>
 	</div>
 	{% block content %}
-		<div class="banner">
+	<div class="banner">
 		<div class="container">
 			<div class="banner-text">			
 				<div class="banner-left wow fadeInLeft animated" data-wow-delay=".5s">			
-      <div class="w3-display-middle">
-                  <h1>Bienvenido</h1>
-                  <p>Estas en NohJuimoh, sistema de busqueda de viajes. Inicia sesión o registrate para poder vivir la experiencia.</p>
-    </div>
-  </div>
-				</div>
-				<div class="clearfix"> </div>
+				    <div class="w3-display-middle">
+				                  <h1>Bienvenido</h1>
+				                  <p>Estas en NohJuimoh, sistema de busqueda de viajes. Inicia sesión o registrate para poder vivir la experiencia.</p>
+				   	</div>
+  				</div>
 			</div>
-		</div>	
+			<div class="clearfix"> </div>
+		</div>
+	</div>	
 	{% endblock %}	
 	<!--//banner-->
 	<div class="footer">
