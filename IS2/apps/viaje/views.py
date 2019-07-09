@@ -1046,6 +1046,7 @@ def administrar(request,pk):
 					aux.append(reserva.usuario)
 					reservastransito.append(aux)						
 	except:
+		print("except")
 		raise Http404
 	if viaje.conductor.usuario == request.user and viaje.estado == "Iniciado":
 		if request.method == "POST":
