@@ -20,8 +20,21 @@
             <h4 style="color: black;">¿Estas seguro que quieres Aceptar esta reserva?</h4>
         </div>
         <div style="text-align: center;">
-          <a href="{% url 'aceptarReservaConductor' id %}"><button class="w3-button w3-dark-grey">SI</button></a>
+
+          {% if id2 %}
+          <form action="{% url 'aceptarReservaConductor' id %}" method="post">
+          {% csrf_token %}
+          <a href="{% url 'aceptarReservaConductor' id %}"><button class="w3-button w3-dark-grey" name="encurso" >SÍ</button></a>
+          </form>
+          <a href="{% url 'administrar' id2 %}"><button class="w3-button w3-dark-grey">NO</button></a>
+
+          {% else %}
+
+          <a href="{% url 'aceptarReservaConductor' id %}"><button class="w3-button w3-dark-grey">SÍ</button></a>
           <a href="{% url 'viaje_list' %}"><button class="w3-button w3-dark-grey">NO</button></a>
+
+          {% endif %}
+          
         </div>
     </div>
   </div>
