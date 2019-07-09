@@ -1138,6 +1138,7 @@ def administrar(request,pk):
 				destino = True
 			return render (request, 'conductor/administrar.html', {"city_array" : json_cities, "siguiente": sig, "destino": destino,'reservas':reservas,'reservastransito':reservastransito,'reservasaceptadas':reservasaceptadas})
 	else:
+		print("else")
 		raise Http404
 
 

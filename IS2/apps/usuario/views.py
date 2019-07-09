@@ -17,6 +17,8 @@ from datetime import datetime
 from datetime import timedelta
 import pytz
 
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 @login_required()
 def home(request):
 	if request.user.is_authenticated is not None:
@@ -265,11 +267,45 @@ def ver_perfil(request):
 	info_perfil.append(ingresado(yo.numero_telefono))
 	info_perfil.append(ingresado(yo.direccion))
 	info_perfil.append(ingresado(yo.profesion))
-	info_perfil.append(sino(yo.fumador))#('Sí' if yo.fumador else 'No')
+	info_perfil.append(sino(yo.fumador))
 
+	#comentarios falsos para probar
+	come = [	'comentario 1',
+				'comentario 2',
+				'es una lista de strings 3',
+				'los comentarios de verdad 4',
+				'tienen también 5',
+				'la valoración 6',
+				'y el usuario 7',
+				'o si es anónimo 8',
+				'etc 9',
+				'10',
+				'11',
+				'12',
+				'13',
+				'14',
+				'un comentario mas largo para ver comentarios largos y como quedan si son muy largos y largos EEEEEEE EEEEEEEE EEEEEEEEEEE EEEEEE EEEEEEEEEEEEEE EEEEEEEEEE 15',
+				'16',
+				'17',
+				'18',
+				'19',
+				'E 20',
+				'21',
+				'22',
+				'23',
+				'24']
 
-	#cond = us.conductor_set.all()[0] ##Conductor.objects.get(usuario_id=request.user.id)
-	#tiene que haber una mejor forma de hacer esto, pero estoy sin internet ("<
+	paginator = Paginator(come, 10)
+	page = request.GET.get('page')
+	try:
+		comentarios = paginator.page(page)
+	except PageNotAnInteger:
+		# If page is not an integer, deliver first page.
+		comentarios = paginator.page(1)
+	except EmptyPage:
+		# If page is out of range (e.g. 9999), deliver last page of results.
+		comentarios = paginator.page(paginator.num_pages)
+
 	cond = us.conductor_set.all()
 	for xor in cond:
 		info_condu = []
@@ -283,7 +319,7 @@ def ver_perfil(request):
 		info_condu.append(ingresado(xor.car.Numeroasientos))
 		info_condu.append(ingresado(xor.car.consumo))
 		info_condu.append(sino(xor.car.maleta))
-		return render(request, 'usuario/mi_perfil_conductor.html', {'perfil': info_perfil, 'perfil_conductor': info_condu})
+		return render(request, 'usuario/mi_perfil_conductor.html', {'perfil': info_perfil, 'perfil_conductor': info_condu, 'comentarios':comentarios})
 
-	return render(request, 'usuario/mi_perfil.html', {'perfil': info_perfil})
+	return render(request, 'usuario/mi_perfil.html', {'perfil': info_perfil, 'comentarios':comentarios})
 

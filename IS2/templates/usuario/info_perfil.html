@@ -34,6 +34,46 @@
           {% else %}
           <a href="{% url 'editarperfil' %}"><button class="w3-button w3-blue" style="text-align: center;">Editar Perfil</button></a>
           {% endif %}
+
+          <br>
+          <h1 style="text-align: center;">Comentarios</h1>
+          <div class="panel panel-default table-responsive" style="background-color: white;">
+            <table class="table  table-responsive table-striped">
+              <thead>
+                <tr>
+                  <th >Usuario</th>
+                  <th >Valoración</th>
+                  <th >Comentario</th>
+                </tr> 
+              </thead>
+              <tbody>
+                {% for com in comentarios %}
+                <tr>
+                <td>Nombre</td>
+                <td>9/11</td>
+                <td>{{ com }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+          <div class="pagination">
+              <span class="step-links">
+                  {% if comentarios.has_previous %}
+                      <a href="?page={{ comentarios.previous_page_number }}">Anterior</a>
+                  {% endif %}
+
+                  <span class="current">
+                      {{ comentarios.number }} / {{ comentarios.paginator.num_pages }}
+                  </span>
+
+                  {% if comentarios.has_next %}
+                      <a href="?page={{ comentarios.next_page_number }}">Siguiente</a>
+                  {% endif %}
+              </span>
+          </div>
+
         </div><br><br>
     </div>
   </div>
