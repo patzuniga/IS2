@@ -1048,7 +1048,7 @@ def administrar(request,pk):
 					aux.append(reserva.estado)
 					aux.append(reserva.usuario)
 					reservastransito.append(aux)
-		tramitos = viaje.tramos.all()
+		tramitos = viaje.tramos.all().order_by('orden_en_viaje')
 		paradas = []						
 		for i in range(len(tramitos)):
 			paradas.append(tramitos[i].origen.direccion)
