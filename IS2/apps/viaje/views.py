@@ -874,6 +874,8 @@ def administrar(request,pk):
 		print(reservas_especiales)
 		for res in reservas_especiales:
 			if res.estado == "Aprobada":
+				tramosreserva = reserva.tramos.all()
+				aux = []				
 				aux.append(reserva.id)
 				aux.append(reserva.plazas_pedidas)
 				aux.append(tramosreserva[0].origen.nombre)
