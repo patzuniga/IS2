@@ -2,9 +2,11 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from apps.conductor.models import Conductor
-from apps.usuario.models import Usuario, Perfil
+from apps.usuario.models import Usuario, Perfil, Valoracion
 from apps.viaje.models import Tramo, Reserva, Viaje
 from apps.conductor.forms import Conductor_Form
+from django.http import HttpResponseRedirect, HttpResponse
+
 
 @login_required()
 def configuracion(request):
@@ -125,25 +127,25 @@ def registro_conductor(request):
 		form = Conductor_Form()
 		return render(request, 'conductor/conductor.html', {'form': form})
 
+
 @login_required()
 def valoracionesPendientesConductor(request):
 	current_user = request.user
-	u = Usuario.objects.get(id=current_user.id)
-	evaluador = u.conductor_set.all()[0]
+	evaluador = Usuario.objects.get(id=current_user.id)
 	res = Reserva.objects.all()
 #	print(evaluador.usuario)
 	porValorar = []
 	for v in Viaje.objects.all():
-		if v.conductor == evaluador:
-#			print(evaluador.usuario)
-			for reserva in res:
-				if reserva.tramos.all()[0].viaje == v.id and (reserva.estado == "Por Valorar" or reserva.estado == "Por Valorar Conductor"):
+		for reserva in res:
+			if reserva.tramos.all()[0].viaje == v.id and (reserva.estado == "Por Valorar" or reserva.estado == "Por Valorar Conductor"):
 #					print(reserva.usuario)
 					aux = []
 #					print(reserva.id)
-					print(reserva.estado)
+#					print(reserva.estado)
+#					print(reserva.usuario)
 					aux.append(reserva.usuario)
 					aux.append(reserva.id)
+					aux.append(v.conductor.usuario.id)
 					porValorar.append(aux)
 	return render(request, 'conductor/valoracionesPendientesConductor.html',{'porValorar':porValorar})	
 
@@ -153,56 +155,58 @@ def valoracionesPendientesConductor(request):
 @login_required()
 def vPC(request):
 	current_user = request.user
-	u = Usuario.objects.get(id=current_user.id)
-	conductor = u.conductor_set.all()[0]
+	evaluador = Usuario.objects.get(id=current_user.id)
 	valoracion = []
-	print(conductor.usuario)
 	if request.method == 'POST':
 		post = Valoracion()
-		post.pasajeroEvaluado =	request.POST.get('pasajeroEvaluado')
+		post.usuarioEvaluador = evaluador
+		evaluado = request.POST.get('pasajeroEvaluado')
+		evaluadoDone = Usuario.objects.get(id=evaluado)
+		post.usuarioEvaluado = evaluadoDone
+		print(post.usuarioEvaluado)
 		post.nota = request.POST.get('nota')
 		post.comentario = request.POST.get('comentario')
-		post.comentarioAnonimo = request.POST.get('anon')
+		post.anonimo = request.POST.get('anon')
 		resID = request.POST.get('resID')
-		print(post.pasajeroEvaluado)
-#		print(post.nota)
-#		print(post.comentario)
-		print(post.comentarioAnonimo)
-		print(resID)
 		aux = []
-		if(post.comentarioAnonimo == "True"):
-			aux.append("Anonimo")
+		if(post.anonimo == "True"):
+			anon = "Anonimo"
+			aux.append(anon)
 			aux.append(post.nota)
-			aux.append(post.pasajeroEvaluado)
+			aux.append(post.usuarioEvaluado)
 			aux.append(post.comentario)
+			aux.append(post.anonimo)
 			valoracion.append(aux)
-			print(valoracion)			
+			print(valoracion)
+			post.save()
 			res = Reserva.objects.get(id=resID)
 			if( res.estado == "Por Valorar Conductor"):
 				res.estado = "Terminada"
 				print(res.estado)
-				#Agregar res.save()
+				res.save()
 			if (res.estado == "Por Valorar"):
 				res.estado = "Por Valorar Pasajero"
 				print(res.estado)
-				#Agregar res.save()
+				res.save()
 			return HttpResponseRedirect('/conductor/valoracionesPendientesConductor/',{'valoracion':valoracion})
 		else:
-			aux.append(conductor.usuario)
+			aux.append(evaluador)
 			aux.append(post.nota)
-			aux.append(post.pasajeroEvaluado)
+			aux.append(post.usuarioEvaluado)
 			aux.append(post.comentario)
+			aux.append(post.anonimo)
 			valoracion.append(aux)
 			print(valoracion)
+			post.save()
 			res = Reserva.objects.get(id=resID)
 			if( res.estado == "Por Valorar Conductor"):
 				res.estado = "Terminada"
 				print(res.estado)					
-				#Agregar res.save()
+				res.save()
 			if (res.estado == "Por Valorar"):
 				res.estado = "Por Valorar Pasajero"
 				print(res.estado)
-				#Agregar res.save()
+				res.save()
 			return HttpResponseRedirect('/conductor/valoracionesPendientesConductor/',{'valoracion':valoracion})				
 
 

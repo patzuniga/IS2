@@ -7,6 +7,7 @@ from .models import Interes_Personal
 
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 from .models import Usuario
+from .models import Valoracion
 
 class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
@@ -19,3 +20,4 @@ class CustomUserAdmin(UserAdmin):
 admin.site.register(Usuario, CustomUserAdmin)
 admin.site.register(Perfil)
 admin.site.register(Interes_Personal)
+admin.site.register(Valoracion)

@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-
+ 
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
@@ -7,12 +7,13 @@ from django.contrib.auth.forms import PasswordChangeForm
 # Create your views here.
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
-from apps.usuario.models import Usuario, Perfil
+from apps.usuario.models import Usuario, Perfil, Valoracion
 from apps.conductor.models import Vehiculo, Conductor
 from apps.viaje.models import Reserva,Viaje
 from apps.usuario.forms import *
 from apps.conductor.views import registro_conductor
 from apps.conductor.views import Conductor, registro_conductor
+from django.http import HttpResponseRedirect, HttpResponse
 from datetime import datetime 
 from datetime import timedelta
 import pytz
@@ -268,6 +269,18 @@ def ver_perfil(request):
 	info_perfil.append(ingresado(yo.direccion))
 	info_perfil.append(ingresado(yo.profesion))
 	info_perfil.append(sino(yo.fumador))
+	val = Valoracion.objects.all()
+	suma = 0
+	counter = 0	
+	for v in val:
+		if v.usuarioEvaluado == us:			
+			suma += v.nota
+			counter += 1
+	if suma > 0:
+		promedio = suma/counter
+		yo.valoracion = promedio
+	info_perfil.append(yo.valoracion)
+	yo.save()
 
 	#comentarios falsos para probar
 	come = [	'comentario 1',
@@ -322,4 +335,85 @@ def ver_perfil(request):
 		return render(request, 'usuario/mi_perfil_conductor.html', {'perfil': info_perfil, 'perfil_conductor': info_condu, 'comentarios':comentarios})
 
 	return render(request, 'usuario/mi_perfil.html', {'perfil': info_perfil, 'comentarios':comentarios})
+
+@login_required()
+def valoracionesPendientesUsuario(request):
+	current_user = request.user
+	evaluador = Usuario.objects.get(id=current_user.id)
+#	print(evaluador)
+	porValorar = []
+	res = Reserva.objects.all()
+	for v in Viaje.objects.all():
+		for reserva in res:
+			if reserva.tramos.all()[0].viaje == v.id and (reserva.estado == "Por Valorar" or reserva.estado == "Por Valorar Usuario"):
+#				print(reserva.usuario)
+				aux = []
+#				print(v.conductor.usuario)
+#				print(reserva.estado)
+				aux.append(v.conductor.usuario)
+				aux.append(reserva.id)
+				aux.append(v.conductor.usuario.id)
+				porValorar.append(aux)
+	print(porValorar)
+	return render(request, 'usuario/valoracionesPendientesUsuario.html',{'porValorar':porValorar})	
+
+#	else:
+#		return render(request, 'conductor/valoracionesPendientesConductor')
+
+@login_required()
+def vPU(request):
+	current_user = request.user
+	evaluador = Usuario.objects.get(id=current_user.id)
+	valoracion = []
+	if request.method == 'POST':
+		post = Valoracion()
+		post.usuarioEvaluador = evaluador
+		evaluado = request.POST.get('conductorEvaluado')
+		evaluadoDone = Usuario.objects.get(id=evaluado)
+		post.usuarioEvaluado = evaluadoDone
+		print(post.usuarioEvaluado)
+		post.nota = request.POST.get('nota')
+		post.comentario = request.POST.get('comentario')
+		post.anonimo = request.POST.get('anon')
+		resID = request.POST.get('resID')
+		aux = []
+		if(post.anonimo == "True"):
+			anon = "Anonimo"
+			aux.append(anon)
+			aux.append(post.nota)
+			aux.append(post.usuarioEvaluado)
+			aux.append(post.comentario)
+			aux.append(post.anonimo)
+			valoracion.append(aux)
+			print(valoracion)
+			post.save()
+			res = Reserva.objects.get(id=resID)
+			if( res.estado == "Por Valorar Pasajero"):
+				res.estado = "Terminada"
+				print(res.estado)
+				res.save()
+			if (res.estado == "Por Valorar"):
+				res.estado = "Por Valorar Conductor"
+				print(res.estado)
+				res.save()
+			return HttpResponseRedirect('/valoracionesPendientesUsuario/',{'valoracion':valoracion})
+		else:
+			aux.append(evaluador)
+			aux.append(post.nota)
+			aux.append(post.usuarioEvaluado)
+			aux.append(post.comentario)
+			aux.append(post.anonimo)
+			valoracion.append(aux)
+			print(valoracion)
+			post.save()
+			res = Reserva.objects.get(id=resID)
+			if( res.estado == "Por Valorar Pasajero"):
+				res.estado = "Terminada"
+				print(res.estado)					
+				res.save()
+			if (res.estado == "Por Valorar"):
+				res.estado = "Por Valorar Conductor"
+				print(res.estado)
+				res.save()
+			return HttpResponseRedirect('/valoracionesPendientesUsuario/',{'valoracion':valoracion})				
 

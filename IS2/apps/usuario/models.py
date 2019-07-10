@@ -5,7 +5,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 #from apps.viaje.models import Tramo
 # Create your models here.
-
+ 
 class Usuario(AbstractUser):
 	usuario = models.CharField(max_length=30, null = False)
 
@@ -40,4 +40,13 @@ def save_user_profile(sender,instance, **kwargs):
 class Interes_Personal(models.Model):
 	  interes = models.CharField(max_length=20, null = False)
 
+class Valoracion(models.Model):
+	nota = models.IntegerField(null= False, blank=False)
+	usuarioEvaluador = models.ForeignKey(Usuario, null = True,on_delete = models.CASCADE, related_name="usuariosEvaluador")
+	usuarioEvaluado = models.ForeignKey	(Usuario,  null = True,on_delete = models.CASCADE, related_name="usuariosEvaluado")
+	comentario = models.TextField(null=False,blank=False)
+	anonimo = models.BooleanField(default=False)
+	class Meta:
+		verbose_name = "Valoracion"
+		verbose_name_plural = "Valoraciones"
 
