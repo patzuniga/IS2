@@ -136,9 +136,10 @@ def registro(request):
 		return render(request, 'usuario/registrarme.html', {'form': form})
 
 def alerta(request):
+	print("holaaaa")
 	request.user.perfil.mensajes=""
 	request.user.perfil.save()
-	return redirect('login')
+	return redirect('home')
 
 def editarperfil(request):
 	user = Usuario.objects.get(id=request.user.id)

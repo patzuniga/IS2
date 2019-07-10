@@ -24,8 +24,10 @@
                 <div id="map" class="map"></div>
               </div>
               <br>
+              <form method='POST'>
+               <button style="margin:1.5em;" type="submit" name="alerta" value="1"><span style="color:red; font-size:1.5em;" class="glyphicon glyphicon-alert "></span><span style="font-size:1.5em;"> Avisar a los pasajeros cercanos </span></button>
+             </form>
               <div class="panel panel-default table-responsive">
-                <br>
               <table class="table  table-responsive table-striped" >
                 <thead>
                   <tr id="head">
@@ -163,13 +165,10 @@
             <td>{{ reserva.4}}</a></td>
             <td>{{ reserva.5}}</a></td>
             
-            <form action="{% url 'confirmarAceptarReservaConductor' reserva.0 %}" method="post">
+            <form method="post">
             {% csrf_token %}
-            <td ><a href="{% url 'confirmarAceptarReservaConductor' reserva.0 %}"><button class="round-button" name="encurso" onclick=""><i class="fa fa-check" style="text-align: center;"></i></button></a></td>
-            </form>
-            <form action="{% url 'confirmarCanReservaConductor' reserva.0 %}" method="post">
-            {% csrf_token %}
-            <td ><a href="{% url 'confirmarCanReservaConductor' reserva.0 %}"><button class="round-button" name="encurso" onclick=""><i class="fa fa-times" style="text-align: center;"></i></button></a></td>
+            <td ><button class="round-button" name="aprobar" value="{{reserva.0}}" onclick="Aprobar()"><i class="fa fa-check" style="text-align: center;"></i></button></td>
+            <td><button class="round-button" name="rechazar" value="{{reserva.0}}" onclick="Rechazar()"><i class="fa fa-times" style="text-align: center;"></i></button></td>
             </form>
             </tr>
 
@@ -292,5 +291,5 @@ function showError(error) {
     </script>
   <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAD6Q31QwQK0pv7twtzD32efp6hLa0uFEs&callback=initMap">
-    </script>
+  </script>
 {% endblock %}
