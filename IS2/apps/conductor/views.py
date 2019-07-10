@@ -22,7 +22,7 @@ def cambio(request):
 	print("Autoaceptar es",auto_a)
 	if request.method == 'POST':
 		auto_a = not auto_a
-		print("Ahora es",auto_a)
+		print("Ahora es ",auto_a)
 		conductor.autoaceptar_reservas = auto_a
 		conductor.save()
 

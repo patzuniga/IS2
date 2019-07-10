@@ -47,8 +47,8 @@ class EditarPerfil(forms.Form):
     email = forms.EmailField(required=True,widget=forms.EmailInput(attrs={'class':'form-control'}))
     numero_telefono = forms.CharField(max_length=30, label = "Teléfono",widget=forms.TextInput(attrs={'class':'form-control'}))
     direccion = forms.CharField(max_length=40, label = "Dirección",widget=forms.TextInput(attrs={'class':'form-control'}))
-    profesion = forms.CharField(max_length=20, label = "Profesión")
-    fumador = forms.BooleanField(required = False, label = "Fumador")
+    profesion = forms.CharField(max_length=20, label = "Profesión",widget=forms.TextInput(attrs={'class':'form-control'}))
+    fumador = forms.BooleanField(required = False, label = "Fumador",widget=forms.CheckboxInput(attrs={'class':'w3-check'}))
 
 class EditarPerfilConduct(forms.Form):
     username = forms.CharField(max_length=15, label="Usuario",widget=forms.TextInput(attrs={'class':'form-control'}))
@@ -56,8 +56,8 @@ class EditarPerfilConduct(forms.Form):
     numero_telefono = forms.CharField(max_length=30, label = "Teléfono",widget=forms.TextInput(attrs={'class':'form-control'}))
     direccion = forms.CharField(max_length=40, label = "Dirección",widget=forms.TextInput(attrs={'class':'form-control'}))
     profesion = forms.CharField(max_length=20, label = "Profesión",widget=forms.TextInput(attrs={'class':'form-control'}))
-    fumador = forms.BooleanField(required = False, label = "Fumador")
-    maleta = forms.BooleanField( required = False, label = "Maleta")
+    fumador = forms.BooleanField(required = False, label = "Fumador",widget=forms.CheckboxInput(attrs={'class':'w3-check'}))
+    maleta = forms.BooleanField( required = False, label = "Maleta",widget=forms.CheckboxInput(attrs={'class':'w3-check'}))
     clasedelicencia = forms.CharField(max_length=1, label = "Clase Licencia",widget=forms.TextInput(attrs={'class':'form-control'}))
     fecha_obtencion = forms.CharField(max_length=30,label = "Fecha obtencion Licencia",widget=forms.TextInput(attrs={'class':'form-control'}))
     patente = forms.CharField(max_length=30, label = "Patente Vehiculo",widget=forms.TextInput(attrs={'class':'form-control'}))
