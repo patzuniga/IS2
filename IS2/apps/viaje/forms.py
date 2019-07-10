@@ -7,7 +7,7 @@ from .models import *
 
 class ViajeForm(forms.Form):
 
-	fecha = forms.DateField(widget=forms.TextInput(attrs={'class':'form-control','placeholder':'Fecha Destino (DD/MM/YY)'}))
+	fecha = forms.DateField(widget=forms.TextInput(attrs={'class':'form-control','placeholder':'Fecha Origen (DD/MM/YY)'}))
 	hora_origen = forms.TimeField(widget=forms.TimeInput(attrs={'class':'form-control','placeholder':'Hora Origen (HH:MM)'}))
 	porta_maleta = forms.BooleanField(required = False,widget=forms.CheckboxInput(attrs={'class':'w3-check'}))
 	silla_niños = forms.BooleanField(required = False,widget=forms.CheckboxInput(attrs={'class':'w3-check'}))
@@ -16,8 +16,8 @@ class ViajeForm(forms.Form):
 	plazas_disponibles = forms.IntegerField(min_value=0,widget=forms.NumberInput(attrs={'class':'form-control','placeholder':'Plazas Disponibles'}))
 	#origen = forms.CharField(label="origen")
 	#destino = forms.CharField(label="destino")
-	fecha_destino = forms.DateField(widget=forms.TextInput(attrs={'class':'form-control','placeholder':'Fecha Destino (DD/MM/YY)'}))
-	hora_destino = forms.TimeField(widget=forms.TimeInput(attrs={'class':'form-control','placeholder':'Hora Origen (HH:MM)'}))
+	fecha_destino = forms.DateField(widget=forms.TextInput(attrs={'class':'form-control','placeholder':'Fecha Llegada (DD/MM/YY)'}))
+	hora_destino = forms.TimeField(widget=forms.TimeInput(attrs={'class':'form-control','placeholder':'Hora Llegada (HH:MM)'}))
 	def clean(self):
 		cleaned_data = super().clean()
 		f1 = cleaned_data.get("fecha")
