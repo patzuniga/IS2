@@ -124,3 +124,85 @@ def registro_conductor(request):
 	else:
 		form = Conductor_Form()
 		return render(request, 'conductor/conductor.html', {'form': form})
+
+@login_required()
+def valoracionesPendientesConductor(request):
+	current_user = request.user
+	u = Usuario.objects.get(id=current_user.id)
+	evaluador = u.conductor_set.all()[0]
+	res = Reserva.objects.all()
+#	print(evaluador.usuario)
+	porValorar = []
+	for v in Viaje.objects.all():
+		if v.conductor == evaluador:
+#			print(evaluador.usuario)
+			for reserva in res:
+				if reserva.tramos.all()[0].viaje == v.id and (reserva.estado == "Por Valorar" or reserva.estado == "Por Valorar Conductor"):
+#					print(reserva.usuario)
+					aux = []
+#					print(reserva.id)
+					print(reserva.estado)
+					aux.append(reserva.usuario)
+					aux.append(reserva.id)
+					porValorar.append(aux)
+	return render(request, 'conductor/valoracionesPendientesConductor.html',{'porValorar':porValorar})	
+
+#	else:
+#		return render(request, 'conductor/valoracionesPendientesConductor')
+
+@login_required()
+def vPC(request):
+	current_user = request.user
+	u = Usuario.objects.get(id=current_user.id)
+	conductor = u.conductor_set.all()[0]
+	valoracion = []
+	print(conductor.usuario)
+	if request.method == 'POST':
+		post = Valoracion()
+		post.pasajeroEvaluado =	request.POST.get('pasajeroEvaluado')
+		post.nota = request.POST.get('nota')
+		post.comentario = request.POST.get('comentario')
+		post.comentarioAnonimo = request.POST.get('anon')
+		resID = request.POST.get('resID')
+		print(post.pasajeroEvaluado)
+#		print(post.nota)
+#		print(post.comentario)
+		print(post.comentarioAnonimo)
+		print(resID)
+		aux = []
+		if(post.comentarioAnonimo == "True"):
+			aux.append("Anonimo")
+			aux.append(post.nota)
+			aux.append(post.pasajeroEvaluado)
+			aux.append(post.comentario)
+			valoracion.append(aux)
+			print(valoracion)			
+			res = Reserva.objects.get(id=resID)
+			if( res.estado == "Por Valorar Conductor"):
+				res.estado = "Terminada"
+				print(res.estado)
+				#Agregar res.save()
+			if (res.estado == "Por Valorar"):
+				res.estado = "Por Valorar Pasajero"
+				print(res.estado)
+				#Agregar res.save()
+			return HttpResponseRedirect('/conductor/valoracionesPendientesConductor/',{'valoracion':valoracion})
+		else:
+			aux.append(conductor.usuario)
+			aux.append(post.nota)
+			aux.append(post.pasajeroEvaluado)
+			aux.append(post.comentario)
+			valoracion.append(aux)
+			print(valoracion)
+			res = Reserva.objects.get(id=resID)
+			if( res.estado == "Por Valorar Conductor"):
+				res.estado = "Terminada"
+				print(res.estado)					
+				#Agregar res.save()
+			if (res.estado == "Por Valorar"):
+				res.estado = "Por Valorar Pasajero"
+				print(res.estado)
+				#Agregar res.save()
+			return HttpResponseRedirect('/conductor/valoracionesPendientesConductor/',{'valoracion':valoracion})				
+
+

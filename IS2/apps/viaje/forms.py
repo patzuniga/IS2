@@ -50,7 +50,7 @@ class EditarViajeForm(forms.Form):
 
 class ParadasForm(forms.Form):
 	fecha = forms.DateField(label = "Fecha de llegada",widget=forms.TextInput(attrs={'class':'form-control'}))
-	hora = forms.TimeField(label = "Fecha de llegada",widget=forms.TextInput(attrs={'class':'form-control'}))
+	hora = forms.TimeField(label = "Hora de llegada",widget=forms.TextInput(attrs={'class':'form-control'}))
 
 class BuscarForm(forms.Form):
 	#origen = forms.CharField(label = "Origen")

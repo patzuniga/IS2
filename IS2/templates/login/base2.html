@@ -122,7 +122,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
               <li><a href="{% url 'viaje_list' %}" class="notification" >Ver Viajes<span class="badge" style="font-size: 1.2vw">
               {{user.conductor_set.all.0.reservas_por_aprobar}}</span>  </a></li>
               {% endif %}
-              <li><a href="{% url 'viaje_list' %}">Valoraciones</a></li>
+              <li><a href="{% url 'valoracionesPendientesConductor' %}">Valoraciones</a></li>
               <li><a href= "{% url 'configuracion' %}"><span class="glyphicon glyphicon-cog"></span></a></li>
               <li><a href="logout">Log out</a></li>
             </ul> 
