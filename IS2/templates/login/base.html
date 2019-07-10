@@ -129,7 +129,11 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
     <br><br><br><br>
       </div>
   </div>
-</div>      
+</div>
+<form id="dynForm" action="/alerta" method="post">
+  {% csrf_token %}
+<input type="hidden" name="alerta" value="1" readonly>
+</form>    
   <!--//banner-->
   <div class="footer">
     <div class="container">
@@ -165,40 +169,18 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
   </div>
   <!--//footer-->   
   <!--search jQuery-->
-  <script src="{% static '/js/main.js' %}"></script>
-  <!--//search jQuery-->
-  <!--smooth-scrolling-of-move-up-->
-  <script type="text/javascript">
-    $(document).ready(function() {
-    
-      var defaults = {
-        containerID: 'toTop', // fading element id
-        containerHoverID: 'toTopHover', // fading element hover id
-        scrollSpeed: 1200,
-        easingType: 'linear' 
-      };
-      
-      $().UItoTop({ easingType: 'easeOutQuart' });
-      
-    });
-  </script>
-  <!--//smooth-scrolling-of-move-up-->
-  <!--Bootstrap core JavaScript
-    ================================================== -->
-    <!--Placed at the end of the document so the pages load faster -->
-    <script src="{% static '/js/bootstrap.js' %}"></script>
-    <script>
-// Tabs
-function openLink(evt, linkName) {
-  var i, x, tablinks;
-  x = document.getElementsByClassName("myLink");
-  
-  tablinks = document.getElementsByClassName("tablink");
-  document.getElementById(linkName).style.display = "block";
-  evt.currentTarget.className += " w3-red";
-}
-// Click on the first tablink on load
-document.getElementsByClassName("tablink")[0].click();
+<script> 
+  var mensaje = "{{user.perfil.mensajes}}";
+  if (mensaje != ""){
+      var a = confirm(mensaje);
+      if (a){
+      document.getElementById("dynForm").submit();
+      } else{
+      document.getElementById("dynForm").submit();
+      }
+    }
 </script>
+<script src="{% static '/js/bootstrap.js' %}"></script>
+
 </body>
 </html>

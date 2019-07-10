@@ -20,7 +20,7 @@ class Perfil(models.Model):
 	profesion = models.CharField(max_length=20, null = True, blank = True)
 	fumador = models.NullBooleanField( blank = True)
 	viajes_en_curso = models.IntegerField(default = 0)
-	mensajes = models.CharField(max_length=30, default="")
+	mensajes = models.CharField(max_length=50, default="")
 	class Meta:
 		verbose_name = "Perfil"
 		verbose_name_plural = "Perfiles"
