@@ -444,10 +444,14 @@ def editarviaje(request,idviaje):
 				error = "Fecha de origen y destino no pueden ser menores a la fecha actual."
 				form = EditarViajeForm()
 				return render(request,'viaje/editarviaje.html',{'form':form, 'error': error})	
-			if (fecha_destino < fecha_origen):
+			if (fecha_destino <= fecha_origen):
 				error = "Fecha y hora de termino deben ser mayores a la fecha y hora de inicio."
 				form = EditarViajeForm()
-				return render(request,'viaje/editarviaje.html',{'form':form, 'error': error})	
+				return render(request,'viaje/editarviaje.html',{'form':form, 'error': error})
+			if (fecha_destino > fecha_origen + timedelta(days=1)):
+				error = "El viaje solo puede durar 24 hrs."
+				form = EditarViajeForm()
+				return render(request,'viaje/editarviaje.html',{'form':form, 'error': error})
 
 			if len(tramitos)==1:
 				tramo1 = Tramo()
