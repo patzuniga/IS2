@@ -869,11 +869,10 @@ def administrar(request,pk):
 					aux.append(reserva.usuario)
 					reservastransito.append(aux)
 		tramo_especial = viaje.tramos.all().filter(orden_en_viaje = viaje.parada_actual-1)[0]
-		print(tramo_especial.origen.direccion)
 		reservas_especiales = tramo_especial.reservas.all()
-		print(reservas_especiales)
 		for res in reservas_especiales:
 			if res.estado == "Aprobada":
+				aux = []
 				aux.append(reserva.id)
 				aux.append(reserva.plazas_pedidas)
 				aux.append(tramosreserva[0].origen.nombre)

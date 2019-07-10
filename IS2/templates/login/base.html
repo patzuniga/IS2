@@ -85,7 +85,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
       <div class="container">
         <div class="nav navbar-nav header-two-left">
           <ul>
-            <li><a href="{% url 'ver_perfil' %}"><i class="glyphicon glyphicon-user" aria-hidden="true"></i>{{user.username}}</a></li>
+            <li><a style="font-size: 1.5em" href="{% url 'ver_perfil' %}"><img src="/{{user.perfil.foto_perfil}}" style="width: 1em; height: 1em"> &nbsp{{user.username}}</a></li>
           </ul>
         </div>
         <div class="nav navbar-nav logo wow zoomIn animated" data-wow-delay=".7s">
