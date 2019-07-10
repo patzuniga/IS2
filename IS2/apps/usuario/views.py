@@ -282,31 +282,19 @@ def ver_perfil(request):
 	info_perfil.append(yo.valoracion)
 	yo.save()
 
-	#comentarios falsos para probar
-	come = [	'comentario 1',
-				'comentario 2',
-				'es una lista de strings 3',
-				'los comentarios de verdad 4',
-				'tienen también 5',
-				'la valoración 6',
-				'y el usuario 7',
-				'o si es anónimo 8',
-				'etc 9',
-				'10',
-				'11',
-				'12',
-				'13',
-				'14',
-				'un comentario mas largo para ver comentarios largos y como quedan si son muy largos y largos EEEEEEE EEEEEEEE EEEEEEEEEEE EEEEEE EEEEEEEEEEEEEE EEEEEEEEEE 15',
-				'16',
-				'17',
-				'18',
-				'19',
-				'E 20',
-				'21',
-				'22',
-				'23',
-				'24']
+	come =[]
+	com = Valoracion.objects.filter(usuarioEvaluado=request.user.id)
+
+	for c in com:
+		aux = []
+		if c.anonimo:
+			aux.append('Anónimo')
+		else:
+			aux.append(c.usuarioEvaluador)
+		aux.append(c.nota)
+		aux.append(c.comentario)
+
+		come.append(aux)
 
 	paginator = Paginator(come, 10)
 	page = request.GET.get('page')
