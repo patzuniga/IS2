@@ -90,38 +90,42 @@ def viaje_listo(request):
 	u = Usuario.objects.get(id=current_user.id)
 	viaje.conductor = u.conductor_set.all()[0]
 	viaje.save()
-	for i in range(len(paradas)-1):
-		if(i==0):
-			par1 = Parada()
-			par1.nombre = paradas[i][2]
-			par1.direccion = paradas[i][3]
-			par1.save()
+	try:
+		for i in range(len(paradas)-1):
+			if(i==0):
+				par1 = Parada()
+				par1.nombre = paradas[i][2]
+				par1.direccion = paradas[i][3]
+				par1.save()
 
-			par2 = Parada()
-			par2.nombre = paradas[i+1][2]
-			par2.direccion = paradas[i+1][3]
-			par2.save()
-		else:
-			par1 = par2
-			par2 = Parada()
-			par2.nombre = paradas[i+1][2]
-			par2.direccion = paradas[i+1][3]
-			par2.save()
+				par2 = Parada()
+				par2.nombre = paradas[i+1][2]
+				par2.direccion = paradas[i+1][3]
+				par2.save()
+			else:
+				par1 = par2
+				par2 = Parada()
+				par2.nombre = paradas[i+1][2]
+				par2.direccion = paradas[i+1][3]
+				par2.save()
 
-		tramo = Tramo()
-		tramo.orden_en_viaje  = i
-		tramo.hora_salida = paradas[i][1]
-		tramo.hora_llegada = paradas[i+1][1]
-		tramo.fecha = datetime.strptime(paradas[i][0], "%d/%m/%Y")
-		tramo.asientos_disponibles = request.session['viaje']['plazas_disponibles']
-		tramo.origen = par1
-		tramo.destino = par2
-		tramo.distancia = request.session['viaje']['distancias'][i]
-		tramo.viaje = viaje.id
-		tramo.save()
-		viaje.tramos.add(tramo)
-	viaje.save()
-	return success(request,viaje.id)	
+			tramo = Tramo()
+			tramo.orden_en_viaje  = i
+			tramo.hora_salida = paradas[i][1]
+			tramo.hora_llegada = paradas[i+1][1]
+			tramo.fecha = datetime.strptime(paradas[i][0], "%d/%m/%Y")
+			tramo.asientos_disponibles = request.session['viaje']['plazas_disponibles']
+			tramo.origen = par1
+			tramo.destino = par2
+			tramo.distancia = request.session['viaje']['distancias'][i]
+			tramo.viaje = viaje.id
+			tramo.save()
+			viaje.tramos.add(tramo)
+		viaje.save()
+		return success(request,viaje.id)
+	except:
+		viaje.delete()
+		return redirect('error_crear')	
 
 @login_required()
 def Viajelist(request):
@@ -254,7 +258,7 @@ def buscar_viaje(request):
 			f =  form.cleaned_data['fecha']
 			s = request.POST['origen'].split(',')[0].replace(",","")
 			u = request.POST['destino'].split(',')[0].replace(",","")
-			viaje  = Viaje.objects.filter()
+			viaje  = Viaje.objects.filter(estado="Registrado")
 			#se revisan todos lo viajes
 			origen = False
 			destino = False
@@ -316,6 +320,10 @@ def tiene_reservas(pk):
 @login_required()
 def error1(request):
 	return render(request, 'viaje/error1.html', {})
+
+@login_required()
+def error_crear(request):
+	return render(request, 'viaje/error_crear.html', {})
 
 @login_required()
 def viaje_details(request, pk):
@@ -860,19 +868,6 @@ def administrar(request,pk):
 					aux.append(reserva.estado)
 					aux.append(reserva.usuario)
 					reservas.append(aux)
-			
-			if (reserva.estado == "Aprobada" ):
-				tramosreserva = reserva.tramos.all()
-				aux = []
-				if reserva.tramos.all()[0].viaje == int(pk):
-					aux.append(reserva.id)
-					aux.append(reserva.plazas_pedidas)
-					aux.append(tramosreserva[0].origen.nombre)
-					aux.append(tramosreserva[len(tramosreserva)-1].destino.nombre)
-					aux.append(reserva.precio)
-					aux.append(reserva.estado)
-					aux.append(reserva.usuario)
-					reservasaceptadas.append(aux)
 			if (reserva.estado == "Transito"):
 				tramosreserva = reserva.tramos.all()
 				aux = []
@@ -885,7 +880,20 @@ def administrar(request,pk):
 					aux.append(reserva.estado)
 					aux.append(reserva.usuario)
 					reservastransito.append(aux)
-		tramitos = viaje.tramos.all()
+		tramo_especial = viaje.tramos.all().filter(orden_en_viaje = viaje.parada_actual-1)[0]
+		reservas_especiales = tramo_especial.reservas.all()
+		for res in reservas_especiales:
+			if res.estado == "Aprobada":
+				aux = []
+				aux.append(reserva.id)
+				aux.append(reserva.plazas_pedidas)
+				aux.append(tramosreserva[0].origen.nombre)
+				aux.append(tramosreserva[len(tramosreserva)-1].destino.nombre)
+				aux.append(reserva.precio)
+				aux.append(reserva.estado)
+				aux.append(reserva.usuario)
+				reservasaceptadas.append(aux)
+		tramitos = viaje.tramos.all().order_by('orden_en_viaje')
 		paradas = []						
 		for i in range(len(tramitos)):
 			paradas.append(tramitos[i].origen.direccion)
@@ -986,22 +994,6 @@ def administrar(request,pk):
 						aux.append(reserva.estado)
 						aux.append(reserva.usuario)
 						reservas.append(aux)
-				reservas = []
-				reservasaceptadas = []
-				reservastransito = []
-				tramosreserva = reserva.tramos.all()
-				for tramosre in tramosreserva: 
-					if (reserva.estado == "Aprobada" and (viaje.parada_actual == tramosre.orden_en_viaje+1)):
-						aux = []
-						if reserva.tramos.all()[0].viaje == int(pk):
-							aux.append(reserva.id)
-							aux.append(reserva.plazas_pedidas)
-							aux.append(tramosre[0].origen.nombre)
-							aux.append(tramosre[len(tramosreserva)-1].destino.nombre)
-							aux.append(reserva.precio)
-							aux.append(reserva.estado)
-							aux.append(reserva.usuario)
-							reservasaceptadas.append(aux)
 				if (reserva.estado == "Transito"):
 					tramosreserva = reserva.tramos.all()
 					aux = []
@@ -1013,7 +1005,20 @@ def administrar(request,pk):
 						aux.append(reserva.precio)
 						aux.append(reserva.estado)
 						aux.append(reserva.usuario)
-						reservastransito.append(aux)	
+						reservastransito.append(aux)
+			tramo_especial = viaje.tramos.all().filter(orden_en_viaje = viaje.parada_actual-1)[0]
+			reservas_especiales = tramo_especial.reservas.all()
+			for res in reservas_especiales:
+				if res.estado == "Aprobada":
+					aux = []
+					aux.append(reserva.id)
+					aux.append(reserva.plazas_pedidas)
+					aux.append(tramosreserva[0].origen.nombre)
+					aux.append(tramosreserva[len(tramosreserva)-1].destino.nombre)
+					aux.append(reserva.precio)
+					aux.append(reserva.estado)
+					aux.append(reserva.usuario)
+					reservasaceptadas.append(aux)
 			return render(request,'conductor/administrar.html', {"city_array" : json_cities, "siguiente": sig, "destino": destino,'reservas':reservas,'reservastransito':reservastransito,'reservasaceptadas':reservasaceptadas})
 		else:
 			raise Http404

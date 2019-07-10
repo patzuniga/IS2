@@ -11,6 +11,7 @@ class Usuario(AbstractUser):
 
 class Perfil(models.Model):
 	usuario = models.OneToOneField(Usuario, on_delete = models.CASCADE, null = True, blank=True, related_name = "perfil")
+	foto_perfil = models.ImageField(upload_to='static/fotos_perfil', default ='static/fotos_perfil/user-icon.jpg')
 	rut = models.CharField(max_length=10, null = True, blank = True)
 	nombre = models.CharField(max_length=30, null = True, blank = True)
 	email = models.EmailField(max_length=70,blank=True)
@@ -20,7 +21,7 @@ class Perfil(models.Model):
 	profesion = models.CharField(max_length=20, null = True, blank = True)
 	fumador = models.NullBooleanField( blank = True)
 	viajes_en_curso = models.IntegerField(default = 0)
-	mensajes = models.CharField(max_length=50, default="")
+	mensajes = models.CharField(max_length=50, default="", blank = True)
 	class Meta:
 		verbose_name = "Perfil"
 		verbose_name_plural = "Perfiles"
