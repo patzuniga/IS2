@@ -873,7 +873,6 @@ def administrar(request,pk):
 		reservas_especiales = tramo_especial.reservas.all()
 		print(reservas_especiales)
 		for res in reservas_especiales:
-			print(res.estado)
 			if res.estado == "Aprobada":
 				aux.append(reserva.id)
 				aux.append(reserva.plazas_pedidas)
@@ -895,7 +894,7 @@ def administrar(request,pk):
 					viaje.estado = "Terminado"
 					viaje.save()
 					request.session['valoraciones'] = viaje.id
-					return redirect('fin_viaje') 
+					return redirect('home') 
 			json_cities = json.dumps(paradas[viaje.parada_actual-1::])
 			destino = False
 			if(viaje.parada_actual < len(tramitos)-1):
@@ -913,7 +912,7 @@ def administrar(request,pk):
 				viaje.estado = "Terminado"
 				viaje.save()
 				request.session['valoraciones'] = viaje.id
-				return redirect('fin_viaje') # esto debe cambiarse
+				return redirect('home') # esto debe cambiarse
 			json_cities = json.dumps(paradas[viaje.parada_actual-1::])
 			destino = False
 			if(viaje.parada_actual < len(tramitos)-1):
