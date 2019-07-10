@@ -80,11 +80,11 @@
                         <td>{{ reservasdecididas.1}}</td>
                         <td>{{ reservasdecididas.2}}</td>
                         <td>{{ reservasdecididas.5}}</td>
-                         <form method='POST'>
+                      <form method='POST'>
                         {% csrf_token %}
                         <td ><button class="round-button" value="{{reservasdecididas.0}}" name="sube" ><i class="fa fa-sign-in" style="text-align: center;"></i></button></td>
                         <td ><button class="round-button" value="{{reservasdecididas.0}}" name="nosube"><i class="fa fa-sign-out"   style="text-align: center;"></i></button></td>
-        </form>    {% endfor %}
+        </form>  {% endfor %}
                   </tr>
                 </tbody>
               </table>
@@ -165,11 +165,23 @@
             <td>{{ reserva.4}}</a></td>
             <td>{{ reserva.5}}</a></td>
             
+            <!--
             <form method="post">
             {% csrf_token %}
             <td ><button class="round-button" name="aprobar" value="{{reserva.0}}" onclick="Aprobar()"><i class="fa fa-check" style="text-align: center;"></i></button></td>
             <td><button class="round-button" name="rechazar" value="{{reserva.0}}" onclick="Rechazar()"><i class="fa fa-times" style="text-align: center;"></i></button></td>
+
             </form>
+            -->
+            <form action="{% url 'confirmarAceptarReservaConductor' reserva.0 %}" method="post">
+            {% csrf_token %}
+            <td ><a href="{% url 'confirmarAceptarReservaConductor' reserva.0 %}"><button class="round-button" name="encurso" onclick=""><i class="fa fa-check" style="text-align: center;"></i></button></a></td>
+            </form>
+            <form action="{% url 'confirmarCanReservaConductor' reserva.0 %}" method="post">
+            {% csrf_token %}
+            <td ><a href="{% url 'confirmarCanReservaConductor' reserva.0 %}"><button class="round-button" name="encurso" onclick=""><i class="fa fa-times" style="text-align: center;"></i></button></a></td>
+            </form>
+            
             </tr>
 
           {% endfor %}
