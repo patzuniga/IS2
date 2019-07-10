@@ -915,7 +915,7 @@ def administrar(request,pk):
 				viaje.estado = "Terminado"
 				viaje.save()
 				request.session['valoraciones'] = viaje.id
-				return redirect('fin_viaje') # esto debe cambiarse
+				return render(request,'viaje/fin_viaje.html') # esto debe cambiarse
 			json_cities = json.dumps(paradas[viaje.parada_actual-1::])
 			destino = False
 			if(viaje.parada_actual < len(tramitos)-1):
@@ -957,7 +957,7 @@ def administrar(request,pk):
 					for i in tramosreserva:
 						i.asientos_disponibles += reserva.plazas_pedidas
 						i.save()
-					viaje.asientos_disponibles +=reserva.plazas_pedidas
+					viaje.plazas_disponibles +=reserva.plazas_pedidas
 					viaje.save() 
 					reserva.estado = "Abortada"
 					reserva.save()
@@ -1073,3 +1073,7 @@ def iniciarviaje(request,pk):
 	return render(request,'conductor/error.html',{"titulo" : titulo, "mensaje" : mensaje})
 #@login_required()
 #def Viajereservasver(request):		
+
+def fin_viaje(request):
+	current_user = request.user
+	return render(request,'viaje/fin_viaje.html',{"cond":current_user.id})

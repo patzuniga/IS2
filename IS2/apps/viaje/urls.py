@@ -26,4 +26,5 @@ urlpatterns = [
     url(r'^administrar/(?P<pk>\d+)/$', administrar, name='administrar'),
     url(r'^viaje_reserva/(?P<pk>\d+)$', detail_viaje_en_curso, name='viaje_reserva'),
     url(r'^iniciarviaje/(?P<pk>\d+)$', iniciarviaje, name='iniciarviaje'),
+    url(r'^fin_viaje$', fin_viaje , name='fin_viaje'),
 ]
