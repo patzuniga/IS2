@@ -1025,19 +1025,19 @@ def administrar(request,pk):
 					aux.append(reserva.estado)
 					aux.append(reserva.usuario)
 					reservas.append(aux)
-			tramosreserva = reserva.tramos.all()
-			for tramosre in tramosreserva: 
-				if (reserva.estado == "Aprobada" and viaje.parada_actual == tramosre.orden_en_viaje):
-					aux = []
-					if reserva.tramos.all()[0].viaje == int(pk):
-						aux.append(reserva.id)
-						aux.append(reserva.plazas_pedidas)
-						aux.append(tramosre[0].origen.nombre)
-						aux.append(tramosre[len(tramosreserva)-1].destino.nombre)
-						aux.append(reserva.precio)
-						aux.append(reserva.estado)
-						aux.append(reserva.usuario)
-						reservasaceptadas.append(aux)
+			
+			if (reserva.estado == "Aprobada" ):
+				tramosreserva = reserva.tramos.all()
+				aux = []
+				if reserva.tramos.all()[0].viaje == int(pk):
+					aux.append(reserva.id)
+					aux.append(reserva.plazas_pedidas)
+					aux.append(tramosreserva[0].origen.nombre)
+					aux.append(tramosreserva[len(tramosreserva)-1].destino.nombre)
+					aux.append(reserva.precio)
+					aux.append(reserva.estado)
+					aux.append(reserva.usuario)
+					reservasaceptadas.append(aux)
 			if (reserva.estado == "Transito"):
 				tramosreserva = reserva.tramos.all()
 				aux = []
@@ -1099,7 +1099,7 @@ def administrar(request,pk):
 				if(reserva.estado == "Transito"):
 					reserva.estado = "Terminada"
 					reserva.save()
-				return render (request,'conductor/administrar.html', {"city_array" : json_cities, "siguiente": sig, "destino": destino,'reservas':reservas,'reservastransito':reservastransito,'reservasaceptadas':reservasaceptadas})
+				#return render (request,'conductor/administrar.html', {"city_array" : json_cities, "siguiente": sig, "destino": destino,'reservas':reservas,'reservastransito':reservastransito,'reservasaceptadas':reservasaceptadas})
 			
 			elif request.POST.get("sube"):		
 				print("boton_subee")
@@ -1110,7 +1110,7 @@ def administrar(request,pk):
 					reserva.estado = "Transito"
 					reserva.save()
 					print(reserva.estado)
-				return render(request,'conductor/administrar.html', {"city_array" : json_cities, "siguiente": sig, "destino": destino,'reservas':reservas,'reservastransito':reservastransito,'reservasaceptadas':reservasaceptadas})
+				#return render(request,'conductor/administrar.html', {"city_array" : json_cities, "siguiente": sig, "destino": destino,'reservas':reservas,'reservastransito':reservastransito,'reservasaceptadas':reservasaceptadas})
 		
 			elif request.POST.get("nosube"):
 				print("boton no sube", request.POST.get("no sube"))
@@ -1126,7 +1126,7 @@ def administrar(request,pk):
 					viaje.save() 
 					reserva.estado = "Abortada"
 					reserva.save()
-				return render(request, 'conductor/administrar.html', {"city_array" : json_cities, "siguiente": sig, "destino": destino,'reservas':reservas,'reservastransito':reservastransito,'reservasaceptadas':reservasaceptadas})	
+				#return render(request, 'conductor/administrar.html', {"city_array" : json_cities, "siguiente": sig, "destino": destino,'reservas':reservas,'reservastransito':reservastransito,'reservasaceptadas':reservasaceptadas})	
 
 			elif request.POST.get("alerta"):		
 				if(destino):
@@ -1138,8 +1138,48 @@ def administrar(request,pk):
 			elif request.POST.get("aprobar"):		
 				print(request.POST.get("aprobar"))
 				return render(request,'conductor/administrar.html', {"city_array" : json_cities, "siguiente": sig, "destino": destino,'reservas':reservas,'reservastransito':reservastransito,'reservasaceptadas':reservasaceptadas})
-
-	
+			for reserva in r:
+				if (reserva.estado == "Por Aprobar"):
+					tramosreserva = reserva.tramos.all()
+					aux = []
+					if reserva.tramos.all()[0].viaje == int(pk):
+						aux.append(reserva.id)
+						aux.append(reserva.plazas_pedidas)
+						aux.append(tramosreserva[0].origen.nombre)
+						aux.append(tramosreserva[len(tramosreserva)-1].destino.nombre)
+						aux.append(reserva.precio)
+						aux.append(reserva.estado)
+						aux.append(reserva.usuario)
+						reservas.append(aux)
+				reservas = []
+				reservasaceptadas = []
+				reservastransito = []
+				tramosreserva = reserva.tramos.all()
+				for tramosre in tramosreserva: 
+					if (reserva.estado == "Aprobada" and (viaje.parada_actual == tramosre.orden_en_viaje+1)):
+						aux = []
+						if reserva.tramos.all()[0].viaje == int(pk):
+							aux.append(reserva.id)
+							aux.append(reserva.plazas_pedidas)
+							aux.append(tramosre[0].origen.nombre)
+							aux.append(tramosre[len(tramosreserva)-1].destino.nombre)
+							aux.append(reserva.precio)
+							aux.append(reserva.estado)
+							aux.append(reserva.usuario)
+							reservasaceptadas.append(aux)
+				if (reserva.estado == "Transito"):
+					tramosreserva = reserva.tramos.all()
+					aux = []
+					if reserva.tramos.all()[0].viaje == int(pk):
+						aux.append(reserva.id)
+						aux.append(reserva.plazas_pedidas)
+						aux.append(tramosreserva[0].origen.nombre)
+						aux.append(tramosreserva[len(tramosreserva)-1].destino.nombre)
+						aux.append(reserva.precio)
+						aux.append(reserva.estado)
+						aux.append(reserva.usuario)
+						reservastransito.append(aux)	
+			return render(request,'conductor/administrar.html', {"city_array" : json_cities, "siguiente": sig, "destino": destino,'reservas':reservas,'reservastransito':reservastransito,'reservasaceptadas':reservasaceptadas})
 		else:
 			raise Http404
 	else:
