@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.conf.urls import url, include
 from django.conf.urls import include,url
 from django.contrib import admin
-
+ 
 urlpatterns = [
 	url(r'^login/$', auth_views.login, {'template_name' : 'login/login.html'}, name='login'),
 	url(r'^registro$',registro, name= 'registro'),    
@@ -22,4 +22,6 @@ urlpatterns = [
 	url(r'^editarperfilconduct/$', editarperfilconduct, name='editarperfilconduct'),     
 	url(r'^perfil/',ver_perfil, name= 'ver_perfil'),
 	url(r'^Cambiarcontraseña/',CambiarContraseña, name= 'CambiarContraseña'),
+	url(r'^valoracionesPendientesUsuario/$', valoracionesPendientesUsuario, name='valoracionesPendientesUsuario'),
+	url(r'^vPU/$', vPU, name='vPU'),
 	]

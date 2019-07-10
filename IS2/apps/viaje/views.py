@@ -90,38 +90,42 @@ def viaje_listo(request):
 	u = Usuario.objects.get(id=current_user.id)
 	viaje.conductor = u.conductor_set.all()[0]
 	viaje.save()
-	for i in range(len(paradas)-1):
-		if(i==0):
-			par1 = Parada()
-			par1.nombre = paradas[i][2]
-			par1.direccion = paradas[i][3]
-			par1.save()
+	try:
+		for i in range(len(paradas)-1):
+			if(i==0):
+				par1 = Parada()
+				par1.nombre = paradas[i][2]
+				par1.direccion = paradas[i][3]
+				par1.save()
 
-			par2 = Parada()
-			par2.nombre = paradas[i+1][2]
-			par2.direccion = paradas[i+1][3]
-			par2.save()
-		else:
-			par1 = par2
-			par2 = Parada()
-			par2.nombre = paradas[i+1][2]
-			par2.direccion = paradas[i+1][3]
-			par2.save()
+				par2 = Parada()
+				par2.nombre = paradas[i+1][2]
+				par2.direccion = paradas[i+1][3]
+				par2.save()
+			else:
+				par1 = par2
+				par2 = Parada()
+				par2.nombre = paradas[i+1][2]
+				par2.direccion = paradas[i+1][3]
+				par2.save()
 
-		tramo = Tramo()
-		tramo.orden_en_viaje  = i
-		tramo.hora_salida = paradas[i][1]
-		tramo.hora_llegada = paradas[i+1][1]
-		tramo.fecha = datetime.strptime(paradas[i][0], "%d/%m/%Y")
-		tramo.asientos_disponibles = request.session['viaje']['plazas_disponibles']
-		tramo.origen = par1
-		tramo.destino = par2
-		tramo.distancia = request.session['viaje']['distancias'][i]
-		tramo.viaje = viaje.id
-		tramo.save()
-		viaje.tramos.add(tramo)
-	viaje.save()
-	return success(request,viaje.id)	
+			tramo = Tramo()
+			tramo.orden_en_viaje  = i
+			tramo.hora_salida = paradas[i][1]
+			tramo.hora_llegada = paradas[i+1][1]
+			tramo.fecha = datetime.strptime(paradas[i][0], "%d/%m/%Y")
+			tramo.asientos_disponibles = request.session['viaje']['plazas_disponibles']
+			tramo.origen = par1
+			tramo.destino = par2
+			tramo.distancia = request.session['viaje']['distancias'][i]
+			tramo.viaje = viaje.id
+			tramo.save()
+			viaje.tramos.add(tramo)
+		viaje.save()
+		return success(request,viaje.id)
+	except:
+		viaje.delete()
+		return redirect('error_crear')	
 
 @login_required()
 def Viajelist(request):
@@ -318,6 +322,10 @@ def error1(request):
 	return render(request, 'viaje/error1.html', {})
 
 @login_required()
+def error_crear(request):
+	return render(request, 'viaje/error_crear.html', {})
+
+@login_required()
 def viaje_details(request, pk):
 	viajes=[]
 	paradas = []
@@ -444,10 +452,14 @@ def editarviaje(request,idviaje):
 				error = "Fecha de origen y destino no pueden ser menores a la fecha actual."
 				form = EditarViajeForm()
 				return render(request,'viaje/editarviaje.html',{'form':form, 'error': error})	
-			if (fecha_destino < fecha_origen):
+			if (fecha_destino <= fecha_origen):
 				error = "Fecha y hora de termino deben ser mayores a la fecha y hora de inicio."
 				form = EditarViajeForm()
-				return render(request,'viaje/editarviaje.html',{'form':form, 'error': error})	
+				return render(request,'viaje/editarviaje.html',{'form':form, 'error': error})
+			if (fecha_destino > fecha_origen + timedelta(days=1)):
+				error = "El viaje solo puede durar 24 hrs."
+				form = EditarViajeForm()
+				return render(request,'viaje/editarviaje.html',{'form':form, 'error': error})
 
 			if len(tramitos)==1:
 				tramo1 = Tramo()
@@ -893,7 +905,7 @@ def administrar(request,pk):
 					viaje.estado = "Terminado"
 					viaje.save()
 					request.session['valoraciones'] = viaje.id
-					return redirect('home') 
+					return redirect('fin_viaje') 
 			json_cities = json.dumps(paradas[viaje.parada_actual-1::])
 			destino = False
 			if(viaje.parada_actual < len(tramitos)-1):
@@ -911,7 +923,7 @@ def administrar(request,pk):
 				viaje.estado = "Terminado"
 				viaje.save()
 				request.session['valoraciones'] = viaje.id
-				return redirect('home') # esto debe cambiarse
+				return render(request,'viaje/fin_viaje.html') # esto debe cambiarse
 			json_cities = json.dumps(paradas[viaje.parada_actual-1::])
 			destino = False
 			if(viaje.parada_actual < len(tramitos)-1):
@@ -930,7 +942,7 @@ def administrar(request,pk):
 				if(reserva.estado == "Transito"):
 					reserva.estado = "Terminada"
 					reserva.save()
-				return render (request,'conductor/administrar.html', {"city_array" : json_cities, "siguiente": sig, "destino": destino,'reservas':reservas,'reservastransito':reservastransito,'reservasaceptadas':reservasaceptadas})
+				#return render (request,'conductor/administrar.html', {"city_array" : json_cities, "siguiente": sig, "destino": destino,'reservas':reservas,'reservastransito':reservastransito,'reservasaceptadas':reservasaceptadas})
 			
 			elif request.POST.get("sube"):		
 				print("boton_subee")
@@ -941,7 +953,7 @@ def administrar(request,pk):
 					reserva.estado = "Transito"
 					reserva.save()
 					print(reserva.estado)
-				return render(request,'conductor/administrar.html', {"city_array" : json_cities, "siguiente": sig, "destino": destino,'reservas':reservas,'reservastransito':reservastransito,'reservasaceptadas':reservasaceptadas})
+				#return render(request,'conductor/administrar.html', {"city_array" : json_cities, "siguiente": sig, "destino": destino,'reservas':reservas,'reservastransito':reservastransito,'reservasaceptadas':reservasaceptadas})
 		
 			elif request.POST.get("nosube"):
 				print("boton no sube", request.POST.get("no sube"))
@@ -953,11 +965,11 @@ def administrar(request,pk):
 					for i in tramosreserva:
 						i.asientos_disponibles += reserva.plazas_pedidas
 						i.save()
-					viaje.asientos_disponibles +=reserva.plazas_pedidas
+					viaje.plazas_disponibles +=reserva.plazas_pedidas
 					viaje.save() 
 					reserva.estado = "Abortada"
 					reserva.save()
-				return render(request, 'conductor/administrar.html', {"city_array" : json_cities, "siguiente": sig, "destino": destino,'reservas':reservas,'reservastransito':reservastransito,'reservasaceptadas':reservasaceptadas})	
+				#return render(request, 'conductor/administrar.html', {"city_array" : json_cities, "siguiente": sig, "destino": destino,'reservas':reservas,'reservastransito':reservastransito,'reservasaceptadas':reservasaceptadas})	
 
 			elif request.POST.get("alerta"):		
 				if(destino):
@@ -969,8 +981,45 @@ def administrar(request,pk):
 			elif request.POST.get("aprobar"):		
 				print(request.POST.get("aprobar"))
 				return render(request,'conductor/administrar.html', {"city_array" : json_cities, "siguiente": sig, "destino": destino,'reservas':reservas,'reservastransito':reservastransito,'reservasaceptadas':reservasaceptadas})
-
-	
+			for reserva in r:
+				if (reserva.estado == "Por Aprobar"):
+					tramosreserva = reserva.tramos.all()
+					aux = []
+					if reserva.tramos.all()[0].viaje == int(pk):
+						aux.append(reserva.id)
+						aux.append(reserva.plazas_pedidas)
+						aux.append(tramosreserva[0].origen.nombre)
+						aux.append(tramosreserva[len(tramosreserva)-1].destino.nombre)
+						aux.append(reserva.precio)
+						aux.append(reserva.estado)
+						aux.append(reserva.usuario)
+						reservas.append(aux)
+				if (reserva.estado == "Transito"):
+					tramosreserva = reserva.tramos.all()
+					aux = []
+					if reserva.tramos.all()[0].viaje == int(pk):
+						aux.append(reserva.id)
+						aux.append(reserva.plazas_pedidas)
+						aux.append(tramosreserva[0].origen.nombre)
+						aux.append(tramosreserva[len(tramosreserva)-1].destino.nombre)
+						aux.append(reserva.precio)
+						aux.append(reserva.estado)
+						aux.append(reserva.usuario)
+						reservastransito.append(aux)
+			tramo_especial = viaje.tramos.all().filter(orden_en_viaje = viaje.parada_actual-1)[0]
+			reservas_especiales = tramo_especial.reservas.all()
+			for res in reservas_especiales:
+				if res.estado == "Aprobada":
+					aux = []
+					aux.append(reserva.id)
+					aux.append(reserva.plazas_pedidas)
+					aux.append(tramosreserva[0].origen.nombre)
+					aux.append(tramosreserva[len(tramosreserva)-1].destino.nombre)
+					aux.append(reserva.precio)
+					aux.append(reserva.estado)
+					aux.append(reserva.usuario)
+					reservasaceptadas.append(aux)
+			return render(request,'conductor/administrar.html', {"city_array" : json_cities, "siguiente": sig, "destino": destino,'reservas':reservas,'reservastransito':reservastransito,'reservasaceptadas':reservasaceptadas})
 		else:
 			raise Http404
 	else:
@@ -1029,3 +1078,7 @@ def iniciarviaje(request,pk):
 	return render(request,'conductor/error.html',{"titulo" : titulo, "mensaje" : mensaje})
 #@login_required()
 #def Viajereservasver(request):		
+
+def fin_viaje(request):
+	current_user = request.user
+	return render(request,'viaje/fin_viaje.html',{"cond":current_user.id})

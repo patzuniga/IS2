@@ -17,6 +17,7 @@ urlpatterns = [
 	url(r'^realizar_reservas$', realizar_reservas, name='realizar_reservas'),
 	url(r'^guardar_reservas$', guardar_reservas, name='guardar_reservas'),
 	url(r'^error1$', error1 , name='cancelar_editar_error'),
+	url(r'^error_crear$', error_crear , name='error_crear'),
 	url(r'^confirmarCanReservaConductor/(?P<pk>\d+)/$', confirmarCanReservaConductor, name='confirmarCanReservaConductor'),
 	url(r'^confirmarCanReservaAceptadaConductor/(?P<pk>\d+)/$', confirmarCanReservaAceptadaConductor, name='confirmarCanReservaAceptadaConductor'),
     url(r'^cancelarReservaAceptadaConductor/(?P<pk>\d+)/$', cancelarReservaAceptadaConductor, name='cancelarReservaAceptadaConductor'),
@@ -26,4 +27,5 @@ urlpatterns = [
     url(r'^administrar/(?P<pk>\d+)/$', administrar, name='administrar'),
     url(r'^viaje_reserva/(?P<pk>\d+)$', detail_viaje_en_curso, name='viaje_reserva'),
     url(r'^iniciarviaje/(?P<pk>\d+)$', iniciarviaje, name='iniciarviaje'),
+    url(r'^fin_viaje$', fin_viaje , name='fin_viaje'),
 ]

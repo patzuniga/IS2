@@ -1,0 +1,26 @@
+{% extends 'login/base2.html' %}
+
+{% block content %}
+
+<style type="text/css">
+  h3{text-align: center;}
+  h4{text-align: center; color: black;}
+</style>
+<div class="banner-info">
+  <div class="w3-bar w3-black">
+      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Fin Viaje</button>
+    </div>
+    <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
+      <div class="banner-left wow fadeInLeft animated" data-wow-delay=".5s"" >
+         <br><br><h3>Fin del Viaje</h3>
+            <div class="w3-container" style="margin:0 -16px;">
+               <h4 style="color: black;">¿Quieres realizar valoraciones de los pasajeros?</h4>
+            </div><br><br>
+            <div style="text-align: center;">
+              <a href="{% url 'valoracionesPendientesConductor' %}"><button class="w3-button w3-dark-grey">Valorar</button></a>
+              <a href="{% url 'home' %}"><button class="w3-button w3-dark-grey">No Valorar</button></a>
+            </div>
+      </div>
+    </div>
+</div>
+{% endblock %}

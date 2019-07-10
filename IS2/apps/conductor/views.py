@@ -2,9 +2,11 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from apps.conductor.models import Conductor
-from apps.usuario.models import Usuario, Perfil
+from apps.usuario.models import Usuario, Perfil, Valoracion
 from apps.viaje.models import Tramo, Reserva, Viaje
 from apps.conductor.forms import Conductor_Form
+from django.http import HttpResponseRedirect, HttpResponse
+
 
 @login_required()
 def configuracion(request):
@@ -22,7 +24,7 @@ def cambio(request):
 	print("Autoaceptar es",auto_a)
 	if request.method == 'POST':
 		auto_a = not auto_a
-		print("Ahora es",auto_a)
+		print("Ahora es ",auto_a)
 		conductor.autoaceptar_reservas = auto_a
 		conductor.save()
 
@@ -124,3 +126,87 @@ def registro_conductor(request):
 	else:
 		form = Conductor_Form()
 		return render(request, 'conductor/conductor.html', {'form': form})
+
+
+@login_required()
+def valoracionesPendientesConductor(request):
+	current_user = request.user
+	evaluador = Usuario.objects.get(id=current_user.id)
+	res = Reserva.objects.all()
+#	print(evaluador.usuario)
+	porValorar = []
+	for v in Viaje.objects.all():
+		for reserva in res:
+			if reserva.tramos.all()[0].viaje == v.id and (reserva.estado == "Por Valorar" or reserva.estado == "Por Valorar Conductor"):
+#					print(reserva.usuario)
+					aux = []
+#					print(reserva.id)
+#					print(reserva.estado)
+#					print(reserva.usuario)
+					aux.append(reserva.usuario)
+					aux.append(reserva.id)
+					aux.append(v.conductor.usuario.id)
+					porValorar.append(aux)
+	return render(request, 'conductor/valoracionesPendientesConductor.html',{'porValorar':porValorar})	
+
+#	else:
+#		return render(request, 'conductor/valoracionesPendientesConductor')
+
+@login_required()
+def vPC(request):
+	current_user = request.user
+	evaluador = Usuario.objects.get(id=current_user.id)
+	valoracion = []
+	if request.method == 'POST':
+		post = Valoracion()
+		post.usuarioEvaluador = evaluador
+		evaluado = request.POST.get('pasajeroEvaluado')
+		evaluadoDone = Usuario.objects.get(id=evaluado)
+		post.usuarioEvaluado = evaluadoDone
+		print(post.usuarioEvaluado)
+		post.nota = request.POST.get('nota')
+		post.comentario = request.POST.get('comentario')
+		post.anonimo = request.POST.get('anon')
+		resID = request.POST.get('resID')
+		aux = []
+		if(post.anonimo == "True"):
+			anon = "Anonimo"
+			aux.append(anon)
+			aux.append(post.nota)
+			aux.append(post.usuarioEvaluado)
+			aux.append(post.comentario)
+			aux.append(post.anonimo)
+			valoracion.append(aux)
+			print(valoracion)
+			post.save()
+			res = Reserva.objects.get(id=resID)
+			if( res.estado == "Por Valorar Conductor"):
+				res.estado = "Terminada"
+				print(res.estado)
+				res.save()
+			if (res.estado == "Por Valorar"):
+				res.estado = "Por Valorar Pasajero"
+				print(res.estado)
+				res.save()
+			return HttpResponseRedirect('/conductor/valoracionesPendientesConductor/',{'valoracion':valoracion})
+		else:
+			aux.append(evaluador)
+			aux.append(post.nota)
+			aux.append(post.usuarioEvaluado)
+			aux.append(post.comentario)
+			aux.append(post.anonimo)
+			valoracion.append(aux)
+			print(valoracion)
+			post.save()
+			res = Reserva.objects.get(id=resID)
+			if( res.estado == "Por Valorar Conductor"):
+				res.estado = "Terminada"
+				print(res.estado)					
+				res.save()
+			if (res.estado == "Por Valorar"):
+				res.estado = "Por Valorar Pasajero"
+				print(res.estado)
+				res.save()
+			return HttpResponseRedirect('/conductor/valoracionesPendientesConductor/',{'valoracion':valoracion})				
+
+
