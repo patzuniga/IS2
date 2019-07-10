@@ -13,7 +13,7 @@
                 <p><strong>Dirección: </strong>{{perfil.4}}</p>
                 <p><strong>Profesión: </strong>{{perfil.5}}</p>
                 <p><strong>Fumador: </strong>{{perfil.6}}</p>
-                <p><strong>Calificación Promedio: </strong> poner algo aquí (raknar)</p>
+                <p><strong>Calificación Promedio: </strong> {{ perfil.7}}</p>
                 {% if perfil_conductor %}
                 <br>
                 <p><strong>Licencia: </strong>Clase {{perfil_conductor.0}}, obtenida en {{perfil_conductor.1}}</p>
@@ -28,12 +28,14 @@
                 {% endif %}
               </div>
           </div><br>
-        <div class="banner-left">
+        <div class="banner-info" style="padding-left: 10%" >
           {% if perfil_conductor %}
           <a href="{% url 'editarperfilconduct' %}"><button class="w3-button w3-blue" style="text-align: center;">Editar Perfil</button></a>
           {% else %}
           <a href="{% url 'editarperfil' %}"><button class="w3-button w3-blue" style="text-align: center;">Editar Perfil</button></a>
           {% endif %}
+        </div>
+        <div class="banner-left">
 
           <br>
           <h1 style="text-align: center;">Comentarios</h1>
@@ -49,9 +51,9 @@
               <tbody>
                 {% for com in comentarios %}
                 <tr>
-                <td>Nombre</td>
-                <td>9/11</td>
-                <td>{{ com }}</td>
+                <td>{{ com.0 }}</td>
+                <td>{{ com.1 }}</td>
+                <td>{{ com.2 }}</td>
                 </tr>
                 {% endfor %}
               </tbody>

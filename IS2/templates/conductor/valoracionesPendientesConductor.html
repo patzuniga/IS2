@@ -1,0 +1,102 @@
+{% extends 'login/base2.html' %}
+
+{% block content %}
+<style type="text/css">
+input[type="text"]{
+	width: 100%
+	box-sizing: border-box;
+	-webkit-box-sizing:border-box;
+	-moz-box-sizing: border-box;
+}
+
+.rating {
+  width: 150px;
+  height: 40px;
+  margin: 10 auto;
+  padding: 1px 10px;
+
+}
+.rating label {
+	float: right;
+  position: relative;
+  width: 25px;
+  height: 5px;
+  cursor: pointer;
+}
+.rating label:not(:first-of-type) {
+  padding-right: 2px;
+}
+.rating label:before {
+  content: "\2605";
+  font-size: 42px;
+  color: #ccc;
+  line-height: 1;
+}
+.rating input {
+  display: none;
+}
+.rating input:checked ~ label:before, .rating:not(:checked) > label:hover:before, .rating:not(:checked) > label:hover ~ label:before {
+  color: #f9df4a;
+}
+
+
+</style>
+
+<div class="banner-info">
+    <div class="w3-bar w3-black">
+      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Valoraciones Pendientes</button>
+    </div>
+    <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
+      <div class="banner-left wow fadeInLeft animated" data-wow-delay=".5s" >
+      <h2>Valoraciones Pendientes</h2>
+		{% if porValorar%}
+    	<div class="panel panel-default table-responsive">
+                  <table class="table  table-responsive table-striped">
+	                    <thead>
+		      				<tr id="head">
+				        		<th scope="col" >Pasajero a evaluar</th>
+				        		<th scope="col" >Nota</th>
+				        		<th scope="col" >Comentario</th>
+				        		<th scope="col" >Valorar anonimamente</th>
+				        		<th scope="col" >Ingresar valoracion</th>
+				            </tr>
+		        		</thead>
+			      		<tbody>
+		      			{% for valorar in porValorar %}
+			      			<tr >
+								<form method="post" action="../vPC/" onsubmit="return confirm('Esta seguro de asignar esta valoracion?');">
+									{% csrf_token %}
+									    <td>{{valorar.0}} 
+									    	<input type="hidden" id="pasajeroEvaluado" name="pasajeroEvaluado" value="{{valorar.2}}">
+									    </td>
+									    <td>
+									    	<div class="rating">
+					    					<input type="radio" id="star5{{ forloop.counter }}" name="nota" value="5" required><label for="star5{{ forloop.counter }}"></label>
+										    <input type="radio" id="star4{{ forloop.counter }}" name="nota" value="4" ><label for="star4{{ forloop.counter }}"></label>
+										    <input type="radio" id="star3{{ forloop.counter }}" name="nota" value="3" ><label for="star3{{ forloop.counter }}"></label>
+										    <input type="radio" id="star2{{ forloop.counter }}" name="nota" value="2" ><label for="star2{{ forloop.counter }}"></label>
+										    <input type="radio" id="star1{{ forloop.counter }}" name="nota" value="1" ><label for="star1{{ forloop.counter }}"></label>
+											</div></a>
+										</td>
+										<td><textarea rows="3" cols="30" name="comentario" placeholder="Comentario obligatorio" required></textarea></td>
+									    <td>
+									    	<input type="hidden" name="anon" value="False">
+									    	<input type="checkbox"  name="anon" value="True"></a>
+									    </td>
+									    	<input type="hidden" name="resID" value="{{valorar.1}}">
+					   				    <td><input type="submit"></a></td>
+						    	</form>
+						    </tr>
+		    			{% endfor %}
+	    				</tbody>
+    				</table>
+   		</div>
+   		{% else %}
+    		<h1>No hay reservas por valorar</h1>
+    	{% endif %}
+    	</div>
+    </div>
+ </div>
+{% endblock %}
+
+

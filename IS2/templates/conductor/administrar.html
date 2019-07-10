@@ -19,12 +19,13 @@
       <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Reservas');"><i class="fa fa-bell w3-margin-right"></i>Reservas</button>
     </div>
           <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink">
-              <h2 style="text-align: center ;" >Ruta a seguir</h2>
+              <h2 style="text-align: center;" >Ruta a seguir</h2>
               <div class = "w3-container">
                 <div id="map" class="map"></div>
               </div>
               <br>
               <form method='POST'>
+                {% csrf_token %} 
                <button style="margin:1.5em;" type="submit" name="alerta" value="1"><span style="color:red; font-size:1.5em;" class="glyphicon glyphicon-alert "></span><span style="font-size:1.5em;"> Avisar a los pasajeros cercanos </span></button>
              </form>
               <div class="panel panel-default table-responsive">
@@ -39,16 +40,16 @@
                 <tbody> 
                   <tr>
                     {% if destino %}
-                        <td><a>{{ siguiente.destino.direccion }}</a></td>
-                        <td><a>{{ siguiente.hora_llegada }}</a></td>
+                      <td><a>{{ siguiente.destino.direccion }}</a></td>
+                      <td><a>{{ siguiente.hora_llegada }}</a></td>
                       {% else %}
                       <td><a>{{ siguiente.origen.direccion }}</a></td>
                       <td><a>{{ siguiente.hora_salida }}</a></td>
-                      {% endif %}
+                    {% endif %}
                       <form method='POST'>
                       {% csrf_token %}      
                         <td><button type="submit" name="parada" value="1"><span style="color:green; font-size:1.5em;" class="glyphicon glyphicon-ok-sign "></span></button></td>
-                        </form>
+                      </form>
                   </tr>
                 </tbody>
               </table>
@@ -63,29 +64,26 @@
               <table class="table  table-responsive table-striped" >
                 <thead>
                   <tr id="head">
-                        <th  >Reserva id</th>
                         <th  >Pasajero</th>
                         <th  >Plazas</th>
                         <th  >Origen</th>
-                        <th >Estado</th>
                         <th >Sube</th>
                         <th >No sube</th>
                   </tr> 
                 </thead>
                 <tbody> 
-                  <tr>
-                   {% for reservasdecididas in reservasaceptadas %}
-                        <td>{{ reservasdecididas.0}}</td>
+                  {% for reservasdecididas in reservasaceptadas %}
+                    <tr>
                         <td>{{ reservasdecididas.6}}</td>
                         <td>{{ reservasdecididas.1}}</td>
                         <td>{{ reservasdecididas.2}}</td>
-                        <td>{{ reservasdecididas.5}}</td>
                       <form method='POST'>
                         {% csrf_token %}
                         <td ><button class="round-button" value="{{reservasdecididas.0}}" name="sube" ><i class="fa fa-sign-in" style="text-align: center;"></i></button></td>
                         <td ><button class="round-button" value="{{reservasdecididas.0}}" name="nosube"><i class="fa fa-sign-out"   style="text-align: center;"></i></button></td>
-        </form>  {% endfor %}
                   </tr>
+                      </form>  
+                  {% endfor %}
                 </tbody>
               </table>
               </div>
@@ -103,12 +101,12 @@
               <table class="table  table-responsive table-striped" >
                 <thead>
                   <tr id="head">
-                       <th >Reserva id</th>
-                        <th  >Pasajero</th>
-                        <th  >Plazas</th>
-                        <th  >Destino</th>
-                        <th >Estado</th>
-                        <th >Baja</th>
+                        <th>Reserva id</th>
+                        <th>Pasajero</th>
+                        <th>Plazas</th>
+                        <th>Destino</th>
+                        <th>Estado</th>
+                        <th>Baja</th>
                   </tr> 
                 </thead>
                 <tbody> 
