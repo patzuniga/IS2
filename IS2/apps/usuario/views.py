@@ -136,7 +136,6 @@ def registro(request):
 		return render(request, 'usuario/registrarme.html', {'form': form})
 
 def alerta(request):
-	print("holaaaa")
 	request.user.perfil.mensajes=""
 	request.user.perfil.save()
 	return redirect('home')
