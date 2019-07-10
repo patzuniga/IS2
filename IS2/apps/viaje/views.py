@@ -258,7 +258,7 @@ def buscar_viaje(request):
 			f =  form.cleaned_data['fecha']
 			s = request.POST['origen'].split(',')[0].replace(",","")
 			u = request.POST['destino'].split(',')[0].replace(",","")
-			viaje  = Viaje.objects.filter()
+			viaje  = Viaje.objects.filter(estado="Registrado")
 			#se revisan todos lo viajes
 			origen = False
 			destino = False
