@@ -1,0 +1,88 @@
+{% extends 'login/base2.html' %}
+
+{% block content %}
+<!-- Header -->
+<header class="w3-display-container w3-content w3-hide-small" style="max-width:1500px" >
+  <img class="w3-image" src="https://www.gapyear.com/wp-content/uploads/2017/11/RoadTipsMain.jpg" alt="London" width="1500" height="500">
+  <div class="w3-display-middle" style="width:60%; vertical-align: text-top;"  >
+    <div class="w3-bar w3-black">
+      <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'Viajes');"><i class="fa fa-car w3-margin-right"></i>Detalles de Tu Viaje</button>
+    </div>
+    <!-- Tabs -->
+    <div id="Viajes" class="w3-container w3-white w3-padding-16 myLink"  >
+      <h3 style="text-align: center;">Tu Viaje</h3>
+      <div class="w3-row-padding"  style="margin:0 -16px;">
+
+        {% if reservasaceptadas %}
+        <h3 style="text-align: center;">Pasajeros proximos a subir</h3>
+        <div class="panel panel-default table-responsive" style="background-color: white;">
+             <table class="table  table-responsive table-striped">
+          <thead>
+            <tr>
+              <th  >Reserva id</th>
+              <th  >Pasajero</th>
+              <th  >Plazas</th>
+              <th  >Origen</th>
+              <th >Estado</th>
+              <th >Sube</th>
+              <th >No sube</th>
+            </tr>
+            </thead>
+          <tbody>
+          
+            <tr>
+          {% for reservasdecididas in reservasaceptadas %}
+            <td>{{ reservasdecididas.0}}</td>
+            <td>{{ reservasdecididas.6}}</td>
+            <td>{{ reservasdecididas.1}}</td>
+            <td>{{ reservasdecididas.2}}</td>
+            <td>{{ reservasdecididas.5}}</td>
+            <form method="POST">
+            {% csrf_token %}
+            <td ><button class="round-button"><i class="fa fa-sign-in" value="1" name="sube" style="text-align: center;"></i></button></td>
+            <td ><button class="round-button" onclick=""><i class="fa fa-sign-out"  value="{{reservasdecididas.0}}" name="nosube" style="text-align: center;"></i></button></td>
+        </form>
+          
+          {% endfor %}
+          {% else %}
+          <h4> No hay reservas </h4>
+        {% endif %}
+      </tbody>
+      </table><br> {% if reservastransito %}
+        <h3 style="text-align: center;">Pasajeros en el vehiculo</h3>
+       <div class="panel panel-default table-responsive" style="background-color: white;">
+             <table class="table  table-responsive table-striped">
+          <thead>
+            <tr >
+              <th >Reserva id</th>
+              <th  >Pasajero</th>
+              <th  >Plazas</th>
+              <th  >Destino</th>
+              <th >Estado</th>
+              <th >Baja</th>
+            </tr>
+            </thead>
+          <tbody>
+          <tr class="clickable-row" >
+            <tr>
+          {% for reservasdecididas in reservastransito %}
+            <td>{{ reservasdecididas.0}}</td>
+            <td>{{ reservasdecididas.6}}</td>
+            <td>{{ reservasdecididas.1}}</td>
+            <td>{{ reservasdecididas.3}}</td>
+            <td>{{ reservasdecididas.5}}</td>
+            <form method="POST2">
+            {% csrf_token %}
+            <td ><button class="round-button" onclick=""><i class="fa fa-sign-out" name="baja" style="text-align: center;"></i></button></td>
+       </form>
+          </tr>
+          {% endfor %}
+          {% else %}
+          <h4>Aun no hay reservas en tránsito</h4>
+        {% endif %}
+      </tbody>
+      </table><br>
+  </div>
+</div>
+</header>
+{% endblock %}
