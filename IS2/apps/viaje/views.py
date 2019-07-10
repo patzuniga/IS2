@@ -842,6 +842,7 @@ def administrar(request,pk):
 		reservasaceptadas = []
 		reservastransito = []
 		r=Reserva.objects.all()
+		
 		for reserva in r:
 			if (reserva.estado == "Por Aprobar"):
 				tramosreserva = reserva.tramos.all()
@@ -938,12 +939,10 @@ def administrar(request,pk):
 				print(request.POST.get("sube"))
 				id_res = request.POST.get("sube")
 				reservas = Reserva.objects.filter(id=id_res)
-				print(reservas)
-				reserva = reservas[0]
 				if(reserva.estado == "Aprobada"):
 					reserva.estado = "Transito"
-					print(reserva.estado)
 					reserva.save()
+					print(reserva.estado)
 				return render(request,'conductor/administrar.html', {"city_array" : json_cities, "siguiente": sig, "destino": destino,'reservas':reservas,'reservastransito':reservastransito,'reservasaceptadas':reservasaceptadas})
 		
 			elif request.POST.get("nosube"):
@@ -978,7 +977,6 @@ def administrar(request,pk):
 			raise Http404
 	else:
 		raise Http404
-
 
 def detail_viaje_en_curso(request,pk):
 	try:
